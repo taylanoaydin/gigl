@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 #-----------------------------------------------------------------------
-# penny.py
-# Author: Bob Dondero
+# gigl.py
+# Authors: TA, AB, IA, YD
 #-----------------------------------------------------------------------
 
 import flask
@@ -19,3 +19,29 @@ def index():
     html_code = flask.render_template('index.html')
     response = flask.make_response(html_code)
     return response
+
+#-----------------------------------------------------------------------
+@app.route('/searchresults', methods=['GET'])
+def search_results():
+    return
+#-----------------------------------------------------------------------
+@app.route('/details', methods=['GET'])
+def details():
+    return
+#-----------------------------------------------------------------------
+@app.route('/postgig', methods=['GET'])
+def postgig():
+    return
+#-----------------------------------------------------------------------
+@app.route('/profile', methods=['GET'])
+def profile():
+    return
+#-----------------------------------------------------------------------
+@app.route('/gigposted', methods=['POST'])
+def gigposted():
+    return
+#-----------------------------------------------------------------------
+@app.route('/deletegig', methods=['POST'])
+def deletegig():
+    return
+#-----------------------------------------------------------------------
