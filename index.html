@@ -3,12 +3,55 @@
 
 <head>
     <title>Test Page</title>
+    <style>
+        /* Floating Effect CSS */
+        .floating {
+            animation-name: floating;
+            animation-duration: 3s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Pulse Effect CSS */
+        .pulse {
+            animation-name: pulse;
+            animation-duration: 1.5s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Spin Effect CSS */
+        .spin {
+            animation-name: spin;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 
 <body>
     <h1>This is a Test Page</h1>
     <p>Brought to you by Taylan, Andre, Ibe, Yagiz. No need to thank us.</p><br>
-    <img src="{{ url_for('static', filename='kevinjames.jpeg') }}" />
+    <!-- Added the floating class to your image for the floating effect -->
+    <img src="{{ url_for('static', filename='kevinjames.jpeg') }}" class="floating" alt="Image with animation">
 </body>
 
 </html>
