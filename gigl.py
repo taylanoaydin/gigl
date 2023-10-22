@@ -13,7 +13,7 @@ from helpers import handlers
 from helpers import database
 #-----------------------------------------------------------------------
 
-app = flask.Flask(__name__, template_folder='.')
+app = flask.Flask(__name__, template_folder='templates/')
 
 #-----------------------------------------------------------------------
 
@@ -49,3 +49,5 @@ def gigposted():
 def deletegig():
     return
 #-----------------------------------------------------------------------
+if __name__ == '__main__':
+	app.run(debug=True, port=4000)
