@@ -6,7 +6,11 @@
 #-----------------------------------------------------------------------
 
 import flask
-
+from modules import application
+from modules import gig
+from modules import user
+from helpers import handlers
+from helpers import database
 #-----------------------------------------------------------------------
 
 app = flask.Flask(__name__, template_folder='.')
