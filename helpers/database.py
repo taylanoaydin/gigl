@@ -22,24 +22,67 @@ DATABASE_URL = os.environ['DATABASE_URL']
 # and search within a list of categories (or all of them)
 # default returns Gig objects sorted rev-chron by submission date
 def get_gigs(keyword='', category=[]):
-  return
+    return
 
-def get_gig_details():
-  return
+# returns Gig object for the gig with gigID
+def get_gig_details(gigID):
+    return
 
-def get_gigs_posted_by():
-  return
+# returns list of Gig's posted by netid
+def get_gigs_posted_by(netid):
+    return
 
-def get_apps_for():
-  return
+# returns list of Application's sent to gig with gigID
+def get_apps_for(gigID):
+    return
 
-def get_apps_by():
-  return
+# returns list of Application's sent by user with netid (to any gig)
+def get_apps_by(netid):
+    return
+
+# returns the single application sent by user with netid to gig with
+# gigID. Returns None if no application sent by netid to gigID.
+# note to devs: compare return value with None to see if 
+# user already applied
+def get_application(netid, gigID):
+    return
+
+#-----------------------------------------------------------------------
+# FUNCTIONS THAT POTENTIALLY CHANGE DATABASE
+
+# Checks if user with the given netid already exists, if not, adds them
+# to database (used after login).
+def check_and_add_user(netid, name):
+    return
+
+# Deletes gig with the given gigID from both applications and gigs.
+# returns false if gigID doesn't exist, true otherwise
+def delete_gig_from_db(gigID):
+    return
+
+# Creates gig with the given parameters. Unique gigID is automatically 
+# created for any gig.
+def create_gig(netid, title, category, description, qualf, startfrom, 
+              until, posted):
+    return
+
+# Sends application from user with netid to gig with gigID with the
+# given message. 
+def send_application(netid, gigID, message):
+    return
+
+#-----------------------------------------------------------------------
+
+# BOOLEAN RETURN FUNCTIONS
+
+# true if netid posted gig with gigID, false otherwise
+def owns_gig(netid, gigID):
+    return
 
 
 #-----------------------------------------------------------------------
 def _test():
-  photoshoot = Gig()
+  
 
 if __name__ == '__main__':
     _test()
