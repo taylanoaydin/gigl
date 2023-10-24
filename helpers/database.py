@@ -8,36 +8,64 @@ import os
 import sys
 import psycopg2
 import dotenv
+import queue
+from ..modules import application
+from ..modules import gig
+from ..modules import user
 #-----------------------------------------------------------------------
 
 dotenv.load_dotenv()
 DATABASE_URL = os.environ['DATABASE_URL']
 
-#-----------------------------------------------------------------------
+_connection_pool = queue.Queue()
 
+#-----------------------------------------------------------------------
+def _get_connection():
+    try:
+        conn = _connection_pool.get(block=False)
+    except queue.Empty:
+        conn = psycopg2.connect(DATABASE_URL)
+    return conn
+
+def _put_connection(conn):
+    _connection_pool.put(conn)
+
+#-----------------------------------------------------------------------
 # GET FUNCTIONS FOR INFORMATION RETRIEVAL! NO CHANGES MADE TO          #
 # DATABASE                                                             #
 
 # 2 search features: a keyword in any of the fields,
 # and search within a list of categories (or all of them)
 # default returns Gig objects sorted rev-chron by submission date
+# Returns exception if there was an error in database handling
+def get_gigs(keyword='', categories=None):
+    if categories is None:
+        categories = []
+    gigs = []
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            kw = '%' + keyword + '%'
+            all_args = [kw for _ in range(3)]
+            query = """SELECT * FROM gigs 
+                       WHERE (title ILIKE %s OR
+                             description ILIKE %s OR
+                             qualf ILIKE %s)"""
+            if len(categories) != 0:
+                query += " AND category = ANY(%s)"
+                all_args.append(categories)
+            query += " ORDER BY posted DESC"
 
-def get_gigs(keyword='', categories=[]):
-    conn = psycopg2.connect(DATABASE_URL) # connects to database
-    cursor = conn.cursor() # sets up cursor for SQL commands 
-
-    # If no categories are selected, retrieve all gigs that match the keyword
-    if not categories:
-        query = "SELECT * FROM gigs WHERE title LIKE %s OR description LIKE %s OR qualf LIKE %s ORDER BY posted DESC"
-        cursor.execute(query, ('%' + keyword + '%', '%' + keyword + '%', '%' + keyword + '%'))
-    else:
-        query = "SELECT * FROM gigs WHERE (title LIKE %s OR description LIKE %s OR qualf LIKE %s) AND category IN %s ORDER BY posted DESC"
-        cursor.execute(query, ('%' + keyword + '%', '%' + keyword + '%', '%' + keyword + '%', tuple(categories))) # "IN" requires tuple format 
-
-    gigs = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return gigs #returns tuple of gigs with their respective details 
+            cursor.execute(query, all_args)
+            table = cursor.fetchall()
+            for row in table:
+                a_gig = gig.Gig(*row)
+                gigs.append(a_gig)
+    except Exception as ex:
+        return ex
+    finally:
+        _put_connection(connection)
+    return gigs
 
 # returns Gig object for the gig with gigID
 def get_gig_details(gigID):
@@ -97,7 +125,7 @@ def owns_gig(netid, gigID):
 
 #-----------------------------------------------------------------------
 def _test():
-  
+    return
 
 if __name__ == '__main__':
     _test()
