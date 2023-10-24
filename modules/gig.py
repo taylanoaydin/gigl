@@ -6,10 +6,10 @@
 
 class Gig:
 
-    def __init__(self, netid, gigID, 
+    def __init__(self, gigID, netid,
                  title, cat, desc, qual, from_date, til_date, post_date):
-        self._netid = netid
         self._gigID = gigID
+        self._netid = netid
         self._title = title
         self._cat = cat
         self._desc = desc
