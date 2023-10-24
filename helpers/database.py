@@ -21,8 +21,23 @@ DATABASE_URL = os.environ['DATABASE_URL']
 # 2 search features: a keyword in any of the fields,
 # and search within a list of categories (or all of them)
 # default returns Gig objects sorted rev-chron by submission date
-def get_gigs(keyword='', category=[]):
-    return
+
+def get_gigs(keyword='', categories=[]):
+    conn = psycopg2.connect(DATABASE_URL) # connects to database
+    cursor = conn.cursor() # sets up cursor for SQL commands 
+
+    # If no categories are selected, retrieve all gigs that match the keyword
+    if not categories:
+        query = "SELECT * FROM gigs WHERE title LIKE %s OR description LIKE %s OR qualf LIKE %s ORDER BY posted DESC"
+        cursor.execute(query, ('%' + keyword + '%', '%' + keyword + '%', '%' + keyword + '%'))
+    else:
+        query = "SELECT * FROM gigs WHERE (title LIKE %s OR description LIKE %s OR qualf LIKE %s) AND category IN %s ORDER BY posted DESC"
+        cursor.execute(query, ('%' + keyword + '%', '%' + keyword + '%', '%' + keyword + '%', tuple(categories))) # "IN" requires tuple format 
+
+    gigs = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return gigs #returns tuple of gigs with their respective details 
 
 # returns Gig object for the gig with gigID
 def get_gig_details(gigID):
