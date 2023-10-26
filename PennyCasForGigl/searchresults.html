@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Penny.com</title>
+   </head>
+   <body>
+      {% include 'header.html' %}
+      <h1>Author Search Results</h1>
+      <h2>Books by {{author}}:</h2>
+      {% if books|length == 0: %}
+            (None)
+      {% else %}
+         {% for book in books: %}
+             <strong>{{book.get_author()}}</strong>:
+             {{'%s (%.2f)' % (book.get_title(), book.get_price())}}<br>
+         {% endfor %}
+      {% endif %}
+      <br>
+      <br>
+      Click here to do another
+      <a href="/searchform">author search</a>.
+      <br>
+      <br>
+      <br>
+      <br>
+       {% include 'footer.html' %}
+   </body>
+</html>

@@ -6,14 +6,12 @@
 #-----------------------------------------------------------------------
 
 import flask
-import application
-import gig
-import user
-import handlers
-import database
+import auth
+import os
 #-----------------------------------------------------------------------
 
 app = flask.Flask(__name__, template_folder='templates/')
+app.secret_key = os.urandom(12).hex()
 
 #-----------------------------------------------------------------------
 
@@ -21,6 +19,15 @@ app = flask.Flask(__name__, template_folder='templates/')
 @app.route('/index', methods=['GET'])
 def index():
     html_code = flask.render_template('index.html')
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+@app.route('/home', methods=['GET'])
+def home():
+    username = auth.authenticate()
+    html_code = flask.render_template('home.html',
+                                      username=username)
     response = flask.make_response(html_code)
     return response
 
@@ -50,4 +57,4 @@ def deletegig():
     return
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
-	app.run(debug=True, port=4000)
+	app.run(debug=True, port=8888)
