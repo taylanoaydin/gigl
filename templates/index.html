@@ -2,6 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
+    <title>Gigl - Home</title> <!--title on browser window-->
+    <!-- Including the styles from index.css -->
+    <link rel="stylesheet" href="/static/dist/css/index.css">
+</head>
+<body>
+    {% include 'header.html' %} <!--JINJA2 template for the header-->
+    <main>
+    	<!--when user presses "search", use /searchresults Flask route with GET-->
+        <form action="/searchresults" method="GET"> 
+            <input type="text" name="keyword" placeholder="Search for gigs...">
+            <!--allows for dropdown with multiple selects, initially displaying "Category"-->
+            <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
+            <select name="category">
+                <!-- Placeholder option -->
+                <option value="" disabled selected>Category</option>
+                <!-- Categories options -->
+                <option value="teaching">Teaching</option>
+                <option value="research">Research</option>
+                <option value="technical">Technical</option>
+                <option value="writing">Writing</option>
+                <option value="graphic_design">Graphic Design</option>
+                <option value="photography_film">Photography/Film</option>
+                <option value="events">Events</option>
+                <option value="marketing">Marketing</option>
+                <option value="administrative">Administrative</option>
+                <option value="volunteer">Volunteer</option>
+                <option value="fitness">Fitness</option>
+                <option value="other">Other</option>
+            </select>
+            <input type="submit" value="Search">
+        </form>
+    </main>
+</body>
+</html>
+
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gigl | The next big thing</title>
@@ -35,9 +77,9 @@
           <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
         </div>
       </nav>
-      <!-- Mobile menu, show/hide based on menu open state. -->
+      Mobile menu, show/hide based on menu open state.
       <div class="lg:hidden" role="dialog" aria-modal="true">
-        <!-- Background backdrop, show/hide based on slide-over state. -->
+        Background backdrop, show/hide based on slide-over state. 
         <div class="fixed inset-0 z-50"></div>
         <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div class="flex items-center justify-between">
@@ -176,3 +218,4 @@
 </body>
 
 </html>
+-->
