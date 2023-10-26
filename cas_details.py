@@ -20,7 +20,7 @@ def cas_details(netID):
                   item['pustatus'],
                   item['eduPersonPrimaryAffiliation'],
                   item['universityid']] for item in response.json()]
-    return info_list
+    return info_list[0]
 
 #Test
 if __name__ == '__main__':
