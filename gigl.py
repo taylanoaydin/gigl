@@ -18,6 +18,8 @@ app.secret_key = os.urandom(12).hex()
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
+    username = auth.authenticate()
+
     html_code = flask.render_template('index.html')
     response = flask.make_response(html_code)
     return response
@@ -57,4 +59,4 @@ def deletegig():
     return
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
-	app.run(debug=True, port=8888)
+	app.run(host = 'localhost', debug=True, port=8888)
