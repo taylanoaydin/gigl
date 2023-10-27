@@ -12,6 +12,7 @@ import queue
 import application as app
 import gig
 import user
+from cas_details import cas_details
 #-----------------------------------------------------------------------
 
 dotenv.load_dotenv()
