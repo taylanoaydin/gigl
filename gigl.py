@@ -62,8 +62,8 @@ def search_results():
     return response
 
 #-----------------------------------------------------------------------
-@app.route('/details', methods=['GET'])
-def details():
+@app.route('/details/<int:id>', methods=['GET'])
+def details(id):
     return
 #-----------------------------------------------------------------------
 @app.route('/postgig', methods=['GET'])
@@ -106,9 +106,10 @@ def gigposted():
     category = gig_form.get('category')
     description = gig_form.get('description')
     posted = datetime.now().date()
-    database.create_gig(netid, title, category, description,
+    gigID = database.create_gig(netid, title, category, description,
                         qualif, start_date, end_date, posted)
-    html_code = flask.render_template('gigposted.html')
+    html_code = flask.render_template('gigposted.html',
+                                        gigID = int(gigID))
     response = flask.make_response(html_code)
     return response
 #-----------------------------------------------------------------------
