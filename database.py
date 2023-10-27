@@ -309,6 +309,7 @@ def owns_gig(netid, gigID):
 def _test():
     check_and_add_user('ta0639')
     _close_all_connections()
+    print(get_gig_details(12).get_category())
     return
 
 if __name__ == '__main__':
