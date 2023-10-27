@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
+  <title>Gigl - Profile</title> <!--title on browser window-->
+  <style>
+    /* Basic styling for the title */
+    .collapsible-title {
+      cursor: pointer;
+      color: #3498db;
+    }
+
+    /* Hide the checkbox */
+    .collapsible-toggle {
+      display: none;
+    }
+
+    /* By default, hide the collapsible content */
+    .collapsible-content {
+      display: none;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Display the content when the checkbox is checked */
+    .collapsible-toggle:checked+.collapsible-content {
+      display: block;
+    }
+  </style>
+  <!-- Including the styles from index.css -->
+</head>
+
+<body>
+  {% include 'header.html' %} <!--JINJA2 template for the header-->
+  <main>
+    <h2> Your Profile <h2>
+        <h3> Name: {{username}} </h3>
+        <h3> Email: {{user_email}} </h3>
+
+        <label for="toggle-gigs" class="collapsible-title">My Gigs</label>
+        <input type="checkbox" id="toggle-gigs" class="collapsible-toggle">
+        <ul class="collapsible-content">
+          {% for gig in mygigs %}
+          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px;">
+            <span>{{ gig.get_gigID() }}</span>
+            <span>|</span>
+            <span>{{ gig.get_title() }}</span>
+            <span>|</span>
+            <span>{{ gig.get_post_date() }}</span>
+            <span>|</span>
+            <span>{{ gig.get_fromdate() }}</span>
+            <span>|</span>
+            <span>{{ gig.get_til_date() }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <label for="toggle-apps" class="collapsible-title">My Applications</label>
+        <input type="checkbox" id="toggle-apps" class="collapsible-toggle">
+        <ul class="collapsible-content">
+          {% for app in myapps %}
+          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px;">
+            <span>{{ app.get_gigID() }}</span>
+            <span>|</span>
+            <span>{{ app.get_message() }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+
+  </main>
+</body>
+
+</html>
