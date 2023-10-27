@@ -62,14 +62,29 @@ def get_gigs(keyword='', categories=None):
                 a_gig = gig.Gig(*row)
                 gigs.append(a_gig)
     except Exception as ex:
-        return ex
+        return 0
     finally:
         _put_connection(connection)
     return gigs
 
 # returns Gig object for the gig with gigID
 def get_gig_details(gigID):
-    return
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = "SELECT * FROM gigs WHERE gigID = %s"
+            cursor.execute(query, [gigID])
+            gigdetails = cursor.fetchone()
+
+            if gigdetails is None:
+                return None
+            
+            thisgig = gig.Gig(*gigdetails)
+    except Exception as ex:
+        return 0
+    finally:
+        _put_connection(connection)
+    return thisgig
 
 # returns list of Gig's posted by netid
 def get_gigs_posted_by(netid):
@@ -88,6 +103,9 @@ def get_apps_by(netid):
 # note to devs: compare return value with None to see if 
 # user already applied
 def get_application(netid, gigID):
+    return
+
+def get_user(netid):
     return
 
 #-----------------------------------------------------------------------
