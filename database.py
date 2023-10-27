@@ -191,14 +191,44 @@ def get_user(netid):
 # FUNCTIONS THAT POTENTIALLY CHANGE DATABASE
 
 # Checks if user with the given netid already exists, if not, adds them
-# to database (used after login).
+# to database (used after login). Returns true if successful, false
+# if there was any error in the addition of the user to the database
 def check_and_add_user(netid):
-    return
+    usr = get_user(netid)
+    if usr is None:
+        connection = _get_connection()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute('BEGIN')
+                
+                usrname = cas_details(netid)[0]
+                query = "INSERT INTO users (netid, name) VALUES (%s, %s)"
+                cursor.execute(query, [netid, usrname])
+
+                cursor.execute('COMMIT')
+        except Exception as ex:
+            return False
+    return True
 
 # Deletes gig with the given gigID from both applications and gigs.
-# returns false if gigID doesn't exist, true otherwise
+# returns False if there was an error and it couldn't be deleted, true
+# otherwise
 def delete_gig_from_db(gigID):
-    return
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('BEGIN')
+
+            q1 = "DELETE FROM apps WHERE gigID = %s"
+            cursor.exectue(q1, [gigID])
+
+            q2 = "DELETE FROM gigs WHERE gigID = %s"
+            cursor.execute(q2, [gigID])
+
+            cursor.execute('COMMIT')
+    except Exception as ex:
+        return False
+    return True
 
 # Creates gig with the given parameters. Unique gigID is automatically 
 # created for any gig.
@@ -217,7 +247,8 @@ def send_application(netid, gigID, message):
 
 # true if netid posted gig with gigID, false otherwise
 def owns_gig(netid, gigID):
-    return
+    thisgig = get_gig_details(gigID)
+    return (thisgig is not None) and (thisgig.get_netid() == netid)
 
 
 #-----------------------------------------------------------------------
