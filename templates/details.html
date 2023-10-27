@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
+    <title>Gigl - Home</title> <!--title on browser window-->
+    <!-- Including the styles from index.css -->
+    <link rel="stylesheet" href="/static/dist/css/index.css">
+</head>
+
+<body>
+    {% include 'header.html' %} <!--JINJA2 template for the header-->
+    <main>
+        <h1>{{gigTitle}}</h1>
+        <section>
+            <h3>Posted By</h3>
+            <p>{{gigPoster}}</p>
+        </section>
+        <section>
+            <h3>Gig Category</h3>
+            <p>{{gigCategory}}</p>
+        </section>
+        <section>
+            <h3>Description</h3>
+            <p>{{gigDescription}}</p>
+        </section>
+        <section>
+            <h3>Gig Qualifications</h3>
+            <p>{{gigQualifications}}</p>
+        </section>
+        <section>
+            <h3>Gig Timeline</h3>
+            <p>{{gigStartDate}}</p>
+            <p>{{gigEndDate}}</p>
+        </section>
+        <section>
+            <h3>Gig Posted Time</h3>
+            <p>{{gigPostedDate}}</p>
+        </section>
+    </main>
+    <hr>
+</body>
+
+</html>

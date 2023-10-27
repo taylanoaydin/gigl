@@ -11,6 +11,7 @@ import os
 import sys
 import database
 from datetime import datetime
+from cas_details import cas_details
 #-----------------------------------------------------------------------
 
 app = flask.Flask(__name__, template_folder='templates/')
@@ -64,7 +65,28 @@ def search_results():
 #-----------------------------------------------------------------------
 @app.route('/details/<int:id>', methods=['GET'])
 def details(id):
-    return
+    netid = auth.authenticate()
+    gig = database.get_gig_details(id)
+    gigTitle = gig.get_title()
+    gigNetID = gig.get_netid()
+    gigAuthor = cas_details(gigNetID)[0]
+    gigCategory = gig.get_category()
+    gigDescription = gig.get_description()
+    gigQualifications = gig.get_qualifications()
+    gigStartDate = gig.get_fromdate()
+    gigEndDate = gig.get_til_date()
+    gigPostedDate = gig.get_post_date()
+    html_code = flask.render_template('details.html', 
+                                        gigTitle=gigTitle,
+                                        gigPoster=gigAuthor,
+                                        gigCategory=gigCategory,
+                                        gigDescription=gigDescription,
+                                        gigQualifications=gigQualifications,
+                                        gigStartDate=gigStartDate,
+                                        gigEndDate=gigEndDate,
+                                        gigPostedDate=gigPostedDate)
+    response = flask.make_response(html_code)
+    return response
 #-----------------------------------------------------------------------
 @app.route('/postgig', methods=['GET'])
 def postgig():
@@ -119,4 +141,4 @@ def deletegig():
     return
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
-	app.run(host = 'localhost', debug=True, port=8888)
+	app.run(host = 'localhost', debug=True, port=8880)
