@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- CSS style for searchresults.html -->
     <link rel="stylesheet" href="/static/dist/css/searchresults.css">
 </head>
+
 <body>
     {% include 'header.html' %}
     <main>
@@ -30,20 +32,21 @@
         <!-- Use helper functions to fetch and display search results -->
         <!-- 'gigs' is a list from Flask; {% for gig in gigs %} iterates over each gig. -->
         <ul>
-            {% for gig in gigs %}
-                <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px;">
-                    <span>{{ gig.id }}</span>
-                    <span>|</span>
-                    <span>{{ gig.title }}</span>
-                    <span>|</span>
-                    <span>{{ gig.date_posted }}</span>
-                    <span>|</span>
-                    <span>{{ gig.start_date }}</span>
-                    <span>|</span>
-                    <span>{{ gig.end_date }}</span>
-                </li>
+            {% for gig in mygigs %}
+            <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px;">
+                <span>{{ gig.get_gigID() }}</span>
+                <span>|</span>
+                <span>{{ gig.get_title() }}</span>
+                <span>|</span>
+                <span>{{ gig.get_post_date() }}</span>
+                <span>|</span>
+                <span>{{ gig.get_fromdate() }}</span>
+                <span>|</span>
+                <span>{{ gig.get_til_date() }}</span>
+            </li>
             {% endfor %}
         </ul>
     </main>
 </body>
+
 </html>
