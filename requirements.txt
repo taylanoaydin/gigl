@@ -1,9 +1,4 @@
 Flask
 psycopg2
-os
-sys
-database
-datetime
 python-dotenv
-queue
 gunicorn
