@@ -32,7 +32,7 @@
         <!-- Use helper functions to fetch and display search results -->
         <!-- 'gigs' is a list from Flask; {% for gig in gigs %} iterates over each gig. -->
         <ul>
-            {% for gig in mygigs %}
+            {% for gig in gigs %}
             <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px;">
                 <span>{{ gig.get_gigID() }}</span>
                 <span>|</span>

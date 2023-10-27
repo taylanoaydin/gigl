@@ -8,6 +8,7 @@
 import flask
 import auth
 import os
+import sys
 import database
 from datetime import datetime
 #-----------------------------------------------------------------------
@@ -41,6 +42,8 @@ def home():
 #-----------------------------------------------------------------------
 @app.route('/searchresults', methods=['GET'])
 def search_results():
+    netid = auth.authenticate()
+
     keyword = flask.request.args.get('keyword')
     category = flask.request.args.getlist('category')  # Use getlist since we will later use a multi-select dropdown
 
@@ -51,8 +54,9 @@ def search_results():
     if isinstance(gigs, int):
         # Handle the error, e.g., return an error page or message
         return "Error fetching gigs from the database."
-	    
-    html_code = flask.render_template('searchresults.html', gigs=gigs)
+
+    html_code = flask.render_template('searchresults.html', 
+                                        gigs=gigs)
     response = flask.make_response(html_code)
 
     return response
