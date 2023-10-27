@@ -84,7 +84,7 @@ def profile():
     mygigs = database.get_gigs_posted_by(netid)
     myapps = database.get_apps_by(netid)
 
-    html_code = flask.render_template('postgig.html', username=username,
+    html_code = flask.render_template('profile.html', username=username,
                                       user_email=user_email, 
                                       mygigs=mygigs,
                                       myapps=myapps)
