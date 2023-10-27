@@ -36,7 +36,22 @@ def home():
 #-----------------------------------------------------------------------
 @app.route('/searchresults', methods=['GET'])
 def search_results():
-    return
+    keyword = flask.request.args.get('keyword')
+    category = flask.request.args.getlist('category')  # Use getlist since we will later use a multi-select dropdown
+
+    # Fetch list of gigs based on the keyword / category
+    gigs = get_gigs(keyword, category)
+
+    # Check if gigs is a list (successful fetch) or an integer (error code = zero)
+    if isinstance(gigs, int):
+        # Handle the error, e.g., return an error page or message
+        return "Error fetching gigs from the database."
+	    
+    html_code = flask.render_template('searchresults.html', gigs=gigs)
+    response = flask.make_response(html_code)
+
+    return response
+
 #-----------------------------------------------------------------------
 @app.route('/details', methods=['GET'])
 def details():
