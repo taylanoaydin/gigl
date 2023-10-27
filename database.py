@@ -8,10 +8,12 @@ import os
 import sys
 import psycopg2
 import dotenv
+from cas_details import cas_details
 import queue
 import application as app
 import gig
 import user
+
 #-----------------------------------------------------------------------
 
 dotenv.load_dotenv()
@@ -29,6 +31,11 @@ def _get_connection():
 
 def _put_connection(conn):
     _connection_pool.put(conn)
+
+def _close_all_connections():
+    while not _connection_pool.empty():
+        connection = _connection_pool.get()
+        connection.close()
 
 #-----------------------------------------------------------------------
 # GET FUNCTIONS FOR INFORMATION RETRIEVAL! NO CHANGES MADE TO          #
@@ -253,6 +260,8 @@ def owns_gig(netid, gigID):
 
 #-----------------------------------------------------------------------
 def _test():
+    check_and_add_user('ta0639')
+    _close_all_connections()
     return
 
 if __name__ == '__main__':
