@@ -20,8 +20,11 @@ app.secret_key = os.urandom(12).hex()
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
-    username = auth.authenticate()
-
+    netid = auth.authenticate()
+    
+    if not database.check_and_add_user(netid):
+        return "Error handling omitted"
+    
     html_code = flask.render_template('index.html')
     response = flask.make_response(html_code)
     return response
@@ -42,7 +45,7 @@ def search_results():
     category = flask.request.args.getlist('category')  # Use getlist since we will later use a multi-select dropdown
 
     # Fetch list of gigs based on the keyword / category
-    gigs = get_gigs(keyword, category)
+    gigs = database.get_gigs(keyword, category)
 
     # Check if gigs is a list (successful fetch) or an integer (error code = zero)
     if isinstance(gigs, int):
@@ -73,7 +76,20 @@ def postgig():
 #-----------------------------------------------------------------------
 @app.route('/profile', methods=['GET'])
 def profile():
-    return
+    netid = auth.authenticate()
+    user = database.get_user(netid)
+    username = user.get_name()
+    user_email = f"{netid}@princeton.edu"
+
+    mygigs = database.get_gigs_posted_by(netid)
+    myapps = database.get_apps_by(netid)
+
+    html_code = flask.render_template('profile.html', username=username,
+                                      user_email=user_email, 
+                                      mygigs=mygigs,
+                                      myapps=myapps)
+    response = flask.make_response(html_code)     
+    return response
 #-----------------------------------------------------------------------
 @app.route('/gigposted', methods=['POST'])
 def gigposted():
