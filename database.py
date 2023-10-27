@@ -214,6 +214,8 @@ def check_and_add_user(netid):
                 cursor.execute('COMMIT')
         except Exception as ex:
             return False
+        finally:
+            _put_connection(connection)
     return True
 
 # Deletes gig with the given gigID from both applications and gigs.
@@ -234,18 +236,63 @@ def delete_gig_from_db(gigID):
             cursor.execute('COMMIT')
     except Exception as ex:
         return False
+    finally:
+        _put_connection(connection)
     return True
 
 # Creates gig with the given parameters. Unique gigID is automatically 
-# created for any gig.
+# created for any gig. Returns gigID normally, -1 if there was any
+# problem adding to db
 def create_gig(netid, title, category, description, qualf, startfrom, 
               until, posted):
-    return
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('BEGIN')
+
+            query = """INSERT INTO gigs 
+            (netid, title, category, description, 
+            qualf, startfrom, until, posted)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING gigID"""
+
+            cursor.execute(query, [netid, title, category, description, qualf, startfrom, 
+              until, posted])
+            gigID = cursor.fetchone()[0]
+
+            cursor.execute('COMMIT')
+            return gigID
+    except Exception as ex:
+        return -1
+    finally:
+        _put_connection(connection)
 
 # Sends application from user with netid to gig with gigID with the
 # given message. 
 def send_application(netid, gigID, message):
-    return
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            validgig = "SELECT * FROM gigs WHERE gigID = %s"
+
+            cursor.execute(validgig, [gigID])
+            row = cursor.fetchone()
+
+            if row is None:
+                return False
+
+            cursor.execute('BEGIN')
+
+            query = """INSERT INTO apps 
+                (netid, gigID, message) VALUES
+                (%s, %s, %s)"""
+            cursor.execute(query, [netid, gigID, message])
+
+            cursor.execute('COMMIT')
+            return True
+    except Exception as ex:
+        return False 
+    finally:
+        _put_connection(connection)
 
 #-----------------------------------------------------------------------
 
