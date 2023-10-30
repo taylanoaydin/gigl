@@ -48,6 +48,7 @@ def search_results():
 
     keyword = flask.request.args.get('keyword')
     category = flask.request.args.getlist('category')  # Use getlist since we will later use a multi-select dropdown
+    cat = category[0]
     if category == ['']:
         category = []
 
@@ -58,7 +59,10 @@ def search_results():
     #if isinstance(gigs, int):
         # Handle the error, e.g., return an error page or message
         # return "Error fetching gigs from the database."
-    html_code = flask.render_template('searchresults.html', mygigs=gigs)
+    html_code = flask.render_template('searchresults.html',
+                                        mygigs=gigs,
+                                        cat=cat,
+                                        kw=keyword)
     response = flask.make_response(html_code)
 
     return response
