@@ -158,5 +158,39 @@ def deletegig():
     
     return
 #-----------------------------------------------------------------------
+@app.route('/apply', methods=['POST'])
+def apply():
+    netid = auth.authenticate()
+    gigID = flask.request.form.get("apply")
+    message = flask.request.form.get("msg")
+
+    if database.owns_gig(netid, gigID):
+        html_code = flask.render_template('apply_error.html',
+                                            gigID = int(gigID),
+                                            err="You can't apply to your own gig...")
+        response = flask.make_response(html_code)
+        return response
+    
+    application = database.get_application(netid, gigID)
+    if application is not None:
+        html_code = flask.render_template('apply_error.html',
+                                            gigID = int(gigID),
+                                            err="You have already applied...")
+        response = flask.make_response(html_code)
+        return response
+
+    if database.send_application(netid, gigID, message):
+        html_code = flask.render_template('apply_error.html',
+                                            gigID = int(gigID),
+                                            err="You have successfully applied!")
+        response = flask.make_response(html_code)
+        return response
+    else:
+        html_code = flask.render_template('apply_error.html',
+                                            gigID = int(gigID),
+                                            err="Application couldn't be sent due to a database error.")
+        response = flask.make_response(html_code)
+        return response
+#-----------------------------------------------------------------------
 if __name__ == '__main__':
 	app.run(host = 'localhost', debug=True, port=8880)

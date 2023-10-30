@@ -56,9 +56,9 @@
             <button type="submit" name="gigID" value="{{ gigID }}">Delete Gig!</button>
         </form>
         {% elif application is none %}
-        <form>
+        <form action="/apply" method="post">
             <input type="text" name="msg" placeholder="Give them your pitch!">
-            <button type="submit" name="apply">Apply</button>
+            <button type="submit" name="apply" value="{{ gigID }}">Apply</button>
         </form>
         {% else %}
         <p>Already applied. You said:
