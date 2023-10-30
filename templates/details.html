@@ -61,7 +61,11 @@
             <button type="submit" name="apply">Apply</button>
         </form>
         {% else %}
-        <p>Already applied. You said: {{ application.get_message() }}</p>
+        <p>Already applied. You said:
+        <blockquote>
+            {{ application.get_message() }}
+        </blockquote>
+        </p>
         {% endif %}
     </main>
     <hr>
