@@ -244,7 +244,7 @@ def delete_gig_from_db(gigID):
 # Creates gig with the given parameters. Unique gigID is automatically 
 # created for any gig. Returns gigID normally, -1 if there was any
 # problem adding to db
-def create_gig(netid, title, category, description, qualf, startfrom, 
+def create_gig(netid, title, category, description, qualf, startfrom,
               until, posted):
     connection = _get_connection()
     try:

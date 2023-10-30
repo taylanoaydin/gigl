@@ -2,51 +2,52 @@
 <html lang="en">
 
 <head>
-    <!-- CSS style for searchresults.html -->
-    <link rel="stylesheet" href="/static/dist/css/searchresults.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
+    <title>Gigl</title>
 </head>
 
 <body>
     {% include 'header.html' %}
-    <main>
-        <!-- Search form for users to make another search -->
-        <form action="/searchresults" method="GET">
-            <input type="text" name="keyword" placeholder="Search for gigs...">
-            <select name="category" multiple size="5">
-                <!-- Categories options here -->
-                <option value="teaching">Teaching</option>
-                <option value="research">Research</option>
-                <option value="technical">Technical</option>
-                <option value="writing">Writing</option>
-                <option value="graphic_design">Graphic Design</option>
-                <option value="photography_film">Photography/Film</option>
-                <option value="events">Events</option>
-                <option value="marketing">Marketing</option>
-                <option value="administrative">Administrative</option>
-                <option value="volunteer">Volunteer</option>
-                <option value="fitness">Fitness</option>
-                <option value="other">Other</option>
-            </select>
-            <input type="submit" value="Search">
-        </form>
-        <!-- Use helper functions to fetch and display search results -->
-        <!-- 'gigs' is a list from Flask; {% for gig in gigs %} iterates over each gig. -->
-        <ul>
-            {% for gig in gigs: %}
-            <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px;">
-                <span>{{ gig.get_gigID() }}</span>
-                <span>|</span>
-                <span>{{ gig.get_title() }}</span>
-                <span>|</span>
-                <span>{{ gig.get_post_date() }}</span>
-                <span>|</span>
-                <span>{{ gig.get_fromdate() }}</span>
-                <span>|</span>
-                <span>{{ gig.get_til_date() }}</span>
-            </li>
-            {% endfor %}
-        </ul>
-    </main>
+    <form action="/searchresults" method="GET">
+        <input type="text" name="keyword" placeholder="Search for gigs...">
+        <!--allows for dropdown with multiple selects, initially displaying "Category"-->
+        <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
+        <select name="category">
+            <!-- Placeholder option -->
+            <option value="" selected>Any Category</option>
+            <!-- Categories options -->
+            <option value="teaching">Teaching</option>
+            <option value="research">Research</option>
+            <option value="technical">Technical</option>
+            <option value="writing">Writing</option>
+            <option value="graphic_design">Graphic Design</option>
+            <option value="photography_film">Photography/Film</option>
+            <option value="events">Events</option>
+            <option value="marketing">Marketing</option>
+            <option value="administrative">Administrative</option>
+            <option value="volunteer">Volunteer</option>
+            <option value="fitness">Fitness</option>
+            <option value="other">Other</option>
+        </select>
+        <input type="submit" value="Search">
+    </form>
+    <table border="1">
+        <tr>
+            <th>Gig Title</th>
+            <th>Posted On</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+        {% for gig in mygigs %}
+        <tr>
+            <td><a href="{{ url_for('details', id=gig.get_gigID()) }}" class="btn">{{ gig.get_title() }}</a></td>
+            <td>{{ gig.get_post_date() }}</td>
+            <td>{{ gig.get_fromdate() }}</td>
+            <td>{{ gig.get_til_date() }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 
 </html>

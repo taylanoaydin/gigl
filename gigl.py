@@ -23,11 +23,12 @@ app.secret_key = os.urandom(12).hex()
 @app.route('/index', methods=['GET'])
 def index():
     netid = auth.authenticate()
-    
+    username = database.get_user(netid).get_name()
+
     if not database.check_and_add_user(netid):
         return "Error handling omitted"
     
-    html_code = flask.render_template('index.html')
+    html_code = flask.render_template('index.html', usrname=username)
     response = flask.make_response(html_code)
     return response
 
@@ -43,21 +44,21 @@ def home():
 #-----------------------------------------------------------------------
 @app.route('/searchresults', methods=['GET'])
 def search_results():
-    netid = auth.authenticate()
+    auth.authenticate()
 
     keyword = flask.request.args.get('keyword')
     category = flask.request.args.getlist('category')  # Use getlist since we will later use a multi-select dropdown
+    if category == ['']:
+        category = []
 
     # Fetch list of gigs based on the keyword / category
-    gigs = database.get_gigs(keyword, category)
+    gigs = database.get_gigs(keyword=keyword, categories=category)
 
     # Check if gigs is a list (successful fetch) or an integer (error code = zero)
-    if isinstance(gigs, int):
+    #if isinstance(gigs, int):
         # Handle the error, e.g., return an error page or message
-        return "Error fetching gigs from the database."
-
-    html_code = flask.render_template('searchresults.html', 
-                                        gigs=gigs)
+        # return "Error fetching gigs from the database."
+    html_code = flask.render_template('searchresults.html', mygigs=gigs)
     response = flask.make_response(html_code)
 
     return response
@@ -111,7 +112,7 @@ def profile():
     myapps = database.get_apps_by(netid)
 
     html_code = flask.render_template('profile.html', username=username,
-                                      user_email=user_email, 
+                                      user_email=user_email,
                                       mygigs=mygigs,
                                       myapps=myapps)
     response = flask.make_response(html_code)     
