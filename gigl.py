@@ -74,13 +74,22 @@ def details(id):
     gig = database.get_gig_details(id)
     gigTitle = gig.get_title()
     gigNetID = gig.get_netid()
-    gigAuthor = cas_details(gigNetID)[0]
+    gigAuthor = database.get_user(gigNetID).get_name()
     gigCategory = gig.get_category()
     gigDescription = gig.get_description()
     gigQualifications = gig.get_qualifications()
     gigStartDate = gig.get_fromdate()
     gigEndDate = gig.get_til_date()
     gigPostedDate = gig.get_post_date()
+
+    owns = database.owns_gig(netid, id) # boolean
+    if owns:
+        all_apps = database.get_apps_for(id)
+        application = None
+    else:
+        all_apps = None
+        application = database.get_application(netid, id)
+
     html_code = flask.render_template('details.html', 
                                         gigTitle=gigTitle,
                                         gigPoster=gigAuthor,
@@ -89,7 +98,11 @@ def details(id):
                                         gigQualifications=gigQualifications,
                                         gigStartDate=gigStartDate,
                                         gigEndDate=gigEndDate,
-                                        gigPostedDate=gigPostedDate)
+                                        gigPostedDate=gigPostedDate,
+                                        is_owner=owns,
+                                        application=application,
+                                        all_apps=all_apps,
+                                        gigID=id)
     response = flask.make_response(html_code)
     return response
 #-----------------------------------------------------------------------

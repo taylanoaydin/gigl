@@ -38,6 +38,31 @@
             <h3>Gig Posted Time</h3>
             <p>{{gigPostedDate}}</p>
         </section>
+        {% if is_owner: %}
+        <table border="1">
+            <tr>
+                <th>Applicant netid</th>
+                <th>Message</th>
+            </tr>
+            {% for app in all_apps %}
+            <tr>
+                <td>{{ app.get_applicant_netid() }}</td>
+                <td>{{ app.get_message() }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <form action="/deletegig" method="get">
+            <button type="submit" name="gigID" value="{{ gigID }}">Delete Gig!</button>
+        </form>
+        {% elif application is none %}
+        <form>
+            <input type="text" name="msg" placeholder="Give them your pitch!">
+            <button type="submit" name="apply">Apply</button>
+        </form>
+        {% else %}
+        <p>Already applied. You said: {{ application.get_message() }}</p>
+        {% endif %}
     </main>
     <hr>
 </body>
