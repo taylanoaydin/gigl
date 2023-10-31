@@ -28,7 +28,7 @@
             <form action="/gigposted" method="POST">
                 <div>
                     <label for="title">Title:</label>
-                    <input class = "bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="text" id="title" name="title" maxlength="50">
+                    <input class = "bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="text" id="title" name="title" maxlength="50" required>
                 </div>
                 <br>
                 <!-- Start Date -->
@@ -45,7 +45,7 @@
                 <br>
                 <div>
                     <label for="qualifications">Qualifications:</label>
-                    <textarea class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" id="qualifications" name="qualifications" maxlength="100"></textarea>
+                    <textarea class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" id="qualifications" name="qualifications" maxlength="100" required></textarea>
                 </div>
                 
                 <br>
@@ -53,14 +53,14 @@
                 <!--JS required to make description limited on words not characters-->
                 <div>
                     <label for="description">Description:</label>
-                    <textarea class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" id="description" name="description" maxlength="900"> </textarea>
+                    <textarea class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" id="description" name="description" maxlength="900" required> </textarea>
                 </div>
                 
                 <br>
 
                 <div>
                     <label for="Categories">Categories:</label>
-                    <select class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" name="category" id="Categories">
+                    <select class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" name="category" id="Categories" required>
                         <!-- Placeholder option -->
                         <option value="" disabled selected>Category</option>
                         <!-- Categories options -->
