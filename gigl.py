@@ -148,10 +148,12 @@ def gigposted():
     posted = datetime.now().date()
     gigID = database.create_gig(netid, title, category, description,
                         qualif, start_date, end_date, posted)
-    html_code = flask.render_template('gigposted.html',
-                                        gigID = int(gigID))
-    response = flask.make_response(html_code)
-    return response
+    return flask.redirect(flask.url_for('gigposted_success', gigID=gigID))
+
+#-----------------------------------------------------------------------
+@app.route('/gigposted_success/<int:gigID>', methods=['GET'])
+def gigposted_success(gigID):
+    return flask.render_template('gigposted.html', gigID=gigID)
 #-----------------------------------------------------------------------
 @app.route('/deletegig', methods=['POST'])
 def deletegig():
