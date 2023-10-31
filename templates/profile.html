@@ -1,77 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
-  <title>Gigl - Profile</title> <!--title on browser window-->
-  <style>
-    /* Basic styling for the title */
-    .collapsible-title {
-      cursor: pointer;
-      color: #3498db;
-    }
-
-    /* Hide the checkbox */
-    .collapsible-toggle {
-      display: none;
-    }
-
-    /* By default, hide the collapsible content */
-    .collapsible-content {
-      display: none;
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    /* Display the content when the checkbox is checked */
-    .collapsible-toggle:checked+.collapsible-content {
-      display: block;
-    }
-  </style>
-  <!-- Including the styles from index.css -->
-</head>
-
-<body>
-  {% include 'header.html' %} <!--JINJA2 template for the header-->
-  <main>
-    <h2> Your Profile <h2>
-        <h3> Name: {{username}} </h3>
-        <h3> Email: {{user_email}} </h3>
-
-        <label for="toggle-gigs" class="collapsible-title">My Gigs</label>
-        <input type="checkbox" id="toggle-gigs" class="collapsible-toggle">
-        <ul class="collapsible-content">
-          {% for gig in mygigs %}
-          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px;">
-            <span>{{ gig.get_gigID() }}</span>
-            <span>|</span>
-            <span>{{ gig.get_title() }}</span>
-            <span>|</span>
-            <span>{{ gig.get_post_date() }}</span>
-            <span>|</span>
-            <span>{{ gig.get_fromdate() }}</span>
-            <span>|</span>
-            <span>{{ gig.get_til_date() }}</span>
-          </li>
-          {% endfor %}
-        </ul>
-        <br>
-
-        <label for="toggle-apps" class="collapsible-title">My Applications</label>
-        <input type="checkbox" id="toggle-apps" class="collapsible-toggle">
-        <ul class="collapsible-content">
-          {% for app in myapps %}
-          <li style="display: flex; justify-content: space-between; border-bottom: 1px solid #e0e0e0; padding: 10px;">
-            <span>{{ app.get_gigID() }}</span>
-            <span>|</span>
-            <span>{{ app.get_message() }}</span>
-          </li>
-          {% endfor %}
-        </ul>
-
-  </main>
-</body>
-
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!--will scale to diff browser sizes-->
+      <title>Gigl - Profile</title>
+      <!--title on browser window-->
+      <style>
+         /* Basic styling for the title */
+         .collapsible-title {
+         cursor: pointer;
+         color: #3498db;
+         }
+         /* Hide the checkbox */
+         .collapsible-toggle {
+         display: none;
+         }
+         /* By default, hide the collapsible content */
+         .collapsible-content {
+         display: none;
+         list-style-type: none;
+         padding: 0;
+         margin: 0;
+         }
+         /* Display the content when the checkbox is checked */
+         .collapsible-toggle:checked+.collapsible-content {
+         display: block;
+         }
+         section {
+         margin: 0 auto;
+         width: 80%;
+         padding: 1em;
+         }
+      </style>
+      <!-- Including the styles from index.css -->
+   </head>
+   <body>
+      {% include 'header.html' %} <!--JINJA2 template for the header-->
+      <main>
+         <br>
+         <section class= "rounded-lg bg-gray-100 border border-gray-100">
+            <h2 class="text-xl font-bold"> Your Profile </h2>
+            <h3> Name: {{username}} </h3>
+            <h3> Email: {{user_email}} </h3>
+         </section>
+         <section>
+            <label for="toggle-gigs" class="collapsible-title">My Gigs</label>
+            <input type="checkbox" id="toggle-gigs" class="collapsible-toggle">
+            <ul class="collapsible-content">
+               <div class="overflow-auto rounded-lg">
+                  <table class="w-full">
+                     <thead class="bg-gray-200 border-b-2 border-gray-200">
+                        <tr>
+                           <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig ID</th>
+                           <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
+                           <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Description</th>
+                           <th class="p-3 text-sm font-semibold tracking-wide text-left">Posted On</th>
+                           <th class="p-3 text-sm font-semibold tracking-wide text-left">Start Date</th>
+                           <th class="p-3 text-sm font-semibold tracking-wide text-left">End Date</th>
+                           <th class="p-3 text-sm font-semibold tracking-wide text-left">Category</th>
+                        </tr>
+                     </thead>
+                     <tbody class="divide-y divide-gray-150">
+                        {% for gig in mygigs %}
+                        <tr class="bg-gray-100">
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a href="{{ url_for('details', id=gig.get_gigID()) }}" class="font-bold text-blue-500 hover:underline">#{{ gig.get_gigID() }}</a></td>
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_title() }}</td>
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_description() }}</td>
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}</td>
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}</td>
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}</td>
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                              {% if gig.get_category() == 'teaching' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                              Teaching
+                              </span>
+                              {% elif gig.get_category() == 'research' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                              Research
+                              </span>
+                              {% elif gig.get_category() == 'technical' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                              Technical
+                              </span>
+                              {% elif gig.get_category() == 'writing' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                              Writing
+                              </span>
+                              {% elif gig.get_category() == 'graphic_design' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
+                              Graphic Design
+                              </span>
+                              {% elif gig.get_category() == 'photography_film' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
+                              Photography/Film
+                              </span>
+                              {% elif gig.get_category() == 'events' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
+                              Events
+                              </span>
+                              {% elif gig.get_category() == 'marketing' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
+                              Marketing
+                              </span>
+                              {% elif gig.get_category() == 'administrative' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                              Administrative
+                              </span>
+                              {% elif gig.get_category() == 'volunteer' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                              Volunteer
+                              </span>
+                              {% elif gig.get_category() == 'fitness' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                              Fitness
+                              </span>
+                              {% elif gig.get_category() == 'other' %}
+                              <span class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                              Other
+                              </span>
+                              {% endif %}
+                           </td>
+                        </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+            </ul>
+         </section>
+         <section>
+            <label for="toggle-apps" class="collapsible-title">My Applications</label>
+            <input type="checkbox" id="toggle-apps" class="collapsible-toggle">
+            <ul class="collapsible-content">
+               <div class="overflow-auto rounded-lg">
+                <table class="w-full">
+                   <thead class="bg-gray-200 border-b-2 border-gray-200">
+                      <tr>
+                         <th class="w-20 p-3 text-sm font-semibold tracking-wide text-left">Gig ID</th>
+                         <th class="p-3 text-sm font-semibold tracking-wide text-left">Application Message</th>
+                      </tr>
+                   </thead>
+                   <tbody class="divide-y divide-gray-150">
+                      {% for app in myapps %}
+                      <tr class="bg-gray-100">
+                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a href="{{ url_for('details', id=app.get_gigID()) }}" class="font-bold text-blue-500 hover:underline">#{{ app.get_gigID() }}</a></td>
+                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ app.get_message() }}</td>
+                      </tr>
+                      {% endfor %}
+                   </tbody>
+                </table>
+             </div>
+            </ul>
+         </section>
+      </main>
+   </body>
 </html>
