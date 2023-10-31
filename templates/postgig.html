@@ -21,31 +21,31 @@
     {% include 'header.html' %} <!--JINJA2 template for the header-->
     <main>
         <br>
-        <section class= "w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-200">
+        <section class= "w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-100">
             <h2> New Gig for {{username}}-{{user_email}}</h2> <!-- user information -->
             <hr>
             <br>
             <form action="/gigposted" method="POST">
                 <div>
                     <label for="title">Title:</label>
-                    <input class = "bg-gray-100 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="text" id="title" name="title" maxlength="50">
+                    <input class = "bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="text" id="title" name="title" maxlength="50">
                 </div>
                 <br>
                 <!-- Start Date -->
                 <div class="flex space-x-10">
                     <div class="w-full">
                         <label for="start_date">Start Date:</label>
-                        <input class ="block bg-gray-100 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="date" id="start_date" name="start_date" required>
+                        <input class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="date" id="start_date" name="start_date" required>
                     </div>
                     <div class="w-full">
                         <label for="end_date">End Date:</label>
-                        <input class ="block bg-gray-100 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="date" id="end_date" name="end_date" required>
+                        <input class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="date" id="end_date" name="end_date" required>
                     </div>
                 </div>
                 <br>
                 <div>
                     <label for="qualifications">Qualifications:</label>
-                    <input class ="block bg-gray-100 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="text" id="qualifications" name="qualifications" maxlength="100">
+                    <input class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" type="text" id="qualifications" name="qualifications" maxlength="100">
                 </div>
                 
                 <br>
@@ -53,14 +53,14 @@
                 <!--JS required to make description limited on words not characters-->
                 <div>
                     <label for="description">Description:</label>
-                    <input class ="block bg-gray-100 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" id="description" name="description" maxlength="900">
+                    <input class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" id="description" name="description" maxlength="900">
                 </div>
                 
                 <br>
 
                 <div>
                     <label for="Categories">Categories:</label>
-                    <select class ="block bg-gray-100 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" name="category" id="Categories">
+                    <select class ="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500" name="category" id="Categories">
                         <!-- Placeholder option -->
                         <option value="" disabled selected>Category</option>
                         <!-- Categories options -->

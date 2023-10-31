@@ -7,7 +7,7 @@
   <title>Gigl - Home</title> <!--title on browser window-->
   <!-- Including the styles from index.css -->
   
-  <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
   <style>
     section {
         margin: 0 auto;
@@ -25,33 +25,36 @@
       <strong> Here to connect your talent with the on-campus demand, {{ usrname }}</strong>
     </div>
   </section>
-
   <section>
-    What are you looking for today?
+    <h1>Make A Search</h1>
     <form action="/searchresults" method="GET">
-      <input type="text" name="keyword" placeholder="Search for gigs...">
-      <!--allows for dropdown with multiple selects, initially displaying "Category"-->
-      <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
-      <select name="category">
-        <!-- Placeholder option -->
-        <option value="" selected>Any Category</option>
-        <!-- Categories options -->
-        <option value="teaching">Teaching</option>
-        <option value="research">Research</option>
-        <option value="technical">Technical</option>
-        <option value="writing">Writing</option>
-        <option value="graphic_design">Graphic Design</option>
-        <option value="photography_film">Photography/Film</option>
-        <option value="events">Events</option>
-        <option value="marketing">Marketing</option>
-        <option value="administrative">Administrative</option>
-        <option value="volunteer">Volunteer</option>
-        <option value="fitness">Fitness</option>
-        <option value="other">Other</option>
-      </select>
-      <input type="submit" value="Search">
+        <div class="flex space-x-10">
+            <input class= "border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" name="keyword" value="{{ kw }}" placeholder="Search for any gig now!">
+            <!--allows for dropdown with multiple selects, initially displaying "Category"-->
+            <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
+            <select class= "border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500" name="category">
+                <!-- Placeholder option -->
+                <option value="" {{ 'selected' if cat=='' else '' }}>Any Category</option>
+                <!-- Categories options -->
+                <option value="teaching" {{ 'selected' if cat=='teaching' else '' }}>Teaching</option>
+                <option value="research" {{ 'selected' if cat=='research' else '' }}>Research</option>
+                <option value="technical" {{ 'selected' if cat=='technical' else '' }}>Technical</option>
+                <option value="writing" {{ 'selected' if cat=='writing' else '' }}>Writing</option>
+                <option value="graphic_design" {{ 'selected' if cat=='graphic_design' else '' }}>Graphic Design</option>
+                <option value="photography_film" {{ 'selected' if cat=='photography_film' else '' }}>Photography/Film
+                </option>
+                <option value="events" {{ 'selected' if cat=='events' else '' }}>Events</option>
+                <option value="marketing" {{ 'selected' if cat=='marketing' else '' }}>Marketing</option>
+                <option value="administrative" {{ 'selected' if cat=='administrative' else '' }}>Administrative</option>
+                <option value="volunteer" {{ 'selected' if cat=='volunteer' else '' }}>Volunteer</option>
+                <option value="fitness" {{ 'selected' if cat=='fitness' else '' }}>Fitness</option>
+                <option value="other" {{ 'selected' if cat=='other' else '' }}>Other</option>
+            </select>
+            <input class= "p-2 w-auto rounded-lg bg-indigo-200" type="submit" value="Search">
+        </div>
+        
     </form>
-  </section>
+</section>
 </body>
 
 </html>
