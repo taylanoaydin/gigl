@@ -6,10 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
     <title>Gig Posted!</title> <!--title on browser window-->
     <!-- Including the styles from index.css -->
-    <link rel="stylesheet" href="/static/dist/css/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+    <style> 
+        section {
+            margin: 0 auto;
+            width: 80%;
+            padding: 1em;
+        }
+    </style>
 </head>
 
 <body>
+    {% include 'header.html' %} <!--JINJA2 template for the header-->
     <h1> Your Gig has been posted!</h1>
     <br>
     <a href="index" class="btn">Return Home</a>
