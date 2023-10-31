@@ -1,12 +1,18 @@
 import requests
 import json
 import base64
+import os
+import dotenv
+
+dotenv.load_dotenv()
+CONSUMER_KEY = os.environ['CONSUMER_KEY']
+CONSUMER_SECRET = os.environ['CONSUMER_SECRET']
 
 class Configs:
     def __init__(self):
-        self.CONSUMER_KEY = "KPYMe2FTDdpk9Lo3Q0FLWPWCjwsa"
-        self.CONSUMER_SECRET = "ONBGvpgskS6EKutumvlTf_kh56Ua"
-        self.BASE_URL="https://api.princeton.edu:443/active-directory/1.0.2"
+        self.CONSUMER_KEY = CONSUMER_KEY
+        self.CONSUMER_SECRET = CONSUMER_SECRET
+        self.BASE_URL="https://api.princeton.edu:443/active-directory/1.0.5"
         self.USERS = "/users"
         self.USERS_BASIC = "/users/basic"
         self.USERS_FULL = "/users/full"
