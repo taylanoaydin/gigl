@@ -33,22 +33,26 @@
         </select>
         <input type="submit" value="Search">
     </form>
-    <table border="1">
-        <tr>
+    <table class="table-auto">
+        <thead>
+          <tr>
             <th>Gig Title</th>
             <th>Posted On</th>
             <th>Start Date</th>
             <th>End Date</th>
-        </tr>
-        {% for gig in mygigs %}
-        <tr>
-            <td><a href="{{ url_for('details', id=gig.get_gigID()) }}" class="btn">{{ gig.get_title() }}</a></td>
-            <td>{{ gig.get_post_date() }}</td>
-            <td>{{ gig.get_fromdate() }}</td>
-            <td>{{ gig.get_til_date() }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+          </tr>
+        </thead>
+        <tbody>
+            {% for gig in mygigs %}
+            <tr>g
+                <td><a href="{{ url_for('details', id=gig.get_gigID()) }}" class="btn">{{ gig.get_title() }}</a></td>
+                <td>{{ gig.get_post_date() }}</td>
+                <td>{{ gig.get_fromdate() }}</td>
+                <td>{{ gig.get_til_date() }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
 </body>
 
 </html>
