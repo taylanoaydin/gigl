@@ -6,38 +6,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
   <title>Gigl - Home</title> <!--title on browser window-->
   <!-- Including the styles from index.css -->
-  <link rel="stylesheet" href="/static/dist/css/index.css">
+  
+  <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+  <style>
+    section {
+        margin: 0 auto;
+        width: 80%;
+        padding: 1em;
+    }
+</style>
 </head>
 
 <body>
   {% include 'header.html' %} <!--JINJA2 template for the header-->
   <!--when user presses "search", use /searchresults Flask route with GET-->
-  <strong> Here to connect your talent with the on-campus demand, {{ usrname }}</strong>
-  <br>
-  What are you looking for today?
-  <form action="/searchresults" method="GET">
-    <input type="text" name="keyword" placeholder="Search for gigs...">
-    <!--allows for dropdown with multiple selects, initially displaying "Category"-->
-    <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
-    <select name="category">
-      <!-- Placeholder option -->
-      <option value="" selected>Any Category</option>
-      <!-- Categories options -->
-      <option value="teaching">Teaching</option>
-      <option value="research">Research</option>
-      <option value="technical">Technical</option>
-      <option value="writing">Writing</option>
-      <option value="graphic_design">Graphic Design</option>
-      <option value="photography_film">Photography/Film</option>
-      <option value="events">Events</option>
-      <option value="marketing">Marketing</option>
-      <option value="administrative">Administrative</option>
-      <option value="volunteer">Volunteer</option>
-      <option value="fitness">Fitness</option>
-      <option value="other">Other</option>
-    </select>
-    <input type="submit" value="Search">
-  </form>
+  <section>
+    <div class="mb-6">
+      <strong> Here to connect your talent with the on-campus demand, {{ usrname }}</strong>
+    </div>
+  </section>
+
+  <section>
+    What are you looking for today?
+    <form action="/searchresults" method="GET">
+      <input type="text" name="keyword" placeholder="Search for gigs...">
+      <!--allows for dropdown with multiple selects, initially displaying "Category"-->
+      <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
+      <select name="category">
+        <!-- Placeholder option -->
+        <option value="" selected>Any Category</option>
+        <!-- Categories options -->
+        <option value="teaching">Teaching</option>
+        <option value="research">Research</option>
+        <option value="technical">Technical</option>
+        <option value="writing">Writing</option>
+        <option value="graphic_design">Graphic Design</option>
+        <option value="photography_film">Photography/Film</option>
+        <option value="events">Events</option>
+        <option value="marketing">Marketing</option>
+        <option value="administrative">Administrative</option>
+        <option value="volunteer">Volunteer</option>
+        <option value="fitness">Fitness</option>
+        <option value="other">Other</option>
+      </select>
+      <input type="submit" value="Search">
+    </form>
+  </section>
 </body>
 
 </html>
