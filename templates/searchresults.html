@@ -5,54 +5,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
     <title>Gigl</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+    <style>
+        table, th, td {
+          border: 0.5px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 5px;
+          
+        }
+        th {
+          text-align: left;
+        }
+        section {
+            margin: 0 auto;
+            width: 80%;
+            padding: 1em;
+        }
+    </style>
 </head>
 
 <body>
     {% include 'header.html' %}
-    <form action="/searchresults" method="GET">
-        <input type="text" name="keyword" value="{{ kw }}" placeholder="Search for gigs...">
-        <!--allows for dropdown with multiple selects, initially displaying "Category"-->
-        <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
-        <select name="category">
-            <!-- Placeholder option -->
-            <option value="" {{ 'selected' if cat=='' else '' }}>Any Category</option>
-            <!-- Categories options -->
-            <option value="teaching" {{ 'selected' if cat=='teaching' else '' }}>Teaching</option>
-            <option value="research" {{ 'selected' if cat=='research' else '' }}>Research</option>
-            <option value="technical" {{ 'selected' if cat=='technical' else '' }}>Technical</option>
-            <option value="writing" {{ 'selected' if cat=='writing' else '' }}>Writing</option>
-            <option value="graphic_design" {{ 'selected' if cat=='graphic_design' else '' }}>Graphic Design</option>
-            <option value="photography_film" {{ 'selected' if cat=='photography_film' else '' }}>Photography/Film
-            </option>
-            <option value="events" {{ 'selected' if cat=='events' else '' }}>Events</option>
-            <option value="marketing" {{ 'selected' if cat=='marketing' else '' }}>Marketing</option>
-            <option value="administrative" {{ 'selected' if cat=='administrative' else '' }}>Administrative</option>
-            <option value="volunteer" {{ 'selected' if cat=='volunteer' else '' }}>Volunteer</option>
-            <option value="fitness" {{ 'selected' if cat=='fitness' else '' }}>Fitness</option>
-            <option value="other" {{ 'selected' if cat=='other' else '' }}>Other</option>
-        </select>
-        <input type="submit" value="Search">
-    </form>
-    <table class="table-auto">
-        <thead>
-          <tr>
-            <th>Gig Title</th>
-            <th>Posted On</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-          </tr>
-        </thead>
-        <tbody>
-            {% for gig in mygigs %}
-            <tr>g
-                <td><a href="{{ url_for('details', id=gig.get_gigID()) }}" class="btn">{{ gig.get_title() }}</a></td>
-                <td>{{ gig.get_post_date() }}</td>
-                <td>{{ gig.get_fromdate() }}</td>
-                <td>{{ gig.get_til_date() }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-      </table>
+    <section>
+        <h1>Make a Search</h1>
+        <form action="/searchresults" method="GET">
+            <input type="text" name="keyword" value="{{ kw }}" placeholder="Search for gigs...">
+            <!--allows for dropdown with multiple selects, initially displaying "Category"-->
+            <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
+            <select name="category">
+                <!-- Placeholder option -->
+                <option value="" {{ 'selected' if cat=='' else '' }}>Any Category</option>
+                <!-- Categories options -->
+                <option value="teaching" {{ 'selected' if cat=='teaching' else '' }}>Teaching</option>
+                <option value="research" {{ 'selected' if cat=='research' else '' }}>Research</option>
+                <option value="technical" {{ 'selected' if cat=='technical' else '' }}>Technical</option>
+                <option value="writing" {{ 'selected' if cat=='writing' else '' }}>Writing</option>
+                <option value="graphic_design" {{ 'selected' if cat=='graphic_design' else '' }}>Graphic Design</option>
+                <option value="photography_film" {{ 'selected' if cat=='photography_film' else '' }}>Photography/Film
+                </option>
+                <option value="events" {{ 'selected' if cat=='events' else '' }}>Events</option>
+                <option value="marketing" {{ 'selected' if cat=='marketing' else '' }}>Marketing</option>
+                <option value="administrative" {{ 'selected' if cat=='administrative' else '' }}>Administrative</option>
+                <option value="volunteer" {{ 'selected' if cat=='volunteer' else '' }}>Volunteer</option>
+                <option value="fitness" {{ 'selected' if cat=='fitness' else '' }}>Fitness</option>
+                <option value="other" {{ 'selected' if cat=='other' else '' }}>Other</option>
+            </select>
+            <input type="submit" value="Search">
+        </form>
+    </section>
+    
+    <section>
+        <h2>Search Results</h2>
+        <div class="relative overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">Gig Title</th>
+                    <th scope="col" class="px-6 py-3">Posted On</th>
+                    <th scope="col" class="px-6 py-3">Start Date</th>
+                    <th scope="col" class="px-6 py-3">End Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for gig in mygigs %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><a href="{{ url_for('details', id=gig.get_gigID()) }}" class="btn">{{ gig.get_title() }}</a></td>
+                        <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ gig.get_post_date() }}</td>
+                        <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ gig.get_fromdate() }}</td>
+                        <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ gig.get_til_date() }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
 </body>
 
 </html>
