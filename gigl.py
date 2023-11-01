@@ -12,10 +12,11 @@ import sys
 import database
 from datetime import datetime
 from cas_details import cas_details
+from forms import ApplyForm
 #-----------------------------------------------------------------------
 
 app = flask.Flask(__name__, template_folder='templates/')
-app.secret_key = os.urandom(12).hex()
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
 
 #-----------------------------------------------------------------------
  
@@ -89,6 +90,12 @@ def details(id):
         all_apps = None
         application = database.get_application(netid, id)
 
+    apply_form = ApplyForm()
+    apply_form.gig_id.data = id
+    
+    if apply_form.validate_on_submit():
+        return flask.redirect('/apply')
+
     html_code = flask.render_template('details.html', 
                                         gigTitle=gigTitle,
                                         gigPoster=gigAuthor,
@@ -101,7 +108,8 @@ def details(id):
                                         is_owner=owns,
                                         application=application,
                                         all_apps=all_apps,
-                                        gigID=id)
+                                        gigID=id,
+                                        apply_form=apply_form)
     response = flask.make_response(html_code)
     return response
 #-----------------------------------------------------------------------
@@ -159,7 +167,7 @@ def deletegig():
     
     return
 #-----------------------------------------------------------------------
-@app.route('/apply', methods=['POST'])
+"""@app.route('/apply', methods=['POST'])
 def apply():
     netid = auth.authenticate()
     gigID = flask.request.form.get("apply")
@@ -192,6 +200,39 @@ def apply():
                                             err="Application couldn't be sent due to a database error.")
         response = flask.make_response(html_code)
         return response
+"""
+@app.route('/apply', methods=['POST'])
+def apply():
+    netid = auth.authenticate()
+
+    apply_form = ApplyForm()
+
+    if apply_form.validate_on_submit():
+        gigID = apply_form.gig_id.data 
+        application_message = apply_form.message.data
+        print(gigID + " " + netid)
+        print(application_message)
+
+        if database.owns_gig(netid, gigID):
+            err = "You can't apply to your own gig..."
+        elif database.get_application(netid, gigID):
+            err = "You have already applied..."
+        elif database.send_application(netid, gigID, application_message):
+            err = "You have successfully applied!"
+        else:
+            err = "Application couldn't be sent due to a database error."
+
+        html_code = flask.render_template('apply_error.html',
+                                            gigID = int(gigID),
+                                            err=err)
+        response = flask.make_response(html_code)
+        return response
+
+    else:
+        # If the form doesn't validate, you could either flash a message
+        # or redirect back to the 'details' page where the form errors can be displayed
+        return "meh"
+
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
 	app.run(host = 'localhost', debug=True, port=8888)
