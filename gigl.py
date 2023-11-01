@@ -24,8 +24,7 @@ app.secret_key = os.urandom(12).hex()
 def index():
     netid = auth.authenticate()
 
-    if not database.check_and_add_user(netid):
-        return "Error handling omitted"
+    database.check_and_add_user(netid)
     
     username = database.get_user(netid).get_name()
     html_code = flask.render_template('index.html', usrname=username)
