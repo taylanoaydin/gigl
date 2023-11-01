@@ -18,16 +18,16 @@ app = flask.Flask(__name__, template_folder='templates/')
 app.secret_key = os.urandom(12).hex()
 
 #-----------------------------------------------------------------------
-
+ 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
     netid = auth.authenticate()
-    username = database.get_user(netid).get_name()
 
     if not database.check_and_add_user(netid):
         return "Error handling omitted"
     
+    username = database.get_user(netid).get_name()
     html_code = flask.render_template('index.html', usrname=username)
     response = flask.make_response(html_code)
     return response
