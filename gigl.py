@@ -5,7 +5,7 @@
 # Authors: TA, AB, IA, YD
 #-----------------------------------------------------------------------
 
-import flask
+from flask_mail import Mail, Message
 import auth
 import os
 import sys
@@ -19,6 +19,21 @@ app = flask.Flask(__name__, template_folder='templates/')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
 
 #-----------------------------------------------------------------------
+
+# Configure Flask-Mail with environment variables
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'giglprinc3ton@gmail.com'
+app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PW']
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+# Initialize Flask-Mail
+mail = Mail(app)
+
+
+#-----------------------------------------------------------------------
+
  
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])

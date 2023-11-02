@@ -13,6 +13,9 @@ import queue
 import application as app
 import gig
 import user
+from flask_mail import mail, Message
+from gigl import send_email
+
 
 #-----------------------------------------------------------------------
 
@@ -280,6 +283,8 @@ def send_application(netid, gigID, message):
 
             if row is None:
                 return False
+            
+            gig_poster_netid = row[0]  # Retrieve the gig poster's netid
 
             cursor.execute('BEGIN')
 
@@ -288,12 +293,40 @@ def send_application(netid, gigID, message):
                 (%s, %s, %s)"""
             cursor.execute(query, [netid, gigID, message])
 
+            # Construct the gig poster's email address
+            gig_poster_email = gig_poster_netid + "@princeton.edu"
+        
+            # Retrieve the applicant's name
+            applicant = get_user(netid)
+            if applicant is None:
+                # Handle the case where the applicant's name is not found
+                cursor.execute('ROLLBACK')
+                return False
+
+            send_email(gig_poster_email, applicant.get_name(), message)
+
             cursor.execute('COMMIT')
             return True
     except Exception as ex:
         return False 
     finally:
         _put_connection(connection)
+
+def send_email(to_email, applicant_name, application_message):
+    subject = "Someone applied to your gig"
+    body = f"{applicant_name} applied to your gig:\n\n{application_message}"
+
+    msg = Message(subject,
+                  sender=app.config['MAIL_USERNAME'],
+                  recipients=[to_email],
+                  body=body)
+
+    try:
+        mail.send(msg)
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Error: {e}")
+        # Handle exceptions or errors here (to do later)
 
 #-----------------------------------------------------------------------
 
