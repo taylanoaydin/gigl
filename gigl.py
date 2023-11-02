@@ -5,7 +5,9 @@
 # Authors: TA, AB, IA, YD
 #-----------------------------------------------------------------------
 
-from flask_mail import Mail, Message
+import flask
+from flask_mail import Mail
+from flask import Flask
 import auth
 import os
 import sys
@@ -15,7 +17,7 @@ from cas_details import cas_details
 from forms import ApplyForm
 #-----------------------------------------------------------------------
 
-app = flask.Flask(__name__, template_folder='templates/')
+app = Flask(__name__, template_folder='templates/')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
 
 #-----------------------------------------------------------------------

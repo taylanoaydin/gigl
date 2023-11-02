@@ -13,9 +13,8 @@ import queue
 import application as app
 import gig
 import user
-from flask_mail import mail, Message
-from gigl import send_email
-
+from flask_mail import Mail, Message
+from email_utils import send_email
 
 #-----------------------------------------------------------------------
 
@@ -285,6 +284,7 @@ def send_application(netid, gigID, message):
                 return False
             
             gig_poster_netid = row[0]  # Retrieve the gig poster's netid
+            print()
 
             cursor.execute('BEGIN')
 
@@ -303,7 +303,9 @@ def send_application(netid, gigID, message):
                 cursor.execute('ROLLBACK')
                 return False
 
+            print("About to send email")
             send_email(gig_poster_email, applicant.get_name(), message)
+            print("Email theoretically send")
 
             cursor.execute('COMMIT')
             return True
@@ -311,22 +313,6 @@ def send_application(netid, gigID, message):
         return False 
     finally:
         _put_connection(connection)
-
-def send_email(to_email, applicant_name, application_message):
-    subject = "Someone applied to your gig"
-    body = f"{applicant_name} applied to your gig:\n\n{application_message}"
-
-    msg = Message(subject,
-                  sender=app.config['MAIL_USERNAME'],
-                  recipients=[to_email],
-                  body=body)
-
-    try:
-        mail.send(msg)
-        print("Email sent successfully")
-    except Exception as e:
-        print(f"Error: {e}")
-        # Handle exceptions or errors here (to do later)
 
 #-----------------------------------------------------------------------
 
