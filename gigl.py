@@ -68,7 +68,7 @@ def search_results():
     return response
 
 #-----------------------------------------------------------------------
-@app.route('/details/<int:id>', methods=['GET'])
+@app.route('/details/<int:id>', methods=['GET','POST'])
 def details(id):
     netid = auth.authenticate()
     gig = database.get_gig_details(id)
@@ -91,10 +91,21 @@ def details(id):
         application = database.get_application(netid, id)
 
     apply_form = ApplyForm()
-    apply_form.gig_id.data = id
     
     if apply_form.validate_on_submit():
-        return flask.redirect('/apply')
+        _ = flask.get_flashed_messages() # clears flashed messages
+        application_message = apply_form.message.data
+
+        if database.owns_gig(netid, id):
+            flask.flash("You can't apply to your own gig...", 'error')
+        elif database.get_application(netid, id):
+            flask.flash("You have already applied...", 'error')
+        elif database.send_application(netid, id, application_message):
+            flask.flash("You have successfully applied!", 'success')
+        else:
+            flask.flash("Application couldn't be sent due to a database error.", 'error')
+
+        return flask.redirect(flask.url_for('apply_result', gigID=id))
 
     html_code = flask.render_template('details.html', 
                                         gigTitle=gigTitle,
@@ -112,6 +123,11 @@ def details(id):
                                         apply_form=apply_form)
     response = flask.make_response(html_code)
     return response
+#-----------------------------------------------------------------------
+@app.route('/apply_result', methods=['GET'])
+def apply_result():
+    gigID = flask.request.args.get('gigID')
+    return flask.render_template('apply_err.html', gigID=gigID)
 #-----------------------------------------------------------------------
 @app.route('/postgig', methods=['GET'])
 def postgig():
@@ -166,73 +182,6 @@ def gigposted_success(gigID):
 def deletegig():
     
     return
-#-----------------------------------------------------------------------
-"""@app.route('/apply', methods=['POST'])
-def apply():
-    netid = auth.authenticate()
-    gigID = flask.request.form.get("apply")
-    message = flask.request.form.get("msg")
-
-    if database.owns_gig(netid, gigID):
-        html_code = flask.render_template('apply_error.html',
-                                            gigID = int(gigID),
-                                            err="You can't apply to your own gig...")
-        response = flask.make_response(html_code)
-        return response
-    
-    application = database.get_application(netid, gigID)
-    if application is not None:
-        html_code = flask.render_template('apply_error.html',
-                                            gigID = int(gigID),
-                                            err="You have already applied...")
-        response = flask.make_response(html_code)
-        return response
-
-    if database.send_application(netid, gigID, message):
-        html_code = flask.render_template('apply_error.html',
-                                            gigID = int(gigID),
-                                            err="You have successfully applied!")
-        response = flask.make_response(html_code)
-        return response
-    else:
-        html_code = flask.render_template('apply_error.html',
-                                            gigID = int(gigID),
-                                            err="Application couldn't be sent due to a database error.")
-        response = flask.make_response(html_code)
-        return response
-"""
-@app.route('/apply', methods=['POST'])
-def apply():
-    netid = auth.authenticate()
-
-    apply_form = ApplyForm()
-
-    if apply_form.validate_on_submit():
-        gigID = apply_form.gig_id.data 
-        application_message = apply_form.message.data
-        print(gigID + " " + netid)
-        print(application_message)
-
-        if database.owns_gig(netid, gigID):
-            err = "You can't apply to your own gig..."
-        elif database.get_application(netid, gigID):
-            err = "You have already applied..."
-        elif database.send_application(netid, gigID, application_message):
-            err = "You have successfully applied!"
-        else:
-            err = "Application couldn't be sent due to a database error."
-
-        html_code = flask.render_template('apply_error.html',
-                                            gigID = int(gigID),
-                                            err=err)
-        response = flask.make_response(html_code)
-        return response
-
-    else:
-        # If the form doesn't validate, you could either flash a message
-        # or redirect back to the 'details' page where the form errors can be displayed
-        return "meh"
-
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
 	app.run(host = 'localhost', debug=True, port=8888)
