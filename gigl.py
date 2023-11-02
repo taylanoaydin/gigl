@@ -24,7 +24,6 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
 @app.route('/index', methods=['GET'])
 def index():
     netid = auth.authenticate()
-
     database.check_and_add_user(netid)
     
     username = database.get_user(netid).get_name()
@@ -44,7 +43,8 @@ def home():
 #-----------------------------------------------------------------------
 @app.route('/searchresults', methods=['GET'])
 def search_results():
-    auth.authenticate()
+    netid = auth.authenticate()
+    database.check_and_add_user(netid)
 
     keyword = flask.request.args.get('keyword')
     category = flask.request.args.getlist('category')  # Use getlist since we will later use a multi-select dropdown
@@ -71,6 +71,7 @@ def search_results():
 @app.route('/details/<int:id>', methods=['GET','POST'])
 def details(id):
     netid = auth.authenticate()
+    database.check_and_add_user(netid)
     gig = database.get_gig_details(id)
     gigTitle = gig.get_title()
     gigNetID = gig.get_netid()
@@ -126,12 +127,15 @@ def details(id):
 #-----------------------------------------------------------------------
 @app.route('/apply_result', methods=['GET'])
 def apply_result():
+    netid = auth.authenticate()
+    database.check_and_add_user(netid)
     gigID = flask.request.args.get('gigID')
     return flask.render_template('apply_err.html', gigID=gigID)
 #-----------------------------------------------------------------------
 @app.route('/postgig', methods=['GET'])
 def postgig():
     netid = auth.authenticate()
+    database.check_and_add_user(netid)
     user = database.get_user(netid) # This is returning none
     #TODO: Error Handling for DB failure
     username = user.get_name()
@@ -144,6 +148,7 @@ def postgig():
 @app.route('/profile', methods=['GET'])
 def profile():
     netid = auth.authenticate()
+    database.check_and_add_user(netid)
     user = database.get_user(netid)
     username = user.get_name()
     user_email = f"{netid}@princeton.edu"
@@ -161,6 +166,7 @@ def profile():
 @app.route('/gigposted', methods=['POST'])
 def gigposted():
     netid = auth.authenticate()
+    database.check_and_add_user(netid)
     gig_form = flask.request.form
     start_date = gig_form.get('start_date')
     end_date = gig_form.get('end_date')
@@ -176,6 +182,8 @@ def gigposted():
 #-----------------------------------------------------------------------
 @app.route('/gigposted_success/<int:gigID>', methods=['GET'])
 def gigposted_success(gigID):
+    netid = auth.authenticate()
+    database.check_and_add_user(netid)
     return flask.render_template('gigposted.html', gigID=gigID)
 #-----------------------------------------------------------------------
 @app.route('/deletegig', methods=['POST'])
