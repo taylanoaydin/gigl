@@ -132,27 +132,32 @@ random.shuffle(gigs_data)
 # Function to create gigs for each netID applicant
 def create_gigs_for_applicant(applicant_netID, gigs_data, num_gigs):
     applied_gigs = set()
+    today = datetime.now().date()
     for _ in range(num_gigs):
         gig_data = gigs_data.pop()  # Pop the last gig from the randomized list
         title = gig_data["title"]
         category = gig_data["category"]
         description = gig_data["description"]
         qualifications = gig_data["qualifications"]
-        posted = datetime.now().date()
-        startfrom = posted + timedelta(days=random.randint(1, 7))  # Random date within a week
+        
+        # Define the dates
+        startfrom = today + timedelta(days=random.randint(1, 7))  # Random date within a week
         until = startfrom + timedelta(days=random.randint(1, 7))  # Random date within a week
-        gigID = database.create_gig(applicant_netID, title, category, description, qualifications, startfrom, until, posted)
+        posted = today
+        
+        gigID = create_gig(applicant_netID, title, category, description, qualifications, startfrom, until, posted)
         if gigID == -1:
             print(f"Failed to create a gig for {applicant_netID}")
         else:
             applied_gigs.add(gigID)
             print(f"Created gig with ID {gigID} for {applicant_netID}")
     
-    # Return the gigs back to gigs_data
-    gigs_data.extend([gig for gig in gigs_data if gig["title"] not in applied_gigs])
+    return applied_gigs
 
-# Create gigs for each netID applicant
-num_gigs_per_applicant = 5
-startfrom = 1  # Adjust as needed
+# Create gigs for each netID applicant with 5 job openings each
 for applicant_netID in applicants:
-    create_gigs_for_applicant(applicant_netID, list(gigs_data), num_gigs_per_applicant)
+    gigs_data_copy = list(gigs_data)
+    applied_gigs = create_gigs_for_applicant(applicant_netID, gigs_data_copy, num_gigs_per_applicant)
+    
+    # Return the gigs back to gigs_data for other applicants
+    gigs_data.extend([gig for gig in gigs_data_copy if gig["title"] not in applied_gigs])
