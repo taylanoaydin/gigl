@@ -10,4 +10,3 @@ class DeleteGigForm(FlaskForm):
     delete = SubmitField('Delete')
     confirm = SubmitField('Yes')
     cancel = SubmitField('No')
-    gig_id = HiddenField()

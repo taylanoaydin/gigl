@@ -80,7 +80,6 @@
         <section class= "w-full md:w-1/2 rounded-lg ">
             <form align="center" method="post">
                 {{ delete_form.hidden_tag() }} <!-- CSRF token -->
-                {{ delete_form.gig_id(value=gigID)}}
                 {% if show_confirm %}
                 <p> Are you sure? </p>
                 {{ delete_form.confirm(class="p-2 w-auto rounded-lg bg-green-200") }}
@@ -88,7 +87,6 @@
                 {% else %}
                 {{ delete_form.delete(class="p-2 w-auto rounded-lg bg-red-200") }}
                 {% endif %}
-             <!--   <button class= "p-2 w-auto rounded-lg bg-red-200" type="submit" name="gigID" value="{{ gigID }}">Delete Gig</button> -->
             </form>
         </section>
 
