@@ -229,7 +229,7 @@ def delete_gig_from_db(gigID):
             cursor.execute('BEGIN')
 
             q1 = "DELETE FROM apps WHERE gigID = %s"
-            cursor.exectue(q1, [gigID])
+            cursor.execute(q1, [gigID])
 
             q2 = "DELETE FROM gigs WHERE gigID = %s"
             cursor.execute(q2, [gigID])

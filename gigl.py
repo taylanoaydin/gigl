@@ -12,7 +12,7 @@ import sys
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm
+from forms import ApplyForm, DeleteGigForm
 #-----------------------------------------------------------------------
 
 app = flask.Flask(__name__, template_folder='templates/')
@@ -107,6 +107,18 @@ def details(id):
             flask.flash("Application couldn't be sent due to a database error.", 'error')
 
         return flask.redirect(flask.url_for('apply_result', gigID=id))
+    
+    delete_form = DeleteGigForm()
+    show_confirm = False
+    if delete_form.validate_on_submit():
+        url = flask.url_for('details', id=id)
+        if delete_form.delete.data:
+            show_confirm = True
+        elif delete_form.confirm.data:
+            database.delete_gig_from_db(id)
+            return flask.redirect(flask.url_for('profile'))
+        elif delete_form.cancel.data:
+            return flask.redirect(url)
 
     html_code = flask.render_template('details.html', 
                                         gigTitle=gigTitle,
@@ -121,7 +133,9 @@ def details(id):
                                         application=application,
                                         all_apps=all_apps,
                                         gigID=id,
-                                        apply_form=apply_form)
+                                        apply_form=apply_form,
+                                        delete_form=delete_form,
+                                        show_confirm=show_confirm)
     response = flask.make_response(html_code)
     return response
 #-----------------------------------------------------------------------
@@ -185,11 +199,7 @@ def gigposted_success(gigID):
     netid = auth.authenticate()
     database.check_and_add_user(netid)
     return flask.render_template('gigposted.html', gigID=gigID)
-#-----------------------------------------------------------------------
-@app.route('/deletegig', methods=['POST'])
-def deletegig():
-    
-    return
+
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
 	app.run(host = 'localhost', debug=True, port=8888)
