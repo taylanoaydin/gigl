@@ -87,6 +87,14 @@ def send_email_welcome(to_email, subject, userName):
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
+    html_code = flask.render_template('index.html')
+    response = flask.make_response(html_code)
+    return response
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+@app.route('/home', methods=['GET'])
+def home():
     netid = auth.authenticate()
     status = database.check_and_add_user(netid)
     if status == "user_created":
@@ -95,16 +103,7 @@ def index():
         send_email_welcome(email, "Welcome to Gigl!", username)
         
     username = database.get_user(netid).get_name()
-    html_code = flask.render_template('index.html', usrname=username)
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-@app.route('/home', methods=['GET'])
-def home():
-    username = auth.authenticate()
-    html_code = flask.render_template('home.html',
-                                      username=username)
+    html_code = flask.render_template('home.html', usrname=username)
     response = flask.make_response(html_code)
     return response
 
