@@ -6,19 +6,54 @@
 #-----------------------------------------------------------------------
 
 import flask
+from flask_mail import Mail
+from flask import Flask
 import auth
 import os
-import sys
+import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
 from forms import ApplyForm, DeleteGigForm
+from flask_mail import Message
+from flask import current_app
+import sys
+
+
+
 #-----------------------------------------------------------------------
 
-app = flask.Flask(__name__, template_folder='templates/')
+app = Flask(__name__, template_folder='templates/')
+dotenv.load_dotenv()
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
 
 #-----------------------------------------------------------------------
+
+# Configure Flask-Mail with environment variables
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'giglprinc3ton@gmail.com'
+app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PW']
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+# Initialize Flask-Mail
+mail = Mail(app)
+
+def send_email(to_email, subject, body):
+    msg = Message(subject,
+                  sender=current_app.config['MAIL_USERNAME'],
+                  recipients=[to_email],
+                  body=body)
+    try:
+        with current_app.app_context():
+            mail.send(msg)
+    except Exception as e:
+        print(str(e))
+        sys.exit(1)
+    return True
+#-----------------------------------------------------------------------
+
  
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
@@ -103,6 +138,7 @@ def details(id):
             flask.flash("You have already applied...", 'error')
         elif database.send_application(netid, id, application_message):
             flask.flash("You have successfully applied!", 'success')
+            send_email(gigNetID + "@princeton.edu", database.get_user(netid).get_name(), application_message)
         else:
             flask.flash("Application couldn't be sent due to a database error.", 'error')
 

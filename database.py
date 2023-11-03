@@ -280,7 +280,7 @@ def send_application(netid, gigID, message):
 
             if row is None:
                 return False
-
+            
             cursor.execute('BEGIN')
 
             query = """INSERT INTO apps 
