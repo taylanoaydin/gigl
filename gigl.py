@@ -14,7 +14,7 @@ import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm, DeleteGigForm
+from forms import ApplyForm, DeleteGigForm, PostGigForm
 from flask_mail import Message
 from flask import current_app
 import sys
@@ -221,16 +221,27 @@ def apply_result():
     response = flask.make_response(html_code)
     return response
 #-----------------------------------------------------------------------
-@app.route('/postgig', methods=['GET'])
+@app.route('/postgig', methods=['GET', 'POST'])
 def postgig():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
-    user = database.get_user(netid) # This is returning none
-    #TODO: Error Handling for DB failure
+    user = database.get_user(netid)
+    gig_form = PostGigForm()
+    if gig_form.validate_on_submit():
+        gig_id = database.create_gig(netid, gig_form.title.data, gig_form.categories.data,
+                                gig_form.description.data, gig_form.qualifications.data,
+                                gig_form.start_date.data, gig_form.end_date.data,
+                                datetime.now().date())
+        return flask.redirect(flask.url_for('gigposted_success', gigID=gig_id))
+    else:
+            #TODO: Error handling
+            pass
+    
     username = user.get_name()
     user_email = f"{netid}@princeton.edu"
     html_code = flask.render_template('postgig.html', username=username,
-                                      user_email=user_email) 
+                                      user_email=user_email,
+                                      gig_form=gig_form) 
     response = flask.make_response(html_code)
     return response
 #-----------------------------------------------------------------------
