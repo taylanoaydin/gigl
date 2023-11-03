@@ -1,61 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <style>
-    /* Inline CSS for styling */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    h3 {
-        color: #000105;
-    }
-    p {
-      color: #666;
-      margin-top: 10px;
-    }
-    ul {
-      list-style-type: none;
-      margin-top: 10px;
-    }
-    li {
-      margin-bottom: 5px;
-    }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #3498db;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You have a new application!</title>
+    <style>
+        /* Inline styles for consistent rendering */
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #fff;
+          margin: 0;
+          padding: 0;
+        }
+        section {
+          margin: 0 auto;
+          width: 50%;
+          padding: 1em;
+          background-color: #F0F3FF;
+          border-radius: 10px;
+          text-align: left;
+        }
+        h3 {
+          color: #000105;
+        }
+        p {
+          color: #000105;
+        }
+        a {
+          color: #0F3CD2;
+          text-decoration: none;
+        }
+        .btn {
+          display: inline-block;
+          padding: 10px 20px;
+          background-color: #0F3CD2;
+          color: #fff;
+          text-decoration: none;
+          border-radius: 5px;
+          font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h3>Hi {{userName}},</h3>
-    <p>A new candidate has applied to your job posting on Gigl. Here are the details:</p>
-    <ul>
-      <li><strong>Candidate Name:</strong> {{candidateName}}</li>
-      <li><strong>Job Title:</strong> {{gigTitle}}</li>
-      <li><strong>Application Message:</strong> {{applicationMessage}}</li>
-    </ul>
-    <p>
-      You can review this candidate's profile and application by logging in to Gigl.
-      If you have any questions or need further assistance, please don't hesitate to contact us.
-    </p>
-    <p>Best regards,<br>Gigl Team</p>
-    <div class="text-center">
-      <a href="https://gigl.onrender.com/profile" class="btn">View the Application!</a>
+  <br>
+  <section>
+    <div style="padding: 20px;">
+       <h3>Hi {{userName}},</h3>
+       <p>A new candidate has applied to your job posting on Gigl. Here are the details:</p>
+       <ul>
+          <li><strong>Candidate Name:</strong> {{candidateName}}</li>
+          <li><strong>Job Title:</strong> {{gigTitle}}</li>
+          <li><strong>Application Message:</strong> {{applicationMessage}}</li>
+       </ul>
+       <p>
+          You can review this candidate's profile and application by logging in to Gigl.
+          If you have any questions or need further assistance, please don't hesitate to contact us.
+       </p>
+       <p>Best regards,<br>Gigl Team</p>
     </div>
-  </div>
+    <div style="text-align: center;">
+        <a href="https://gigl.onrender.com" class="btn">View the Application!</a>
+    </div>
+ </section>
 </body>
 </html>
