@@ -112,11 +112,12 @@ def details(id):
     show_confirm = False
     if delete_form.validate_on_submit():
         url = flask.url_for('details', id=id)
+        _ = flask.get_flashed_messages() # clears flashed messages
         if delete_form.delete.data:
             show_confirm = True
         elif delete_form.confirm.data:
-            database.delete_gig_from_db(id)
-            return flask.redirect(flask.url_for('profile'))
+            flask.flash("Your Gig has been successfully deleted!", "success")
+            return flask.redirect(flask.url_for('gigdeleted', gig_id=id))
         elif delete_form.cancel.data:
             return flask.redirect(url)
 
@@ -144,7 +145,9 @@ def apply_result():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
     gigID = flask.request.args.get('gigID')
-    return flask.render_template('apply_err.html', gigID=gigID)
+    html_code = flask.render_template('apply_err.html', gigID=gigID)
+    response = flask.make_response(html_code)
+    return response
 #-----------------------------------------------------------------------
 @app.route('/postgig', methods=['GET'])
 def postgig():
@@ -192,6 +195,14 @@ def gigposted():
     gigID = database.create_gig(netid, title, category, description,
                         qualif, start_date, end_date, posted)
     return flask.redirect(flask.url_for('gigposted_success', gigID=gigID))
+
+@app.route('/gigdeleted/<int:gig_id>', methods=['GET'])
+def gigdeleted(gig_id):
+    netid = auth.authenticate()
+    database.delete_gig_from_db(gig_id)
+    html_code = flask.render_template('gigdeleted.html')
+    response = flask.make_response(html_code)
+    return response
 
 #-----------------------------------------------------------------------
 @app.route('/gigposted_success/<int:gigID>', methods=['GET'])
