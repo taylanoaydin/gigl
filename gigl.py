@@ -78,7 +78,7 @@ def index():
         username = cas_details(netid)[0]
         email = netid + "@princeton.edu"
         send_email_welcome(email, "Welcome to Gigl!", username)
-    
+        
     username = database.get_user(netid).get_name()
     html_code = flask.render_template('index.html', usrname=username)
     response = flask.make_response(html_code)
