@@ -14,7 +14,7 @@ import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm
+from forms import ApplyForm, DeleteGigForm
 from flask_mail import Message
 from flask import current_app
 import sys
@@ -143,6 +143,19 @@ def details(id):
             flask.flash("Application couldn't be sent due to a database error.", 'error')
 
         return flask.redirect(flask.url_for('apply_result', gigID=id))
+    
+    delete_form = DeleteGigForm()
+    show_confirm = False
+    if delete_form.validate_on_submit():
+        url = flask.url_for('details', id=id)
+        _ = flask.get_flashed_messages() # clears flashed messages
+        if delete_form.delete.data:
+            show_confirm = True
+        elif delete_form.confirm.data:
+            flask.flash("Your Gig has been successfully deleted!", "success")
+            return flask.redirect(flask.url_for('gigdeleted', gig_id=id))
+        elif delete_form.cancel.data:
+            return flask.redirect(url)
 
     html_code = flask.render_template('details.html', 
                                         gigTitle=gigTitle,
@@ -157,7 +170,9 @@ def details(id):
                                         application=application,
                                         all_apps=all_apps,
                                         gigID=id,
-                                        apply_form=apply_form)
+                                        apply_form=apply_form,
+                                        delete_form=delete_form,
+                                        show_confirm=show_confirm)
     response = flask.make_response(html_code)
     return response
 #-----------------------------------------------------------------------
@@ -166,7 +181,9 @@ def apply_result():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
     gigID = flask.request.args.get('gigID')
-    return flask.render_template('apply_err.html', gigID=gigID)
+    html_code = flask.render_template('apply_err.html', gigID=gigID)
+    response = flask.make_response(html_code)
+    return response
 #-----------------------------------------------------------------------
 @app.route('/postgig', methods=['GET'])
 def postgig():
@@ -215,17 +232,21 @@ def gigposted():
                         qualif, start_date, end_date, posted)
     return flask.redirect(flask.url_for('gigposted_success', gigID=gigID))
 
+@app.route('/gigdeleted/<int:gig_id>', methods=['GET'])
+def gigdeleted(gig_id):
+    netid = auth.authenticate()
+    database.delete_gig_from_db(gig_id)
+    html_code = flask.render_template('gigdeleted.html')
+    response = flask.make_response(html_code)
+    return response
+
 #-----------------------------------------------------------------------
 @app.route('/gigposted_success/<int:gigID>', methods=['GET'])
 def gigposted_success(gigID):
     netid = auth.authenticate()
     database.check_and_add_user(netid)
     return flask.render_template('gigposted.html', gigID=gigID)
-#-----------------------------------------------------------------------
-@app.route('/deletegig', methods=['POST'])
-def deletegig():
-    
-    return
+
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
 	app.run(host = 'localhost', debug=True, port=8888)
