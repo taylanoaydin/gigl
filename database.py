@@ -213,6 +213,8 @@ def check_and_add_user(netid):
                 cursor.execute(query, [netid, usrname])
 
                 cursor.execute('COMMIT')
+
+                return "user_created"
         except Exception as ex:
             return False
         finally:

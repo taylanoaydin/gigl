@@ -54,7 +54,6 @@
                         <tr>
                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig ID</th>
                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
-                           <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Description</th>
                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Posted On</th>
                            <th class="p-3 text-sm font-semibold tracking-wide text-left">Start Date</th>
                            <th class="p-3 text-sm font-semibold tracking-wide text-left">End Date</th>
@@ -66,7 +65,6 @@
                         <tr class="bg-gray-100">
                            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a href="{{ url_for('details', id=gig.get_gigID()) }}" class="font-bold text-blue-500 hover:underline">#{{ gig.get_gigID() }}</a></td>
                            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_title() }}</td>
-                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_description() }}</td>
                            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}</td>
                            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}</td>
                            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}</td>

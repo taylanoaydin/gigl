@@ -52,6 +52,20 @@ def send_email(to_email, subject, body):
         print(str(e))
         sys.exit(1)
     return True
+
+def send_email_welcome(to_email, subject, userName):
+    msg = Message(subject,
+                  sender=current_app.config['MAIL_USERNAME'],
+                  recipients=[to_email])
+    msg.html = flask.render_template('welcomeEmail.html', userName=userName)
+
+    try:
+        with current_app.app_context():
+            mail.send(msg)
+    except Exception as e:
+        print(str(e))
+        sys.exit(1)
+    return True
 #-----------------------------------------------------------------------
 
  
@@ -59,8 +73,12 @@ def send_email(to_email, subject, body):
 @app.route('/index', methods=['GET'])
 def index():
     netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    
+    status = database.check_and_add_user(netid)
+    if status == "user_created":
+        username = cas_details(netid)[0]
+        email = netid + "@princeton.edu"
+        send_email_welcome(email, "Welcome to Gigl!", username)
+        
     username = database.get_user(netid).get_name()
     html_code = flask.render_template('index.html', usrname=username)
     response = flask.make_response(html_code)
@@ -134,10 +152,13 @@ def details(id):
 
         if database.owns_gig(netid, id):
             flask.flash("You can't apply to your own gig...", 'error')
+            print("You can't apply to your own gig...")
         elif database.get_application(netid, id):
             flask.flash("You have already applied...", 'error')
+            print("You have already applied...")
         elif database.send_application(netid, id, application_message):
             flask.flash("You have successfully applied!", 'success')
+            print("You have successfully applied!")
             send_email(gigNetID + "@princeton.edu", database.get_user(netid).get_name(), application_message)
         else:
             flask.flash("Application couldn't be sent due to a database error.", 'error')
@@ -249,4 +270,4 @@ def gigposted_success(gigID):
 
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
-	app.run(host = 'localhost', debug=True, port=8888)
+    app.run(host = 'localhost', debug=True, port=8888)
