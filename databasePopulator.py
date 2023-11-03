@@ -145,7 +145,7 @@ def create_gigs_for_applicant(applicant_netID, gigs_data, num_gigs):
         until = startfrom + timedelta(days=random.randint(1, 7))  # Random date within a week
         posted = today
         
-        gigID = create_gig(applicant_netID, title, category, description, qualifications, startfrom, until, posted)
+        gigID = database.create_gig(applicant_netID, title, category, description, qualifications, startfrom, until, posted)
         if gigID == -1:
             print(f"Failed to create a gig for {applicant_netID}")
         else:
@@ -157,7 +157,7 @@ def create_gigs_for_applicant(applicant_netID, gigs_data, num_gigs):
 # Create gigs for each netID applicant with 5 job openings each
 for applicant_netID in applicants:
     gigs_data_copy = list(gigs_data)
-    applied_gigs = create_gigs_for_applicant(applicant_netID, gigs_data_copy, num_gigs_per_applicant)
+    applied_gigs = create_gigs_for_applicant(applicant_netID, gigs_data_copy, 5)
     
     # Return the gigs back to gigs_data for other applicants
     gigs_data.extend([gig for gig in gigs_data_copy if gig["title"] not in applied_gigs])
