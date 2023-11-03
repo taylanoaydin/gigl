@@ -10,14 +10,21 @@ from flask_mail import Mail
 from flask import Flask
 import auth
 import os
-import sys
+import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
 from forms import ApplyForm
+from flask_mail import Message
+from flask import current_app
+import sys
+
+
+
 #-----------------------------------------------------------------------
 
 app = Flask(__name__, template_folder='templates/')
+dotenv.load_dotenv()
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
 
 #-----------------------------------------------------------------------
@@ -33,7 +40,20 @@ app.config['MAIL_USE_SSL'] = True
 # Initialize Flask-Mail
 mail = Mail(app)
 
-
+def send_email(to_email, subject, body):
+    print("Current EMAIL_PW:", os.environ.get('EMAIL_PW'))
+    print("send_email called successfully", file=sys.stderr)
+    msg = Message(subject,
+                  sender=current_app.config['MAIL_USERNAME'],
+                  recipients=[to_email],
+                  body=body)
+    try:
+        with current_app.app_context():
+            mail.send(msg)
+    except Exception as e:
+        print(str(e))
+        sys.exit(1)
+    return True
 #-----------------------------------------------------------------------
 
  
@@ -120,6 +140,7 @@ def details(id):
             flask.flash("You have already applied...", 'error')
         elif database.send_application(netid, id, application_message):
             flask.flash("You have successfully applied!", 'success')
+            send_email(gigNetID + "@princeton.edu", database.get_user(netid).get_name(), application_message)
         else:
             flask.flash("Application couldn't be sent due to a database error.", 'error')
 

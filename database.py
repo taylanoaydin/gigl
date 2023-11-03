@@ -284,7 +284,6 @@ def send_application(netid, gigID, message):
                 return False
             
             gig_poster_netid = row[0]  # Retrieve the gig poster's netid
-            print()
 
             cursor.execute('BEGIN')
 
@@ -292,20 +291,6 @@ def send_application(netid, gigID, message):
                 (netid, gigID, message) VALUES
                 (%s, %s, %s)"""
             cursor.execute(query, [netid, gigID, message])
-
-            # Construct the gig poster's email address
-            gig_poster_email = gig_poster_netid + "@princeton.edu"
-        
-            # Retrieve the applicant's name
-            applicant = get_user(netid)
-            if applicant is None:
-                # Handle the case where the applicant's name is not found
-                cursor.execute('ROLLBACK')
-                return False
-
-            print("About to send email")
-            send_email(gig_poster_email, applicant.get_name(), message)
-            print("Email theoretically send")
 
             cursor.execute('COMMIT')
             return True
