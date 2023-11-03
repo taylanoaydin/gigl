@@ -41,8 +41,6 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 def send_email(to_email, subject, body):
-    print("Current EMAIL_PW:", os.environ.get('EMAIL_PW'))
-    print("send_email called successfully", file=sys.stderr)
     msg = Message(subject,
                   sender=current_app.config['MAIL_USERNAME'],
                   recipients=[to_email],
