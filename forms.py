@@ -28,7 +28,7 @@ class PostGigForm(FlaskForm):
                                       ('photography_film', 'Photography/Film'),
                                       ('events', 'Events'),
                                       ('marketing', "Marketing"),
-                                      ('administrative', "Adminsitrative"),
+                                      ('administrative', "Administrative"),
                                       ('volunteer', "Volunteer"),
                                       ('fitness', 'Fitness'),
                                       ('other', 'Other')])
