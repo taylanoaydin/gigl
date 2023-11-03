@@ -13,8 +13,6 @@ import queue
 import application as app
 import gig
 import user
-from flask_mail import Mail, Message
-from email_utils import send_email
 
 #-----------------------------------------------------------------------
 
@@ -231,7 +229,7 @@ def delete_gig_from_db(gigID):
             cursor.execute('BEGIN')
 
             q1 = "DELETE FROM apps WHERE gigID = %s"
-            cursor.exectue(q1, [gigID])
+            cursor.execute(q1, [gigID])
 
             q2 = "DELETE FROM gigs WHERE gigID = %s"
             cursor.execute(q2, [gigID])
@@ -283,8 +281,6 @@ def send_application(netid, gigID, message):
             if row is None:
                 return False
             
-            gig_poster_netid = row[0]  # Retrieve the gig poster's netid
-
             cursor.execute('BEGIN')
 
             query = """INSERT INTO apps 
