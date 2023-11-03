@@ -1,66 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
-  <title>Gigl - Home</title> <!--title on browser window-->
-  <!-- Including the styles from index.css -->
-  
-  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
-  <style>
-    section {
-        margin: 0 auto;
-        width: 80%;
-        padding: 1em;
-    }
-</style>
-</head>
-
-<body>
-  {% include 'header.html' %} <!--JINJA2 template for the header-->
-  <!--when user presses "search", use /searchresults Flask route with GET-->
-  <section>
-    <div class="mb-6">
-      <strong> Here to connect your talent with the on-campus demand, {{ usrname }}</strong>
-    </div>
-  </section>
-  <section>
-    <h1>Make A Search</h1>
-    <form action="/searchresults" method="GET">
-        <div class="flex space-x-10">
-            <input class= "border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" name="keyword" value="{{ kw }}" placeholder="Search for any gig now!">
-            <!--allows for dropdown with multiple selects, initially displaying "Category"-->
-            <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
-            <select class= "border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500" name="category">
-                <!-- Placeholder option -->
-                <option value="" {{ 'selected' if cat=='' else '' }}>Any Category</option>
-                <!-- Categories options -->
-                <option value="teaching" {{ 'selected' if cat=='teaching' else '' }}>Teaching</option>
-                <option value="research" {{ 'selected' if cat=='research' else '' }}>Research</option>
-                <option value="technical" {{ 'selected' if cat=='technical' else '' }}>Technical</option>
-                <option value="writing" {{ 'selected' if cat=='writing' else '' }}>Writing</option>
-                <option value="graphic_design" {{ 'selected' if cat=='graphic_design' else '' }}>Graphic Design</option>
-                <option value="photography_film" {{ 'selected' if cat=='photography_film' else '' }}>Photography/Film
-                </option>
-                <option value="events" {{ 'selected' if cat=='events' else '' }}>Events</option>
-                <option value="marketing" {{ 'selected' if cat=='marketing' else '' }}>Marketing</option>
-                <option value="administrative" {{ 'selected' if cat=='administrative' else '' }}>Administrative</option>
-                <option value="volunteer" {{ 'selected' if cat=='volunteer' else '' }}>Volunteer</option>
-                <option value="fitness" {{ 'selected' if cat=='fitness' else '' }}>Fitness</option>
-                <option value="other" {{ 'selected' if cat=='other' else '' }}>Other</option>
-            </select>
-            <input class= "p-2 w-auto rounded-lg bg-indigo-200 border border-indigo-300" type="submit" value="Search">
-        </div>
-        
-    </form>
-</section>
-</body>
-
-</html>
-
-
-<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,7 +36,6 @@
           <a href="/home" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
         </div>
       </nav>
-      Mobile menu, show/hide based on menu open state.
       <div class="lg:hidden" role="dialog" aria-modal="true">
         Background backdrop, show/hide based on slide-over state. 
         <div class="fixed inset-0 z-50"></div>
@@ -167,76 +104,6 @@
       </dl>
     </div>
   </div>
-
-  
-  <div class="overflow-hidden bg-white py-24 sm:py-32">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <div class="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-        <div class="lg:pr-8 lg:pt-4">
-          <div class="lg:max-w-lg">
-            <h2 class="text-base font-semibold leading-7 text-indigo-600">Deploy faster</h2>
-            <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">A better workflow</p>
-            <p class="mt-6 text-lg leading-8 text-gray-600">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.</p>
-            <dl class="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
-              <div class="relative pl-9">
-                <dt class="inline font-semibold text-gray-900">
-                  <svg class="absolute left-1 top-1 h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M5.5 17a4.5 4.5 0 01-1.44-8.765 4.5 4.5 0 018.302-3.046 3.5 3.5 0 014.504 4.272A4 4 0 0115 17H5.5zm3.75-2.75a.75.75 0 001.5 0V9.66l1.95 2.1a.75.75 0 101.1-1.02l-3.25-3.5a.75.75 0 00-1.1 0l-3.25 3.5a.75.75 0 101.1 1.02l1.95-2.1v4.59z" clip-rule="evenodd" />
-                  </svg>
-                  Push to deploy.
-                </dt>
-                <dd class="inline">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.</dd>
-              </div>
-              <div class="relative pl-9">
-                <dt class="inline font-semibold text-gray-900">
-                  <svg class="absolute left-1 top-1 h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
-                  </svg>
-                  SSL certificates.
-                </dt>
-                <dd class="inline">Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.</dd>
-              </div>
-              <div class="relative pl-9">
-                <dt class="inline font-semibold text-gray-900">
-                  <svg class="absolute left-1 top-1 h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path d="M4.632 3.533A2 2 0 016.577 2h6.846a2 2 0 011.945 1.533l1.976 8.234A3.489 3.489 0 0016 11.5H4c-.476 0-.93.095-1.344.267l1.976-8.234z" />
-                    <path fill-rule="evenodd" d="M4 13a2 2 0 100 4h12a2 2 0 100-4H4zm11.24 2a.75.75 0 01.75-.75H16a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75V15zm-2.25-.75a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 00.75-.75V15a.75.75 0 00-.75-.75h-.01z" clip-rule="evenodd" />
-                  </svg>
-                  Database backups.
-                </dt>
-                <dd class="inline">Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis.</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-        <img src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png" alt="Product screenshot" class="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0" width="2432" height="1442">
-      </div>
-    </div>
-  </div>
-  <section class="relative isolate overflow-hidden bg-white px-6 py-24 sm:py-32 lg:px-8">
-    <div class="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.indigo.100),white)] opacity-20"></div>
-    <div class="absolute inset-y-0 right-1/2 -z-10 mr-16 w-[200%] origin-bottom-left skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:mr-28 lg:mr-0 xl:mr-16 xl:origin-center"></div>
-    <div class="mx-auto max-w-2xl lg:max-w-4xl">
-      <img class="mx-auto h-12" src="https://tailwindui.com/img/logos/workcation-logo-indigo-600.svg" alt="">
-      <figure class="mt-10">
-        <blockquote class="text-center text-xl font-semibold leading-8 text-gray-900 sm:text-2xl sm:leading-9">
-          <p>“Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo expedita voluptas culpa sapiente alias molestiae. Numquam corrupti in laborum sed rerum et corporis.”</p>
-        </blockquote>
-        <figcaption class="mt-10">
-          <img class="mx-auto h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-          <div class="mt-4 flex items-center justify-center space-x-3 text-base">
-            <div class="font-semibold text-gray-900">Judith Black</div>
-            <svg viewBox="0 0 2 2" width="3" height="3" aria-hidden="true" class="fill-gray-900">
-              <circle cx="1" cy="1" r="1" />
-            </svg>
-            <div class="text-gray-600">CEO of Workcation</div>
-          </div>
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-  
 </body>
 
 </html>
--->
