@@ -73,7 +73,11 @@ def send_email_welcome(to_email, subject, userName):
 @app.route('/index', methods=['GET'])
 def index():
     netid = auth.authenticate()
-    database.check_and_add_user(netid)
+    status = database.check_and_add_user(netid)
+    if status == "user_created":
+        username = cas_details(netid)[0]
+        email = netid + "@princeton.edu"
+        send_email_welcome(email, "Welcome to Gigl!", username)
     
     username = database.get_user(netid).get_name()
     html_code = flask.render_template('index.html', usrname=username)
@@ -156,7 +160,6 @@ def details(id):
             flask.flash("You have successfully applied!", 'success')
             print("You have successfully applied!")
             send_email(gigNetID + "@princeton.edu", database.get_user(netid).get_name(), application_message)
-            send_email_welcome("hd0216@princeton.edu", "Welcome to Gigl!", "Yagiz Devre")
         else:
             flask.flash("Application couldn't be sent due to a database error.", 'error')
 
