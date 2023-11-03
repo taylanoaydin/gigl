@@ -53,11 +53,11 @@ def send_email(to_email, subject, body):
         sys.exit(1)
     return True
 
-def send_application(to_email, subject, userName, candidateName, gigTitle, applicationMessage):
+def send_application(to_email, subject, userName, candidateName, gigTitle, applicationMessage, gigID):
     msg = Message(subject,
                   sender=current_app.config['MAIL_USERNAME'],
                   recipients=[to_email])
-    msg.html = flask.render_template('applicationEmail.html', userName=userName, candidateName=candidateName, gigTitle=gigTitle, applicationMessage=applicationMessage)
+    msg.html = flask.render_template('applicationEmail.html', userName=userName, candidateName=candidateName, gigTitle=gigTitle, applicationMessage=applicationMessage, gigID=gigID)
 
     try:
         with current_app.app_context():
@@ -173,7 +173,7 @@ def details(id):
         elif database.send_application(netid, id, application_message):
             flask.flash("You have successfully applied!", 'success')
             print("You have successfully applied!")
-            send_application(gigNetID + "@princeton.edu", "You have a new application!", database.get_user(gigNetID).get_name(), database.get_user(netid).get_name(), gigTitle, application_message)
+            send_application(gigNetID+ "@princeton.edu", "You have a new application!", database.get_user(gigNetID).get_name(), database.get_user(netid).get_name(), gigTitle, application_message, id)
         else:
             flask.flash("Application couldn't be sent due to a database error.", 'error')
 
