@@ -174,7 +174,7 @@ def details(id):
         elif database.send_application(netid, id, application_message):
             flask.flash("You have successfully applied!", 'success')
             print("You have successfully applied!")
-            send_application(gigNetID + "@princeton.edu", "You have a new application!", database.get_user(gigNetID).get_name(), database.get_user(netid).get_name(), gigTitle, application_message)
+            send_application(gigNetID + "@princeton.edu", "You have a new application!", gigAuthor, database.get_user(netid).get_name(), gigTitle, application_message)
         else:
             flask.flash("Application couldn't be sent due to a database error.", 'error')
 
