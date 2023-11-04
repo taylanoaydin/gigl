@@ -1,7 +1,10 @@
-from flask_wtf import FlaskForm
 from wtforms import SubmitField, TextAreaField, StringField, DateField, SelectField
 from wtforms.validators import InputRequired, ValidationError, Length, DataRequired
 import wtforms.validators as validators
+from wtforms.validators import Optional
+from flask_wtf import FlaskForm
+from flask_wtf import Form  # Import Form instead of FlaskForm
+
 
 class ApplyForm(FlaskForm):
     message = TextAreaField('Give them your pitch!', [InputRequired(), Length(min=1, max=1000)])
@@ -11,6 +14,26 @@ class DeleteGigForm(FlaskForm):
     delete = SubmitField('Delete')
     confirm = SubmitField('Yes')
     cancel = SubmitField('No')
+
+class SearchForm(Form):
+    keyword = StringField('Keyword', validators=[Optional()])
+    category = SelectField('Category', choices=[
+        ('', 'Any Category'),
+        ('teaching', 'Teaching'),
+        ('research', 'Research'),
+        ('technical', 'Technical'),
+        ('writing', 'Writing'),
+        ('graphic_design', 'Graphic Design'),
+        ('photography_film', 'Photography/Film'),
+        ('events', 'Events'),
+        ('marketing', 'Marketing'),
+        ('administrative', 'Administrative'),
+        ('volunteer', 'Volunteer'),
+        ('fitness', 'Fitness'),
+        ('other', 'Other')
+    ])
+    submit = SubmitField('Search')
+
 
 class PostGigForm(FlaskForm):
     title = StringField('Title', validators=[InputRequired(), Length(max=50)])

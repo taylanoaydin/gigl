@@ -18,6 +18,9 @@ from forms import ApplyForm, DeleteGigForm, PostGigForm
 from flask_mail import Message
 from flask import current_app
 import sys
+from flask import render_template, request, make_response
+from forms import SearchForm
+from flask_wtf.csrf import CSRFProtect
 
 
 
@@ -26,6 +29,7 @@ import sys
 app = Flask(__name__, template_folder='templates/')
 dotenv.load_dotenv()
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
+csrf = CSRFProtect(app)
 
 #-----------------------------------------------------------------------
 
@@ -90,6 +94,7 @@ def index():
     html_code = flask.render_template('index.html')
     response = flask.make_response(html_code)
     return response
+
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -113,24 +118,34 @@ def search_results():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
 
-    keyword = flask.request.args.get('keyword')
-    category = flask.request.args.getlist('category')  # Use getlist since we will later use a multi-select dropdown
-    cat = category[0]
-    if category == ['']:
-        category = []
+    # Initialize the form with the query parameters from the request
+    search_form = SearchForm(request.args)
+
+    if search_form.validate():  # This will validate the form fields without considering the HTTP method
+        keyword = search_form.keyword.data
+        category = search_form.category.data
+        categories = [category] if category else [] 
+        print(f"Form validated. Keyword: {keyword}, Category: {category}")
+    else: # If form fails to validate (in case something goes wrong with the form submission)
+        print("Form did not validate. Errors:", search_form.errors)
+        keyword = None
+        category = None
+        categories = []  # This will fetch gigs filtered by the selected category
+        print("Form did not validate.")
 
     # Fetch list of gigs based on the keyword / category
-    gigs = database.get_gigs(keyword=keyword, categories=category)
+    gigs = database.get_gigs(keyword=keyword, categories=categories)
+    print(f"Gigs fetched: {gigs}")
 
-    # Check if gigs is a list (successful fetch) or an integer (error code = zero)
-    #if isinstance(gigs, int):
-        # Handle the error, e.g., return an error page or message
-        # return "Error fetching gigs from the database."
-    html_code = flask.render_template('searchresults.html',
-                                        mygigs=gigs,
-                                        cat=cat,
-                                        kw=keyword)
-    response = flask.make_response(html_code)
+    # Check if gigs is not an empty list
+    if gigs == 0:
+        gigs = []  # Ensure gigs is always a list
+        print("No gigs found, setting gigs to an empty list.")
+
+    # Render the template with the search results and the form
+    html_code = render_template('searchresults.html', search_form=search_form, mygigs=gigs, cat=category, kw=keyword)
+
+    response = make_response(html_code)
 
     return response
 
