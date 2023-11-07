@@ -33,6 +33,24 @@
          padding: 1em;
          }
       </style>
+
+
+<script>
+    function openTab(event, tabName) {
+        var tabcontent = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        var tablinks = document.getElementsByClassName("tab-link");
+        for (var i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" bg-gray-300", "");
+        }
+
+        document.getElementById(tabName).style.display = "block";
+        event.currentTarget.className += " bg-gray-300";
+    }
+</script>
       <!-- Including the styles from index.css -->
    </head>
    <body>
@@ -45,10 +63,15 @@
             <h3> Email: {{user_email}} </h3>
          </section>
          <section>
-            <label for="toggle-gigs" class="collapsible-title">My Gigs</label>
-            <input type="checkbox" id="toggle-gigs" class="collapsible-toggle">
-            <ul class="collapsible-content">
-               <div class="overflow-auto rounded-lg">
+            <div class="flex flex-col items-center justify-center">
+               <!-- Tabs -->
+               <div class="mb-4">
+                   <button class="tab-link px-4 py-2 text-gray-600 bg-gray-200 hover:bg-gray-300" onclick="openTab(event, 'Table1')">My Gigs</button>
+                   <button class="tab-link px-4 py-2 text-gray-600 bg-gray-200 hover:bg-gray-300" onclick="openTab(event, 'Table2')">My Apps</button>
+               </div>
+           
+               <!-- Content -->
+               <div id="Table1" class="tab-content" style="display:block">
                   <table class="w-full">
                      <thead class="bg-gray-200 border-b-2 border-gray-200">
                         <tr>
@@ -122,32 +145,28 @@
                      </tbody>
                   </table>
                </div>
-            </ul>
+               <div id="Table2" class="tab-content" style="display:none">
+                  <table class="w-full">
+                     <thead class="bg-gray-200 border-b-2 border-gray-200">
+                        <tr>
+                           <th class="w-20 p-3 text-sm font-semibold tracking-wide text-left">Gig ID</th>
+                           <th class="p-3 text-sm font-semibold tracking-wide text-left">Application Message</th>
+                        </tr>
+                     </thead>
+                     <tbody class="divide-y divide-gray-150">
+                        {% for app in myapps %}
+                        <tr class="bg-gray-100">
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a href="{{ url_for('details', id=app.get_gigID()) }}" class="font-bold text-blue-500 hover:underline">#{{ app.get_gigID() }}</a></td>
+                           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ app.get_message() }}</td>
+                        </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+           </div>
          </section>
-         <section>
-            <label for="toggle-apps" class="collapsible-title">My Applications</label>
-            <input type="checkbox" id="toggle-apps" class="collapsible-toggle">
-            <ul class="collapsible-content">
-               <div class="overflow-auto rounded-lg">
-                <table class="w-full">
-                   <thead class="bg-gray-200 border-b-2 border-gray-200">
-                      <tr>
-                         <th class="w-20 p-3 text-sm font-semibold tracking-wide text-left">Gig ID</th>
-                         <th class="p-3 text-sm font-semibold tracking-wide text-left">Application Message</th>
-                      </tr>
-                   </thead>
-                   <tbody class="divide-y divide-gray-150">
-                      {% for app in myapps %}
-                      <tr class="bg-gray-100">
-                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a href="{{ url_for('details', id=app.get_gigID()) }}" class="font-bold text-blue-500 hover:underline">#{{ app.get_gigID() }}</a></td>
-                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ app.get_message() }}</td>
-                      </tr>
-                      {% endfor %}
-                   </tbody>
-                </table>
-             </div>
-            </ul>
-         </section>
+
+         
       </main>
    </body>
 </html>
