@@ -15,6 +15,53 @@
             padding: 1em;
         }
     </style>
+    <script>
+        function sortTable(column, dataType) {
+          var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+          table = document.querySelector("table");
+          switching = true;
+          dir = "asc"; // Set the initial sorting direction to ascending
+      
+          while (switching) {
+            switching = false;
+            rows = table.rows;
+      
+            for (i = 1; i < rows.length - 1; i++) {
+              shouldSwitch = false;
+              x = rows[i].getElementsByTagName("TD")[column];
+              y = rows[i + 1].getElementsByTagName("TD")[column];
+      
+              // Determine if rows should switch place based on the data type
+              if (dir == "asc") {
+                if ((dataType === 'text' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) ||
+                    (dataType === 'date' && new Date(x.innerHTML) > new Date(y.innerHTML))) {
+                  shouldSwitch = true;
+                  break;
+                }
+              } else if (dir == "desc") {
+                if ((dataType === 'text' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) ||
+                    (dataType === 'date' && new Date(x.innerHTML) < new Date(y.innerHTML))) {
+                  shouldSwitch = true;
+                  break;
+                }
+              }
+            }
+            if (shouldSwitch) {
+              rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+              switchcount++;
+            } else {
+              if (switchcount == 0 && dir == "asc") {
+                dir = "desc";
+                switching = true;
+              }
+            }
+          }
+        }
+      </script>
+      
+      
+      
 </head>
 
 <body>
@@ -42,11 +89,11 @@
             <table class="w-full">
                 <thead class="bg-gray-200 border-b-2 border-gray-200">
                 <tr>
-                    <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
-                    <th class="p-3 text-sm font-semibold tracking-wide text-left">Posted On</th>
-                    <th class="p-3 text-sm font-semibold tracking-wide text-left">Start Date</th>
-                    <th class="p-3 text-sm font-semibold tracking-wide text-left">End Date</th>
-                    <th class="p-3 text-sm font-semibold tracking-wide text-left">Category</th>
+                    <th class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Gig Title</th>
+                    <th class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer" onclick="sortTable(1, 'date')">Posted On</th>
+                    <th class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer" onclick="sortTable(2, 'date')">Start Date</th>
+                    <th class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer" onclick="sortTable(3, 'date')">End Date</th>
+                    <th class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Category</th>
                 </tr>
                 </thead>
                 
