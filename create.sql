@@ -5,7 +5,10 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
   netid VARCHAR(10) PRIMARY KEY,
-  name TEXT
+  name TEXT,
+  visible BOOLEAN NOT NULL,
+  bio VARCHAR(1000),
+  links TEXT
 );
 
 CREATE TABLE gigs

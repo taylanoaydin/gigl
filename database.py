@@ -180,7 +180,7 @@ def get_user(netid):
     thisuser = None
     try:
         with connection.cursor() as cursor:
-            query = "SELECT * FROM users WHERE netid = %s"
+            query = "SELECT netid, name FROM users WHERE netid = %s"
             cursor.execute(query, [netid])
             row = cursor.fetchone()
 
@@ -209,7 +209,7 @@ def check_and_add_user(netid):
                 cursor.execute('BEGIN')
                 
                 usrname = cas_details(netid)[0]
-                query = "INSERT INTO users (netid, name) VALUES (%s, %s)"
+                query = "INSERT INTO users (netid, name, visible, bio, links) VALUES (%s, %s, 'n', '', '')"
                 cursor.execute(query, [netid, usrname])
 
                 cursor.execute('COMMIT')
