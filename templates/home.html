@@ -27,32 +27,18 @@
   </section>
   <section>
     <h1>Make A Search</h1>
-    <form action="/searchresults" method="GET">
-        <div class="flex space-x-10">
-            <input class= "border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500" type="text" name="keyword" value="{{ kw }}" placeholder="Search for any gig now!">
-            <!--allows for dropdown with multiple selects, initially displaying "Category"-->
-            <!--PROBLEM: MULTIPLE SELECTS NOT AVAILABLE WITHOUT JAVASCRIPT-->
-            <select class= "border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500" name="category">
-                <!-- Placeholder option -->
-                <option value="" {{ 'selected' if cat=='' else '' }}>Any Category</option>
-                <!-- Categories options -->
-                <option value="teaching" {{ 'selected' if cat=='teaching' else '' }}>Teaching</option>
-                <option value="research" {{ 'selected' if cat=='research' else '' }}>Research</option>
-                <option value="technical" {{ 'selected' if cat=='technical' else '' }}>Technical</option>
-                <option value="writing" {{ 'selected' if cat=='writing' else '' }}>Writing</option>
-                <option value="graphic_design" {{ 'selected' if cat=='graphic_design' else '' }}>Graphic Design</option>
-                <option value="photography_film" {{ 'selected' if cat=='photography_film' else '' }}>Photography/Film
-                </option>
-                <option value="events" {{ 'selected' if cat=='events' else '' }}>Events</option>
-                <option value="marketing" {{ 'selected' if cat=='marketing' else '' }}>Marketing</option>
-                <option value="administrative" {{ 'selected' if cat=='administrative' else '' }}>Administrative</option>
-                <option value="volunteer" {{ 'selected' if cat=='volunteer' else '' }}>Volunteer</option>
-                <option value="fitness" {{ 'selected' if cat=='fitness' else '' }}>Fitness</option>
-                <option value="other" {{ 'selected' if cat=='other' else '' }}>Other</option>
-            </select>
-            <input class= "p-2 w-auto rounded-lg bg-indigo-200 border border-indigo-300" type="submit" value="Search">
-        </div>
-        
+    <form method="POST">
+      {{ search_form.hidden_tag() }}
+      <div class="flex space-x-10">
+          <!-- Render the keyword field using WTForms -->
+          {{ search_form.keyword(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", placeholder="Search for any gig now!") }}
+          
+          <!-- Render the category select field using WTForms -->
+          {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500") }}
+          
+          <!-- Render the submit button using WTForms -->
+          {{ search_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
+      </div>
     </form>
 </section>
 </body>

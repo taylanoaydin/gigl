@@ -15,7 +15,7 @@ class DeleteGigForm(FlaskForm):
     confirm = SubmitField('Yes')
     cancel = SubmitField('No')
 
-class SearchForm(Form):
+class SearchForm(FlaskForm):
     keyword = StringField('Keyword', validators=[Optional()])
     category = SelectField('Category', choices=[
         ('', 'Any Category'),

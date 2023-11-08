@@ -6,7 +6,7 @@
 #-----------------------------------------------------------------------
 
 import flask
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from flask import Flask
 import auth
 import os
@@ -14,13 +14,10 @@ import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm, DeleteGigForm, PostGigForm
-from flask_mail import Message
+from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm
 from flask import current_app
 import sys
 from flask import render_template, request, make_response
-from forms import SearchForm
-from flask_wtf.csrf import CSRFProtect
 
 
 
@@ -29,7 +26,7 @@ from flask_wtf.csrf import CSRFProtect
 app = Flask(__name__, template_folder='templates/')
 dotenv.load_dotenv()
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
-csrf = CSRFProtect(app)
+# csrf = CSRFProtect(app)
 
 #-----------------------------------------------------------------------
 
@@ -98,7 +95,7 @@ def index():
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-@app.route('/home', methods=['GET'])
+@app.route('/home', methods=['GET', 'POST'])
 def home():
     netid = auth.authenticate()
     status = database.check_and_add_user(netid)
@@ -106,26 +103,17 @@ def home():
         username = cas_details(netid)[0]
         email = netid + "@princeton.edu"
         send_email_welcome(email, "Welcome to Gigl!", username)
-        
-    username = database.get_user(netid).get_name()
-    html_code = flask.render_template('home.html', usrname=username)
-    response = flask.make_response(html_code)
-    return response
-
-#-----------------------------------------------------------------------
-@app.route('/searchresults', methods=['GET'])
-def search_results():
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-
+    
     # Initialize the form with the query parameters from the request
-    search_form = SearchForm(request.args)
-
-    if search_form.validate():  # This will validate the form fields without considering the HTTP method
+    search_form = SearchForm()
+    if search_form.validate_on_submit():
         keyword = search_form.keyword.data
+        print(f"keyword value:{keyword}, type:{type(keyword)}")
         category = search_form.category.data
+        print(f"category value:{category}, type:{type(category)}")
         categories = [category] if category else [] 
         print(f"Form validated. Keyword: {keyword}, Category: {category}")
+        return flask.redirect(flask.url_for('search_results', kw=keyword, cat=category))
     else: # If form fails to validate (in case something goes wrong with the form submission)
         print("Form did not validate. Errors:", search_form.errors)
         keyword = None
@@ -133,9 +121,48 @@ def search_results():
         categories = []  # This will fetch gigs filtered by the selected category
         print("Form did not validate.")
 
+    username = database.get_user(netid).get_name()
+    html_code = flask.render_template('home.html', usrname=username,
+                                      search_form=search_form)
+    response = flask.make_response(html_code)
+    return response
+
+#-----------------------------------------------------------------------
+@app.route('/searchresults', methods=['GET', 'POST'])
+def search_results():
+    netid = auth.authenticate()
+    database.check_and_add_user(netid)
+
+    # Initialize the form with the query parameters from the request
+    search_form = SearchForm()
+
+
+    if search_form.validate_on_submit():
+        keyword = search_form.keyword.data
+        category = search_form.category.data
+        categories = [category] if category else [] 
+        print(f"Form validated. Keyword: {keyword}, Category: {category}")
+        return flask.redirect(flask.url_for('search_results',cat=category, kw=keyword ))
+    else: # If form fails to validate (in case something goes wrong with the form submission)
+        category = flask.request.args.get('cat')
+        keyword = flask.request.args.get('kw')
+        search_form.category.data = category
+        # print("Form did not validate. Errors:", search_form.errors)
+        # keyword = None
+        # category = None
+        # categories = []  # This will fetch gigs filtered by the selected category
+        # print("Form did not validate.")
+
     # Fetch list of gigs based on the keyword / category
+    categories = category
+    if not categories:
+        categories = []
+    else:
+        categories = [categories]
+    
     gigs = database.get_gigs(keyword=keyword, categories=categories)
     print(f"Gigs fetched: {gigs}")
+    
 
     # Check if gigs is not an empty list
     if gigs == 0:

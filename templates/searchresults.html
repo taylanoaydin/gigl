@@ -61,20 +61,27 @@
          
          
       </script>
-   </head>
-   <body>
-      {% include 'header.html' %}
-      <section>
-         <h1>Make Another Search</h1>
-         <!-- Update the form to use WTForms -->
-         <form action="{{ url_for('search_results') }}" method="GET">
+      
+      
+      
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <section>
+        <h1>Make Another Search</h1>
+        <!-- Update the form to use WTForms -->
+        <form method="POST">
+            {{ search_form.hidden_tag() }}
             <div class="flex space-x-10">
-               <!-- Render the keyword field using WTForms -->
-               {{ search_form.keyword(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", placeholder="Search for any gig now!") }}
-               <!-- Render the category select field using WTForms -->
-               {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500") }}
-               <!-- Render the submit button using WTForms -->
-               {{ search_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
+                <!-- Render the keyword field using WTForms -->
+                {{ search_form.keyword(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", placeholder="Search for any gig now!", value=kw) }}
+                
+                <!-- Render the category select field using WTForms -->
+                {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500", value=cat) }}
+                
+                <!-- Render the submit button using WTForms -->
+                {{ search_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
             </div>
          </form>
       </section>
