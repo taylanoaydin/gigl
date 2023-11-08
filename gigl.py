@@ -336,5 +336,13 @@ def gigposted_success(gigID):
     return flask.render_template('gigposted.html', gigID=gigID)
 
 #-----------------------------------------------------------------------
+@app.route('/logout', methods=['GET'])
+def logout():
+    flask.session.clear()
+    html_code = flask.render_template('index.html')
+    response = flask.redirect(flask.url_for('index'))
+    return response
+
+#-----------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(host = 'localhost', debug=True, port=8888)
