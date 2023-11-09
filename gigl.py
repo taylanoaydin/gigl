@@ -361,8 +361,8 @@ def logout():
 @app.route('/freelancer/<netid>')
 def freelancer_profile(netid):
     # Fetch freelancer details from the database using netid
-    netid = auth.authenticate()
-    database.update_activity(netid)
+    id = auth.authenticate()
+    database.update_activity(id)
 
     freelancer = database.get_user(netid)
     if freelancer and freelancer.is_visible():
