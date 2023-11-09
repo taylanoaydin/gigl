@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelancer Profile - Gigl</title>
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+    <style>
+        section {
+            margin: 0 auto;
+            width: 80%;
+            padding: 1em;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <main>
+        <section>
+            <h2>{{ freelancer.get_name() }}</h2>
+            <p>{{ freelancer.get_bio() }}</p>
+            <p>Specialty: {{ freelancer.get_specialty() }}</p>
+            <p>Last Active: {{ freelancer.get_active() }}</p>
+            <div>
+                <h3>Links</h3>
+                <ul>
+                    {% for link in freelancer.get_links() %}
+                        <li><a href="{{ link }}">{{ link }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

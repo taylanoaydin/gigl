@@ -333,7 +333,7 @@ def logout():
 def freelancer_profile(netid):
     # Fetch freelancer details from the database using netid
     freelancer = database.get_user(netid)
-    if freelancer and freelancer['visible']:
+    if freelancer and freelancer.is_visible():
         return render_template('freelancer.html', freelancer=freelancer)
     else:
         # Handle the case where the freelancer does not exist or is not visible
