@@ -286,7 +286,7 @@ def postgig():
     response = flask.make_response(html_code)
     return response
 #-----------------------------------------------------------------------
-@app.route('/profile', methods=['GET'])
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
@@ -294,13 +294,21 @@ def profile():
     username = user.get_name()
     user_email = f"{netid}@princeton.edu"
 
+    if request.method == 'POST':
+        if 'toggle_visibility' in request.form:
+            # Call the function to toggle visibility
+            database.set_visibility(netid, not user.is_visible())
+            # Redirect to the profile page with a GET request to prevent double-submit
+            return flask.redirect(flask.url_for('profile'))
+
     mygigs = database.get_gigs_posted_by(netid)
     myapps = database.get_apps_by(netid)
 
     html_code = flask.render_template('profile.html', username=username,
                                       user_email=user_email,
                                       mygigs=mygigs,
-                                      myapps=myapps)
+                                      myapps=myapps,
+                                      is_visible=user.is_visible())  # Pass the visibility status to the template
     response = flask.make_response(html_code)     
     return response
 #-----------------------------------------------------------------------
