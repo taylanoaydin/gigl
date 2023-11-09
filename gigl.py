@@ -98,23 +98,19 @@ def home():
         username = cas_details(netid)[0]
         email = netid + "@princeton.edu"
         send_email_welcome(email, "Welcome to Gigl!", username)
-    
+    else:
+        database.update_activity(netid)
     # Initialize the form with the query parameters from the request
     search_form = SearchForm()
     if search_form.validate_on_submit():
         keyword = search_form.keyword.data
-        print(f"keyword value:{keyword}, type:{type(keyword)}")
         category = search_form.category.data
-        print(f"category value:{category}, type:{type(category)}")
         categories = [category] if category else [] 
-        print(f"Form validated. Keyword: {keyword}, Category: {category}")
         return flask.redirect(flask.url_for('search_results', kw=keyword, cat=category))
     else: # If form fails to validate (in case something goes wrong with the form submission)
-        print("Form did not validate. Errors:", search_form.errors)
         keyword = None
         category = None
         categories = []  # This will fetch gigs filtered by the selected category
-        print("Form did not validate.")
 
     username = database.get_user(netid).get_name()
     html_code = flask.render_template('home.html', usrname=username,
@@ -127,26 +123,20 @@ def home():
 def search_results():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
+    database.update_activity(netid)
 
     # Initialize the form with the query parameters from the request
     search_form = SearchForm()
-
 
     if search_form.validate_on_submit():
         keyword = search_form.keyword.data
         category = search_form.category.data
         categories = [category] if category else [] 
-        print(f"Form validated. Keyword: {keyword}, Category: {category}")
         return flask.redirect(flask.url_for('search_results',cat=category, kw=keyword ))
     else: # If form fails to validate (in case something goes wrong with the form submission)
         category = flask.request.args.get('cat')
         keyword = flask.request.args.get('kw')
         search_form.category.data = category
-        # print("Form did not validate. Errors:", search_form.errors)
-        # keyword = None
-        # category = None
-        # categories = []  # This will fetch gigs filtered by the selected category
-        # print("Form did not validate.")
 
     # Fetch list of gigs based on the keyword / category
     categories = category
@@ -155,9 +145,7 @@ def search_results():
     else:
         categories = [categories]
     
-    gigs = database.get_gigs(keyword=keyword, categories=categories)
-    print(f"Gigs fetched: {gigs}")
-    
+    gigs = database.get_gigs(keyword=keyword, categories=categories)    
 
     # Check if gigs is not an empty list
     if gigs == 0:
@@ -176,6 +164,8 @@ def search_results():
 def details(id):
     netid = auth.authenticate()
     database.check_and_add_user(netid)
+    database.update_activity(netid)
+
     gig = database.get_gig_details(id)
     gigTitle = gig.get_title()
     gigNetID = gig.get_netid()
@@ -203,13 +193,10 @@ def details(id):
 
         if database.owns_gig(netid, id):
             flask.flash("You can't apply to your own gig...", 'error')
-            print("You can't apply to your own gig...")
         elif database.get_application(netid, id):
             flask.flash("You have already applied...", 'error')
-            print("You have already applied...")
         elif database.send_application(netid, id, application_message):
             flask.flash("You have successfully applied!", 'success')
-            print("You have successfully applied!")
             send_application(gigNetID + "@princeton.edu", "You have a new application!", id, gigAuthor, database.get_user(netid).get_name(), gigTitle, application_message)
         else:
             flask.flash("Application couldn't be sent due to a database error.", 'error')
@@ -251,7 +238,10 @@ def details(id):
 @app.route('/apply_result', methods=['GET'])
 def apply_result():
     netid = auth.authenticate()
+    
     database.check_and_add_user(netid)
+    database.update_activity(netid)
+
     gigID = flask.request.args.get('gigID')
     html_code = flask.render_template('apply_err.html', gigID=gigID)
     response = flask.make_response(html_code)
@@ -261,6 +251,8 @@ def apply_result():
 def postgig():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
+    database.update_activity(netid)
+
     user = database.get_user(netid)
     gig_form = PostGigForm()
     if gig_form.validate_on_submit():
@@ -285,6 +277,8 @@ def postgig():
 def profile():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
+    database.update_activity(netid)
+
     user = database.get_user(netid)
     username = user.get_name()
     user_email = f"{netid}@princeton.edu"
@@ -311,6 +305,7 @@ def profile():
 def profilesearch():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
+    database.update_activity(netid)
 
     # Initialize the form with the query parameters from the request
     psearch_form = ProfileSearchForm()
@@ -337,6 +332,9 @@ def profilesearch():
 @app.route('/gigdeleted/<int:gig_id>', methods=['GET'])
 def gigdeleted(gig_id):
     netid = auth.authenticate()
+    database.check_and_add_user(netid)
+    database.update_activity(netid)
+
     database.delete_gig_from_db(gig_id)
     html_code = flask.render_template('gigdeleted.html')
     response = flask.make_response(html_code)
@@ -347,6 +345,8 @@ def gigdeleted(gig_id):
 def gigposted_success(gigID):
     netid = auth.authenticate()
     database.check_and_add_user(netid)
+    database.update_activity(netid)
+
     return flask.render_template('gigposted.html', gigID=gigID)
 
 #-----------------------------------------------------------------------
@@ -361,6 +361,9 @@ def logout():
 @app.route('/freelancer/<netid>')
 def freelancer_profile(netid):
     # Fetch freelancer details from the database using netid
+    netid = auth.authenticate()
+    database.update_activity(netid)
+
     freelancer = database.get_user(netid)
     if freelancer and freelancer.is_visible():
         return render_template('freelancer.html', freelancer=freelancer)
