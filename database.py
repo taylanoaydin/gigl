@@ -198,19 +198,25 @@ def get_user(netid):
 
 # returns list of visible users with only RELEVANT information for the
 # overall profile search: netid, name, specialty, last_active
-def get_all_freelancers():
-    connection = _get_connection()
+def get_freelancers(keyword='', specialty=''):
     users = []
+    connection = _get_connection()
     try:
         with connection.cursor() as cursor:
-            query = "SELECT netid, name, specialty, last_active FROM users WHERE visible"
-            cursor.execute(query)
-            table = cursor.fetchall()
+            kw = '%' + keyword + '%'
+            all_args = [kw]
+            query = """SELECT netid, name, specialty, last_active FROM users
+                       WHERE name ILIKE %s AND visible"""
+            if specialty != '':
+                query += " AND specialty=%s"
+                all_args.append(specialty)
+            query += " ORDER BY last_active DESC"
 
+            cursor.execute(query, all_args)
+            table = cursor.fetchall()
             for row in table:
                 thisuser = user.User(netid=row[0], name=row[1], specialty=row[2], last_active=row[3])
                 users.append(thisuser)
-
             return users
     except Exception as ex:
         return 0
