@@ -46,3 +46,9 @@ Thumbs.db  # For Windows
 
 # local env files
 *.env
+
+# External libraries
+elasticsearch-8.11.10*
+
+# Ibe's venv you can ignore this
+gigl/

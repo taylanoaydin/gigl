@@ -18,6 +18,7 @@ from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSear
 from flask import current_app
 import sys
 from flask import render_template, request, make_response
+from elasticsearch import Elasticsearch
 
 
 
@@ -26,7 +27,7 @@ from flask import render_template, request, make_response
 app = Flask(__name__, template_folder='templates/')
 dotenv.load_dotenv()
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
-# csrf = CSRFProtect(app)
+e_search = Elasticsearch([os.environ.get('ELASTICSEARCH_URL')])
 
 #-----------------------------------------------------------------------
 

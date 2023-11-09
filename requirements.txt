@@ -6,3 +6,4 @@ requests
 Flask-WTF
 WTForms
 Flask-Mail
+elasticsearch
