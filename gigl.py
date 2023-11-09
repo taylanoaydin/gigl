@@ -357,7 +357,6 @@ def logout():
     response = flask.redirect(flask.url_for('index'))
     return response
 #-----------------------------------------------------------------------
-
 @app.route('/freelancer/<netid>')
 def freelancer_profile(netid):
     # Fetch freelancer details from the database using netid
