@@ -356,10 +356,6 @@ def logout():
     html_code = flask.render_template('index.html')
     response = flask.redirect(flask.url_for('index'))
     return response
-
-@app.route('/freelancer', methods=['GET'])
-def freelancer_profile():
-    return
 #-----------------------------------------------------------------------
 
 @app.route('/freelancer/<netid>')
