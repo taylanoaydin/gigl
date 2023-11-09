@@ -5,29 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Freelancer Profile - Gigl</title>
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
-    <style>
-        section {
-            margin: 0 auto;
-            width: 80%;
-            padding: 1em;
-        }
-    </style>
 </head>
-<body>
+<body class="bg-gray-100">
     {% include 'header.html' %}
-    <main>
-        <section>
-            <h2>{{ freelancer.get_name() }}</h2>
-            <p>{{ freelancer.get_bio() }}</p>
-            <p>Specialty: {{ freelancer.get_specialty() }}</p>
-            <p>Last Active: {{ freelancer.get_active() }}</p>
-            <div>
-                <h3>Links</h3>
-                <ul>
-                    {% for link in freelancer.get_links() %}
-                        <li><a href="{{ link }}">{{ link }}</a></li>
-                    {% endfor %}
-                </ul>
+    <main class="container mx-auto mt-10 p-4">
+        <section class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
+            <div class="p-6">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ freelancer.get_name() }}</h2>
+            </div>
+            <div class="px-6 py-4 bg-blue-100">
+                <p class="text-gray-700"><span class="font-semibold">Specialty:</span> {{ freelancer.get_specialty() }}</p>
+                <p class="text-gray-700"><span class="font-semibold">Last Active:</span> {{ freelancer.get_active() }}</p>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Bio</h3>
+                <p class="text-gray-600">{{ freelancer.get_bio() }}</p>
+            </div>
+            {% set colors = ['bg-blue-100', 'bg-red-100', 'bg-green-100', 'bg-yellow-100'] %}
+            <div class="grid grid-cols-2 gap-4 p-6">
+                {% for link in freelancer.get_links() %}
+                <div class="{{ colors[loop.index0 % 4] }} col-span-1 p-2">
+                    <a href="{{ link }}" class="text-blue-500 hover:text-blue-600">{{ link }}</a>
+                </div>
+                {% endfor %}
             </div>
         </section>
     </main>
