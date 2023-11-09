@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
-    <title>Gigl - Home</title> <!--title on browser window-->
+    <title>gigl</title> <!--title on browser window-->
     <!-- Including the styles from index.css -->
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
     <style>
-        
         section {
             margin: 0 auto;
             width: 80%;
@@ -21,7 +20,7 @@
     {% include 'header.html' %} <!--JINJA2 template for the header-->
     <main>
         <br>
-        <section class= "w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-100">
+        <section class="w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-100">
             <h2> New Gig for {{username}}-{{user_email}}</h2> <!-- user information -->
             <hr>
             <br>
@@ -29,7 +28,8 @@
                 {{ gig_form.hidden_tag() }} <!-- CSRF Protection token -->
                 <div>
                     {{ gig_form.title.label }}
-                    {{ gig_form.title(class="bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500")}}
+                    {{ gig_form.title(class="bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2
+                    rounded-lg focus:outline-none focus:border-teal-500")}}
                     {% for error in gig_form.title.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
@@ -39,14 +39,16 @@
                 <div class="flex space-x-10">
                     <div class="w-full">
                         {{ gig_form.start_date.label}}
-                        {{ gig_form.start_date(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500")}}
+                        {{ gig_form.start_date(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                        md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500")}}
                         {% for error in gig_form.start_date.errors %}
                         <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </div>
                     <div class="w-full">
                         {{ gig_form.end_date.label}}
-                        {{ gig_form.end_date(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500")}}
+                        {{ gig_form.end_date(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                        md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500")}}
                         {% for error in gig_form.end_date.errors %}
                         <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
@@ -55,32 +57,35 @@
                 <br>
                 <div>
                     {{ gig_form.qualifications.label }}
-                    {{ gig_form.qualifications(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500")}}
+                    {{ gig_form.qualifications(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                    rounded-lg focus:outline-none focus:border-teal-500")}}
                 </div>
-                
+
                 <br>
-                
+
                 <!--JS required to make description limited on words not characters-->
                 <div>
                     {{ gig_form.description.label}}
-                    {{ gig_form.description(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500")}}
+                    {{ gig_form.description(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                    rounded-lg focus:outline-none focus:border-teal-500")}}
                 </div>
-                
+
                 <br>
 
                 <div>
                     {{ gig_form.categories.label}}
-                    {{ gig_form.categories(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500")}}
+                    {{ gig_form.categories(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                    md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500")}}
                     <!-- error handling must be done -->
                 </div>
-        
+
                 <br>
                 {{ gig_form.submit(class= "shadow p-2 w-auto rounded-lg bg-indigo-200 border border-indigo-300")}}
             </form>
-            
-            
+
+
         </section>
-        
+
     </main>
 
 </body>

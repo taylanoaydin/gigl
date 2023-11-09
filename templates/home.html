@@ -4,17 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
-  <title>Gigl - Home</title> <!--title on browser window-->
+  <title>gigl</title> <!--title on browser window-->
   <!-- Including the styles from index.css -->
-  
+
   <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
   <style>
     section {
-        margin: 0 auto;
-        width: 80%;
-        padding: 1em;
+      margin: 0 auto;
+      width: 80%;
+      padding: 1em;
     }
-</style>
+  </style>
 </head>
 
 <body>
@@ -30,17 +30,19 @@
     <form method="POST">
       {{ search_form.hidden_tag() }}
       <div class="flex space-x-10">
-          <!-- Render the keyword field using WTForms -->
-          {{ search_form.keyword(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", placeholder="Search for any gig now!") }}
-          
-          <!-- Render the category select field using WTForms -->
-          {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500") }}
-          
-          <!-- Render the submit button using WTForms -->
-          {{ search_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
+        <!-- Render the keyword field using WTForms -->
+        {{ search_form.keyword(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+        focus:border-teal-500", placeholder="Search for any gig now!") }}
+
+        <!-- Render the category select field using WTForms -->
+        {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500")
+        }}
+
+        <!-- Render the submit button using WTForms -->
+        {{ search_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
       </div>
     </form>
-</section>
+  </section>
 </body>
 
 </html>
