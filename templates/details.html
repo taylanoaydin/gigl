@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--will scale to diff browser sizes-->
-    <title>Gigl - Home</title> <!--title on browser window-->
+    <title>gigl</title> <!--title on browser window-->
     <!-- Including the styles from index.css -->
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
     <style>
@@ -32,55 +32,67 @@
             <br>
             <div>
                 {% if gigCategory == 'teaching' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
-                Teaching
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                    Teaching
                 </span>
                 {% elif gigCategory == 'research' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                Research
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                    Research
                 </span>
                 {% elif gigCategory == 'technical' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
-                Technical
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                    Technical
                 </span>
                 {% elif gigCategory == 'writing' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
-                Writing
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                    Writing
                 </span>
                 {% elif gigCategory == 'graphic_design' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
-                Graphic Design
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
+                    Graphic Design
                 </span>
                 {% elif gigCategory == 'photography_film' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
-                Photography/Film
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
+                    Photography/Film
                 </span>
                 {% elif gigCategory == 'events' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
-                Events
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
+                    Events
                 </span>
                 {% elif gigCategory == 'marketing' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
-                Marketing
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
+                    Marketing
                 </span>
                 {% elif gigCategory == 'administrative' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
-                Administrative
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                    Administrative
                 </span>
                 {% elif gigCategory == 'volunteer' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                Volunteer
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                    Volunteer
                 </span>
                 {% elif gigCategory == 'fitness' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
-                Fitness
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                    Fitness
                 </span>
                 {% elif gigCategory == 'other' %}
-                Gig Category: <span class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
-                Other
+                Gig Category: <span
+                    class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                    Other
                 </span>
                 {% endif %}
-             </div>
+            </div>
             <div>
                 <h3>Gig Start Date: {{gigStartDate}}</h3>
             </div>
@@ -125,7 +137,7 @@
                 </table>
             </div>
         </section>
-        <section class= "w-full md:w-1/2 rounded-lg ">
+        <section class="w-full md:w-1/2 rounded-lg ">
             <form align="center" method="post">
                 {{ delete_form.hidden_tag() }} <!-- CSRF token -->
                 {% if show_confirm %}
