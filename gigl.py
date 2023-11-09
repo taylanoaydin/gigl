@@ -328,5 +328,18 @@ def logout():
     return response
 
 #-----------------------------------------------------------------------
+
+@app.route('/freelancer/<netid>')
+def freelancer_profile(netid):
+    # Fetch freelancer details from the database using netid
+    freelancer = database.get_user(netid)
+    if freelancer and freelancer['visible']:
+        return render_template('freelancer.html', freelancer=freelancer)
+    else:
+        # Handle the case where the freelancer does not exist or is not visible
+        return "You cannot access this page", 404
+
+
+#-----------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(host = 'localhost', debug=True, port=8888)
