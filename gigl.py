@@ -14,7 +14,7 @@ import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm
+from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm
 from flask import current_app
 import sys
 from flask import render_template, request, make_response
@@ -83,17 +83,12 @@ def send_email_welcome(to_email, subject, userName):
         sys.exit(1)
     return True
 #-----------------------------------------------------------------------
-
- 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
     html_code = flask.render_template('index.html')
     response = flask.make_response(html_code)
     return response
-
-#-----------------------------------------------------------------------
-
 #-----------------------------------------------------------------------
 @app.route('/home', methods=['GET', 'POST'])
 def home():
@@ -304,6 +299,33 @@ def profile():
     response = flask.make_response(html_code)     
     return response
 #-----------------------------------------------------------------------
+@app.route('/profilesearch', methods=['GET', 'POST'])
+def profilesearch():
+    netid = auth.authenticate()
+    database.check_and_add_user(netid)
+
+    # Initialize the form with the query parameters from the request
+    psearch_form = ProfileSearchForm()
+
+    if psearch_form.validate_on_submit():
+        keyword = psearch_form.keyword.data
+        specialty = psearch_form.specialty.data
+        return flask.redirect(flask.url_for('profilesearch',spec=specialty, kw=keyword ))
+    else: # If form fails to validate (in case something goes wrong with the form submission)
+        specialty = flask.request.args.get('spec')
+        keyword = flask.request.args.get('kw')
+        psearch_form.specialty.data = specialty
+    
+    freelancers = database.get_freelancers(keyword=keyword, specialty=specialty)
+
+    # Render the template with the search results and the form
+    html_code = render_template('profilesearch.html', psearch_form=psearch_form, freelancers=freelancers, spec=specialty, kw=keyword)
+
+    response = make_response(html_code)
+
+    return response
+
+#-----------------------------------------------------------------------
 @app.route('/gigdeleted/<int:gig_id>', methods=['GET'])
 def gigdeleted(gig_id):
     netid = auth.authenticate()
@@ -327,6 +349,9 @@ def logout():
     response = flask.redirect(flask.url_for('index'))
     return response
 
+@app.route('/freelancer', methods=['GET'])
+def freelancer_profile():
+    return
 #-----------------------------------------------------------------------
 
 @app.route('/freelancer/<netid>')

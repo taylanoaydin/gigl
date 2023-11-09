@@ -34,6 +34,24 @@ class SearchForm(FlaskForm):
     ])
     submit = SubmitField('Search')
 
+class ProfileSearchForm(FlaskForm):
+    keyword = StringField('Keyword', validators=[Optional()])
+    specialty = SelectField('Specialty', choices=[
+        ('', 'Any Specialty'),
+        ('Tutor', 'Tutor'),
+        ('Researcher', 'Researcher'),
+        ('Developer', 'Developer'),
+        ('Writer', 'Writer'),
+        ('Graphic Designer', 'Graphic Designer'),
+        ('Photographer', 'Photographer'),
+        ('Volunteer', 'Volunteer'),
+        ('Fitness Coach', 'Fitness Coach'),
+        ('Cosmetician', 'Cosmetician'),
+        ('Cook', 'Cook'),
+        ('Fashion Designer', 'Fashion Designer'),
+        ('Miscellaneous', 'Miscellaneous')
+    ])
+    submit = SubmitField('Search')
 
 class PostGigForm(FlaskForm):
     title = StringField('Title', validators=[InputRequired(), Length(max=50)])
