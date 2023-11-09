@@ -8,8 +8,13 @@ CREATE TABLE users
   name TEXT,
   visible BOOLEAN NOT NULL,
   bio VARCHAR(1000),
-  links TEXT
+  links TEXT,
+  specialty TEXT,
+  last_active DATE
 );
+create INDEX index_users_visible ON users(visible);
+create INDEX index_users_specialty ON users(specialty);
+create INDEX index_users_active ON users(last_active);
 
 CREATE TABLE gigs
 (
