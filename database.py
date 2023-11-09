@@ -13,6 +13,7 @@ import queue
 import application as app
 import gig
 import user
+from datetime import datetime
 
 #-----------------------------------------------------------------------
 
@@ -175,12 +176,13 @@ def get_application(netid, gigID):
         _put_connection(connection)
     return thisapp
 
+# RETURNS ALL INFORMATION ABOUT PERSON WITH NETID = netid
 def get_user(netid):
     connection = _get_connection()
     thisuser = None
     try:
         with connection.cursor() as cursor:
-            query = "SELECT netid, name FROM users WHERE netid = %s"
+            query = "SELECT * FROM users WHERE netid = %s"
             cursor.execute(query, [netid])
             row = cursor.fetchone()
 
@@ -194,6 +196,26 @@ def get_user(netid):
         _put_connection(connection)
     return thisuser
 
+# returns list of visible users with only RELEVANT information for the
+# overall profile search: netid, name, specialty, last_active
+def get_all_freelancers():
+    connection = _get_connection()
+    users = []
+    try:
+        with connection.cursor() as cursor:
+            query = "SELECT netid, name, specialty, last_active FROM users WHERE visible"
+            cursor.execute(query)
+            table = cursor.fetchall()
+
+            for row in table:
+                thisuser = user.User(netid=row[0], name=row[1], specialty=row[2], last_active=row[3])
+                users.append(thisuser)
+
+            return users
+    except Exception as ex:
+        return 0
+    finally:
+        _put_connection(connection)
 #-----------------------------------------------------------------------
 # FUNCTIONS THAT POTENTIALLY CHANGE DATABASE
 
@@ -209,8 +231,8 @@ def check_and_add_user(netid):
                 cursor.execute('BEGIN')
                 
                 usrname = cas_details(netid)[0]
-                query = "INSERT INTO users (netid, name, visible, bio, links) VALUES (%s, %s, 'n', '', '')"
-                cursor.execute(query, [netid, usrname])
+                query = "INSERT INTO users (netid, name, visible, bio, links, specialty, last_active) VALUES (%s, %s, 'n', '', '', '', %s)"
+                cursor.execute(query, [netid, usrname, datetime.now().date()])
 
                 cursor.execute('COMMIT')
 
@@ -309,7 +331,7 @@ def owns_gig(netid, gigID):
 
 #-----------------------------------------------------------------------
 def _test():
-    owns_gig('t0639', 14)
+    check_and_add_user('cos-gigl')
     _close_all_connections()
     return
 

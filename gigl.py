@@ -304,22 +304,6 @@ def profile():
     response = flask.make_response(html_code)     
     return response
 #-----------------------------------------------------------------------
-@app.route('/gigposted', methods=['POST'])
-def gigposted():
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    gig_form = flask.request.form
-    start_date = gig_form.get('start_date')
-    end_date = gig_form.get('end_date')
-    qualif = gig_form.get('qualifications')
-    title = gig_form.get('title')
-    category = gig_form.get('category')
-    description = gig_form.get('description')
-    posted = datetime.now().date()
-    gigID = database.create_gig(netid, title, category, description,
-                        qualif, start_date, end_date, posted)
-    return flask.redirect(flask.url_for('gigposted_success', gigID=gigID))
-
 @app.route('/gigdeleted/<int:gig_id>', methods=['GET'])
 def gigdeleted(gig_id):
     netid = auth.authenticate()
