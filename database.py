@@ -325,6 +325,25 @@ def send_application(netid, gigID, message):
     finally:
         _put_connection(connection)
 
+def set_visibility(netid, visible):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('BEGIN')
+            query = "UPDATE users "
+            if visible:
+                query += "SET visible='y'"
+            else:
+                query += "SET visible='n'"
+            query += " WHERE netid = %s"
+
+            cursor.execute(query, [netid])
+            cursor.execute('COMMIT')
+            return True
+    except Exception as ex:
+        return False
+    finally:
+        _put_connection(connection)
 #-----------------------------------------------------------------------
 
 # BOOLEAN RETURN FUNCTIONS
