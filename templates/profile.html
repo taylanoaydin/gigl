@@ -57,10 +57,26 @@
       {% include 'header.html' %} <!--JINJA2 template for the header-->
       <main>
          <br>
-         <section class= "rounded-lg bg-gray-100 border border-gray-100">
-            <h2 class="text-xl font-bold"> Your Profile </h2>
-            <h3> Name: {{username}} </h3>
-            <h3> Email: {{user_email}} </h3>
+         <section class="rounded-lg bg-gray-100 border border-gray-100">
+            <div class="flex justify-between items-center p-4">
+               <div>
+                  <h2 class="text-xl font-bold"> Your Profile </h2>
+                  <h3> Name: {{username}} </h3>
+                  <h3> Email: {{user_email}} </h3>
+               </div>
+               <!-- Toggle Visibility Form -->
+               <div>
+                  <form action="{{ url_for('profile') }}" method="post">
+                     <input type="hidden" name="toggle_visibility" value="1">
+                     <button type="submit" class="bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 px-4 rounded">
+                        {{ 'Make Visible' if not is_visible else 'Make Invisible' }}
+                     </button>
+                     <p class="text-sm text-gray-600 mt-1">
+                        Your freelancer profile is {{ 'invisible' if not is_visible else 'visible for search' }}.
+                     </p>
+                  </form>
+               </div>
+            </div>
          </section>
          <section>
             <div class="flex flex-col items-center justify-center">
