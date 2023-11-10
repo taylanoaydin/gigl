@@ -159,8 +159,8 @@ def index():
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
+    netid = auth.authenticate()
     try:
-        netid = auth.authenticate()
         status = database.check_and_add_user(netid)
         if status == "user_created":
             username = cas_details(netid)[0]
@@ -170,6 +170,7 @@ def home():
             database.update_activity(netid)
         # Initialize the form with the query parameters from the request
         search_form = SearchForm()
+        print("what's going on")
         if search_form.validate_on_submit():
             keyword = search_form.keyword.data
             category = search_form.category.data
@@ -186,10 +187,12 @@ def home():
             category = None
             categories = []  # This will fetch gigs filtered by the selected category
 
+        print("what's going on")
         username = database.get_user(netid).get_name()
         html_code = flask.render_template('home.html', usrname=username,
                                           search_form=search_form)
         response = flask.make_response(html_code)
+        print("what's going on")
         return response
     except AuthenticationError as e:
         app.logger.error(f"Authentication Error: {e}")
@@ -206,8 +209,8 @@ def home():
 
 @app.route('/searchresults', methods=['GET', 'POST'])
 def search_results():
+    netid = auth.authenticate()
     try:
-        netid = auth.authenticate()
         database.check_and_add_user(netid)
         database.update_activity(netid)
 
@@ -259,8 +262,8 @@ def search_results():
 
 @app.route('/details/<int:id>', methods=['GET', 'POST'])
 def details(id):
+    netid = auth.authenticate()
     try:
-        netid = auth.authenticate()
         database.check_and_add_user(netid)
         database.update_activity(netid)
 
@@ -355,8 +358,8 @@ def details(id):
 
 @app.route('/apply_result', methods=['GET'])
 def apply_result():
+    netid = auth.authenticate()
     try:
-        netid = auth.authenticate()
 
         database.check_and_add_user(netid)
         database.update_activity(netid)
@@ -380,8 +383,8 @@ def apply_result():
 
 @app.route('/postgig', methods=['GET', 'POST'])
 def postgig():
+    netid = auth.authenticate()
     try:
-        netid = auth.authenticate()
         database.check_and_add_user(netid)
         database.update_activity(netid)
 
@@ -426,51 +429,50 @@ def postgig():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    try:
-        netid = auth.authenticate()
-        database.check_and_add_user(netid)
-        database.update_activity(netid)
+    netid = auth.authenticate()
+    database.check_and_add_user(netid)
+    database.update_activity(netid)
 
-        user = database.get_user(netid)
-        username = user.get_name()
-        user_email = f"{netid}@princeton.edu"
+    user = database.get_user(netid)
+    bio = user.get_bio()
+    links = user.get_links()
+    username = user.get_name()
+    user_email = f"{netid}@princeton.edu"
 
-        if request.method == 'POST':
-            if 'toggle_visibility' in request.form:
-                # Call the function to toggle visibility
-                database.set_visibility(netid, not user.is_visible())
-                # Redirect to the profile page with a GET request to prevent
-                # double-submit
-                return flask.redirect(flask.url_for('profile'))
+    bioeditform = BioEditForm()
+    linkeditform = LinkEditForm()
 
-        mygigs = database.get_gigs_posted_by(netid)
-        myapps = database.get_apps_by(netid)
+    if request.method == 'POST':
+        if 'toggle_visibility' in request.form:
+            # Call the function to toggle visibility
+            database.set_visibility(netid, not user.is_visible())
+            # Redirect to the profile page with a GET request to prevent
+            # double-submit
+            return flask.redirect(flask.url_for('profile'))
 
-        html_code = flask.render_template(
-            'profile.html',
-            username=username,
-            user_email=user_email,
-            mygigs=mygigs,
-            myapps=myapps,
-            is_visible=user.is_visible())  # Pass the visibility status to the template
-        response = flask.make_response(html_code)
-        return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
-    except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
-    except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+    mygigs = database.get_gigs_posted_by(netid)
+    myapps = database.get_apps_by(netid)
+
+    html_code = flask.render_template(
+        'profile.html',
+        username=username,
+        user_email=user_email,
+        mygigs=mygigs,
+        myapps=myapps,
+        is_visible=user.is_visible(),
+        bio=bio,
+        links=links,
+        bioeditform=bioeditform,
+        linkeditform=linkeditform)  # Pass the visibility status to the template
+    response = flask.make_response(html_code)
+    return response
 # -----------------------------------------------------------------------
 
 
 @app.route('/profilesearch', methods=['GET', 'POST'])
 def profilesearch():
+    netid = auth.authenticate()
     try:
-        netid = auth.authenticate()
         database.check_and_add_user(netid)
         database.update_activity(netid)
 
@@ -521,8 +523,8 @@ def profilesearch():
 
 @app.route('/gigdeleted/<int:gig_id>', methods=['GET'])
 def gigdeleted(gig_id):
+    netid = auth.authenticate()
     try:
-        netid = auth.authenticate()
         database.check_and_add_user(netid)
         database.update_activity(netid)
 
@@ -545,8 +547,8 @@ def gigdeleted(gig_id):
 
 @app.route('/gigposted_success/<int:gigID>', methods=['GET'])
 def gigposted_success(gigID):
+    netid = auth.authenticate()
     try:
-        netid = auth.authenticate()
         database.check_and_add_user(netid)
         database.update_activity(netid)
 
@@ -585,9 +587,9 @@ def logout():
 
 @app.route('/freelancer/<netid>')
 def freelancer_profile(netid):
+    id = auth.authenticate()
     try:
         # Fetch freelancer details from the database using netid
-        id = auth.authenticate()
         database.update_activity(id)
 
         freelancer = database.get_user(netid)
