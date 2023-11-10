@@ -188,7 +188,7 @@ def search_results():
         if search_form.validate_on_submit():
             keyword = search_form.keyword.data
             category = search_form.category.data
-            return flask.redirect(flask.url_for('search_results',cat=category, kw=keyword ))
+            return flask.redirect(flask.url_for('search_results',cat=category, kw=keyword))
             
             
         category = flask.request.args.get('cat')
@@ -202,7 +202,7 @@ def search_results():
             gigs = []  # Ensure gigs is always a list
 
         # Render the template with the search results and the form
-        html_code = render_template('searchresults.html', search_form=search_form, mygigs=gigs, cat=category, kw=keyword)
+        html_code = render_template('searchresults.html', search_form=search_form, mygigs=gigs, cat=category, kw=keyword, author = database.get_user)
 
         response = make_response(html_code)
 
