@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # database.py
 # Author: Taylan Aydin
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 import os
 import sys
@@ -15,14 +15,16 @@ import gig
 import user
 from datetime import datetime
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 dotenv.load_dotenv()
 DATABASE_URL = os.environ['DATABASE_URL']
 
 _connection_pool = queue.Queue()
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+
+
 def _get_connection():
     try:
         conn = _connection_pool.get(block=False)
@@ -30,15 +32,17 @@ def _get_connection():
         conn = psycopg2.connect(DATABASE_URL)
     return conn
 
+
 def _put_connection(conn):
     _connection_pool.put(conn)
+
 
 def _close_all_connections():
     while not _connection_pool.empty():
         connection = _connection_pool.get()
         connection.close()
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # GET FUNCTIONS FOR INFORMATION RETRIEVAL! NO CHANGES MADE TO          #
 # DATABASE                                                             #
 
@@ -46,6 +50,8 @@ def _close_all_connections():
 # and search within a list of categories (or all of them)
 # default returns Gig objects sorted rev-chron by submission date
 # Returns exception if there was an error in database handling
+
+
 def get_gigs(keyword='', categories=None):
     if categories is None:
         categories = []
@@ -55,7 +61,7 @@ def get_gigs(keyword='', categories=None):
         with connection.cursor() as cursor:
             kw = '%' + keyword + '%'
             all_args = [kw for _ in range(3)]
-            query = """SELECT * FROM gigs 
+            query = """SELECT * FROM gigs
                        WHERE (title ILIKE %s OR
                              description ILIKE %s OR
                              qualf ILIKE %s)"""
@@ -78,6 +84,8 @@ def get_gigs(keyword='', categories=None):
     return gigs
 
 # returns Gig object for the gig with gigID
+
+
 def get_gig_details(gigID):
     connection = _get_connection()
     thisgig = None
@@ -89,7 +97,7 @@ def get_gig_details(gigID):
 
             if gigdetails is None:
                 return None
-            
+
             thisgig = gig.Gig(*gigdetails)
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
@@ -99,6 +107,8 @@ def get_gig_details(gigID):
     return thisgig
 
 # returns list of Gig's posted by netid
+
+
 def get_gigs_posted_by(netid):
     connection = _get_connection()
     gigs = []
@@ -107,7 +117,7 @@ def get_gigs_posted_by(netid):
             query = "SELECT * FROM gigs WHERE netid = %s"
             cursor.execute(query, [netid])
             postedgigs = cursor.fetchall()
-            
+
             for row in postedgigs:
                 thisgig = gig.Gig(*row)
                 gigs.append(thisgig)
@@ -119,6 +129,8 @@ def get_gigs_posted_by(netid):
     return gigs
 
 # returns list of Application's sent to gig with gigID
+
+
 def get_apps_for(gigID):
     connection = _get_connection()
     apps = []
@@ -127,7 +139,7 @@ def get_apps_for(gigID):
             query = "SELECT * FROM apps WHERE gigID = %s"
             cursor.execute(query, [gigID])
             received_apps = cursor.fetchall()
-            
+
             for row in received_apps:
                 thisapp = app.Application(*row)
                 apps.append(thisapp)
@@ -148,7 +160,7 @@ def get_apps_by(netid):
             query = "SELECT * FROM apps WHERE netid = %s"
             cursor.execute(query, [netid])
             sent_apps = cursor.fetchall()
-            
+
             for row in sent_apps:
                 thisapp = app.Application(*row)
                 apps.append(thisapp)
@@ -161,8 +173,10 @@ def get_apps_by(netid):
 
 # returns the single application sent by user with netid to gig with
 # gigID. Returns None if no application sent by netid to gigID.
-# note to devs: compare return value with None to see if 
+# note to devs: compare return value with None to see if
 # user already applied
+
+
 def get_application(netid, gigID):
     connection = _get_connection()
     thisapp = None
@@ -174,7 +188,7 @@ def get_application(netid, gigID):
 
             if row is None:
                 return None
-            
+
             thisapp = app.Application(*row)
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
@@ -184,6 +198,8 @@ def get_application(netid, gigID):
     return thisapp
 
 # RETURNS ALL INFORMATION ABOUT PERSON WITH NETID = netid
+
+
 def get_user(netid):
     connection = _get_connection()
     thisuser = None
@@ -195,7 +211,7 @@ def get_user(netid):
 
             if row is None:
                 return None
-            
+
             thisuser = user.User(*row)
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
@@ -206,6 +222,8 @@ def get_user(netid):
 
 # returns list of visible users with only RELEVANT information for the
 # overall profile search: netid, name, specialty, last_active
+
+
 def get_freelancers(keyword='', specialty=''):
     users = []
     connection = _get_connection()
@@ -223,7 +241,11 @@ def get_freelancers(keyword='', specialty=''):
             cursor.execute(query, all_args)
             table = cursor.fetchall()
             for row in table:
-                thisuser = user.User(netid=row[0], name=row[1], specialty=row[2], last_active=row[3])
+                thisuser = user.User(
+                    netid=row[0],
+                    name=row[1],
+                    specialty=row[2],
+                    last_active=row[3])
                 users.append(thisuser)
             return users
     except Exception as ex:
@@ -231,12 +253,14 @@ def get_freelancers(keyword='', specialty=''):
         raise
     finally:
         _put_connection(connection)
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # FUNCTIONS THAT POTENTIALLY CHANGE DATABASE
 
 # Checks if user with the given netid already exists, if not, adds them
 # to database (used after login). Returns true if successful, exception else
 # if there was any error in the addition of the user to the database
+
+
 def check_and_add_user(netid):
     usr = get_user(netid)
     if usr is None:
@@ -244,7 +268,7 @@ def check_and_add_user(netid):
         try:
             with connection.cursor() as cursor:
                 cursor.execute('BEGIN')
-                
+
                 usrname = cas_details(netid)[0]
                 query = "INSERT INTO users (netid, name, visible, bio, links, specialty, last_active) VALUES (%s, %s, 'n', '', '', '', %s)"
                 cursor.execute(query, [netid, usrname, datetime.now().date()])
@@ -263,6 +287,8 @@ def check_and_add_user(netid):
 # Deletes gig with the given gigID from both applications and gigs.
 # raises exception if there was an error and it couldn't be deleted, true
 # otherwise
+
+
 def delete_gig_from_db(gigID):
     connection = _get_connection()
     try:
@@ -283,23 +309,26 @@ def delete_gig_from_db(gigID):
         _put_connection(connection)
     return True
 
-# Creates gig with the given parameters. Unique gigID is automatically 
+# Creates gig with the given parameters. Unique gigID is automatically
 # created for any gig. Returns gigID normally, -1 if there was any
 # problem adding to db
+
+
 def create_gig(netid, title, category, description, qualf, startfrom,
-              until, posted):
+               until, posted):
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
             cursor.execute('BEGIN')
 
-            query = """INSERT INTO gigs 
-            (netid, title, category, description, 
+            query = """INSERT INTO gigs
+            (netid, title, category, description,
             qualf, startfrom, until, posted)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING gigID"""
 
-            cursor.execute(query, [netid, title, category, description, qualf, startfrom, 
-              until, posted])
+            cursor.execute(
+                query, [
+                    netid, title, category, description, qualf, startfrom, until, posted])
             gigID = cursor.fetchone()[0]
 
             cursor.execute('COMMIT')
@@ -310,7 +339,9 @@ def create_gig(netid, title, category, description, qualf, startfrom,
         _put_connection(connection)
 
 # Sends application from user with netid to gig with gigID with the
-# given message. 
+# given message.
+
+
 def send_application(netid, gigID, message):
     connection = _get_connection()
     try:
@@ -322,10 +353,10 @@ def send_application(netid, gigID, message):
 
             if row is None:
                 return False
-            
+
             cursor.execute('BEGIN')
 
-            query = """INSERT INTO apps 
+            query = """INSERT INTO apps
                 (netid, gigID, message) VALUES
                 (%s, %s, %s)"""
             cursor.execute(query, [netid, gigID, message])
@@ -334,9 +365,10 @@ def send_application(netid, gigID, message):
             return True
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
-        raise 
+        raise
     finally:
         _put_connection(connection)
+
 
 def set_visibility(netid, visible):
     connection = _get_connection()
@@ -359,6 +391,7 @@ def set_visibility(netid, visible):
     finally:
         _put_connection(connection)
 
+
 def update_activity(netid):
     connection = _get_connection()
     try:
@@ -376,6 +409,7 @@ def update_activity(netid):
     finally:
         _put_connection(connection)
 
+
 def update_bio(netid, newbio):
     connection = _get_connection()
     try:
@@ -391,6 +425,7 @@ def update_bio(netid, newbio):
         return False
     finally:
         _put_connection(connection)
+
 
 def update_links(netid, links):
     connection = _get_connection()
@@ -408,24 +443,29 @@ def update_links(netid, links):
         return False
     finally:
         _put_connection(connection)
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 # BOOLEAN RETURN FUNCTIONS
 
 # true if netid posted gig with gigID, exception otherwise
+
+
 def owns_gig(netid, gigID):
-    try: 
+    try:
         thisgig = get_gig_details(gigID)
         return (thisgig is not None) and (thisgig.get_netid() == netid)
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
         raise
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+
+
 def _test():
     check_and_add_user('cos-gigl')
     _close_all_connections()
     return
+
 
 if __name__ == '__main__':
     _test()

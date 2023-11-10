@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # application.py
 # Author: Taylan Aydin
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 class Application:
 
@@ -19,22 +19,26 @@ class Application:
 
     def get_message(self):
         return self._msg
-    
+
     def to_tuple(self):
         return (self._appl_netid, self._gigID, self._msg)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+
 
 def _test():
-    myapp = Application('ta0639', '14', 
-                        'Hey! I am interested in taking your graduation ' +
-                        'photos!\nI have a lot of experience and would love to ' +
-                         'talk about this further. Hit me up!')
+    myapp = Application(
+        'ta0639',
+        '14',
+        'Hey! I am interested in taking your graduation ' +
+        'photos!\nI have a lot of experience and would love to ' +
+        'talk about this further. Hit me up!')
     print(myapp.get_applicant_netid())
     print(myapp.get_gigID())
     print(myapp.get_message())
     print()
     print(myapp.to_tuple())
+
 
 if __name__ == '__main__':
     _test()
