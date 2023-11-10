@@ -243,7 +243,8 @@ def search_results():
             search_form=search_form,
             mygigs=gigs,
             cat=category,
-            kw=keyword)
+            kw=keyword,
+            author = database.get_user)
 
         response = make_response(html_code)
 
