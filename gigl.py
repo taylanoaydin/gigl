@@ -41,6 +41,42 @@ app.config['MAIL_USE_SSL'] = True
 # Initialize Flask-Mail
 mail = Mail(app)
 
+#-----------------------------------------------------------------------
+
+class DatabaseError(Exception):
+    """Exception raised for errors related to the database operations."""
+    pass
+
+class AuthenticationError(Exception):
+    """Exception raised for errors during authentication."""
+    pass
+
+class EmailSendingError(Exception):
+    """Exception raised for errors during email sending."""
+    pass
+
+# Define error handlers
+@app.errorhandler(DatabaseError)
+def database_error_handler(error):
+    app.logger.error(f"Database Error: {error}")
+    return render_template('error_database.html'), 500
+
+@app.errorhandler(AuthenticationError)
+def authentication_error_handler(error):
+    app.logger.error(f"Authentication Error: {error}")
+    return render_template('error_auth.html'), 401
+
+@app.errorhandler(404)
+def not_found_error_handler(error):
+    return render_template('error_404.html'), 404
+
+@app.errorhandler(500)
+def internal_error_handler(error):
+    app.logger.error(f"Internal Server Error: {error}")
+    return render_template('error_500.html'), 500
+#-----------------------------------------------------------------------
+
+
 def send_email(to_email, subject, body):
     msg = Message(subject,
                   sender=current_app.config['MAIL_USERNAME'],
@@ -49,10 +85,10 @@ def send_email(to_email, subject, body):
     try:
         with current_app.app_context():
             mail.send(msg)
+        return True
     except Exception as e:
-        print(str(e))
-        sys.exit(1)
-    return True
+        app.logger.error(f"Email Sending Error: {e}")
+        raise EmailSendingError(f"Failed to send email to {to_email}")
 
 def send_application(to_email, subject, gigID, userName, candidateName, gigTitle, applicationMessage):
     msg = Message(subject,
@@ -63,10 +99,10 @@ def send_application(to_email, subject, gigID, userName, candidateName, gigTitle
     try:
         with current_app.app_context():
             mail.send(msg)
+        return True
     except Exception as e:
-        print(str(e))
-        sys.exit(1)
-    return True
+        app.logger.error(f"Email Sending Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 def send_email_welcome(to_email, subject, userName):
@@ -78,130 +114,160 @@ def send_email_welcome(to_email, subject, userName):
     try:
         with current_app.app_context():
             mail.send(msg)
+        return True
     except Exception as e:
-        print(str(e))
-        sys.exit(1)
-    return True
+        app.logger.error(f"Email Sending Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 #-----------------------------------------------------------------------
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
-    html_code = flask.render_template('index.html')
-    response = flask.make_response(html_code)
-    return response
+    try: 
+        html_code = flask.render_template('index.html')
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 #-----------------------------------------------------------------------
 @app.route('/home', methods=['GET', 'POST'])
 def home():
-    netid = auth.authenticate()
-    status = database.check_and_add_user(netid)
-    if status == "user_created":
-        username = cas_details(netid)[0]
-        email = netid + "@princeton.edu"
-        send_email_welcome(email, "Welcome to Gigl!", username)
-    else:
-        database.update_activity(netid)
-    # Initialize the form with the query parameters from the request
-    search_form = SearchForm()
-    if search_form.validate_on_submit():
-        keyword = search_form.keyword.data
-        category = search_form.category.data
-        categories = [category] if category else [] 
-        return flask.redirect(flask.url_for('search_results', kw=keyword, cat=category))
-    else: # If form fails to validate (in case something goes wrong with the form submission)
-        keyword = None
-        category = None
-        categories = []  # This will fetch gigs filtered by the selected category
+    try: 
+        netid = auth.authenticate()
+        status = database.check_and_add_user(netid)
+        if status == "user_created":
+            username = cas_details(netid)[0]
+            email = netid + "@princeton.edu"
+            send_email_welcome(email, "Welcome to Gigl!", username)
+        else:
+            database.update_activity(netid)
+        # Initialize the form with the query parameters from the request
+        search_form = SearchForm()
+        if search_form.validate_on_submit():
+            keyword = search_form.keyword.data
+            category = search_form.category.data
+            categories = [category] if category else [] 
+            return flask.redirect(flask.url_for('search_results', kw=keyword, cat=category))
+        else: # If form fails to validate (in case something goes wrong with the form submission)
+            keyword = None
+            category = None
+            categories = []  # This will fetch gigs filtered by the selected category
 
-    username = database.get_user(netid).get_name()
-    html_code = flask.render_template('home.html', usrname=username,
-                                      search_form=search_form)
-    response = flask.make_response(html_code)
-    return response
+        username = database.get_user(netid).get_name()
+        html_code = flask.render_template('home.html', usrname=username,
+                                        search_form=search_form)
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler 
 
 #-----------------------------------------------------------------------
 @app.route('/searchresults', methods=['GET', 'POST'])
 def search_results():
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    database.update_activity(netid)
+    try: 
+        netid = auth.authenticate()
+        database.check_and_add_user(netid)
+        database.update_activity(netid)
 
-    # Initialize the form with the query parameters from the request
-    search_form = SearchForm()
+        # Initialize the form with the query parameters from the request
+        search_form = SearchForm()
 
-    if search_form.validate_on_submit():
-        keyword = search_form.keyword.data
-        category = search_form.category.data
-        categories = [category] if category else [] 
-        return flask.redirect(flask.url_for('search_results',cat=category, kw=keyword ))
-    else: # If form fails to validate (in case something goes wrong with the form submission)
+        if search_form.validate_on_submit():
+            keyword = search_form.keyword.data
+            category = search_form.category.data
+            return flask.redirect(flask.url_for('search_results',cat=category, kw=keyword ))
+            
+            
         category = flask.request.args.get('cat')
         keyword = flask.request.args.get('kw')
         search_form.category.data = category
+        
+        gigs = database.get_gigs(keyword=keyword, categories=[category] if category else [])    
 
-    # Fetch list of gigs based on the keyword / category
-    categories = category
-    if not categories:
-        categories = []
-    else:
-        categories = [categories]
-    
-    gigs = database.get_gigs(keyword=keyword, categories=categories)    
+         # Check if gigs is not an empty list
+        if not gigs:
+            gigs = []  # Ensure gigs is always a list
 
-    # Check if gigs is not an empty list
-    if gigs == 0:
-        gigs = []  # Ensure gigs is always a list
-        print("No gigs found, setting gigs to an empty list.")
+        # Render the template with the search results and the form
+        html_code = render_template('searchresults.html', search_form=search_form, mygigs=gigs, cat=category, kw=keyword)
 
-    # Render the template with the search results and the form
-    html_code = render_template('searchresults.html', search_form=search_form, mygigs=gigs, cat=category, kw=keyword)
+        response = make_response(html_code)
 
-    response = make_response(html_code)
-
-    return response
-
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 #-----------------------------------------------------------------------
 @app.route('/details/<int:id>', methods=['GET','POST'])
 def details(id):
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    database.update_activity(netid)
+    try: 
+        netid = auth.authenticate()
+        database.check_and_add_user(netid)
+        database.update_activity(netid)
 
-    gig = database.get_gig_details(id)
-    gigTitle = gig.get_title()
-    gigNetID = gig.get_netid()
-    gigAuthor = database.get_user(gigNetID).get_name()
-    gigCategory = gig.get_category()
-    gigDescription = gig.get_description()
-    gigQualifications = gig.get_qualifications()
-    gigStartDate = gig.get_fromdate()
-    gigEndDate = gig.get_til_date()
-    gigPostedDate = gig.get_post_date()
+        gig = database.get_gig_details(id)
+        gigTitle = gig.get_title()
+        gigNetID = gig.get_netid()
+        gigAuthor = database.get_user(gigNetID).get_name()
+        gigCategory = gig.get_category()
+        gigDescription = gig.get_description()
+        gigQualifications = gig.get_qualifications()
+        gigStartDate = gig.get_fromdate()
+        gigEndDate = gig.get_til_date()
+        gigPostedDate = gig.get_post_date()
 
-    owns = database.owns_gig(netid, id) # boolean
-    if owns:
-        all_apps = database.get_apps_for(id)
-        application = None
-    else:
-        all_apps = None
-        application = database.get_application(netid, id)
-
-    apply_form = ApplyForm()
-    
-    if apply_form.validate_on_submit():
-        _ = flask.get_flashed_messages() # clears flashed messages
-        application_message = apply_form.message.data
-
-        if database.owns_gig(netid, id):
-            flask.flash("You can't apply to your own gig...", 'error')
-        elif database.get_application(netid, id):
-            flask.flash("You have already applied...", 'error')
-        elif database.send_application(netid, id, application_message):
-            flask.flash("You have successfully applied!", 'success')
-            send_application(gigNetID + "@princeton.edu", "You have a new application!", id, gigAuthor, database.get_user(netid).get_name(), gigTitle, application_message)
+        owns = database.owns_gig(netid, id) # boolean
+        if owns:
+            all_apps = database.get_apps_for(id)
+            application = None
         else:
-            flask.flash("Application couldn't be sent due to a database error.", 'error')
+            all_apps = None
+            application = database.get_application(netid, id)
 
-        return flask.redirect(flask.url_for('apply_result', gigID=id))
+        apply_form = ApplyForm()
+        
+        if apply_form.validate_on_submit():
+            application_message = apply_form.message.data
+
+            if database.owns_gig(netid, id):
+                flask.flash("You can't apply to your own gig...", 'error')
+            elif database.get_application(netid, id):
+                flask.flash("You have already applied...", 'error')
+            elif database.send_application(netid, id, application_message):
+                flask.flash("You have successfully applied!", 'success')
+                send_application(gigNetID + "@princeton.edu", "You have a new application!", id, gigAuthor, database.get_user(netid).get_name(), gigTitle, application_message)
+            else:
+                flask.flash("Application couldn't be sent due to a database error.", 'error')
+
+            return flask.redirect(flask.url_for('apply_result', gigID=id))
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
     
     delete_form = DeleteGigForm()
     show_confirm = False
@@ -237,138 +303,219 @@ def details(id):
 #-----------------------------------------------------------------------
 @app.route('/apply_result', methods=['GET'])
 def apply_result():
-    netid = auth.authenticate()
-    
-    database.check_and_add_user(netid)
-    database.update_activity(netid)
+    try: 
+        netid = auth.authenticate()
+        
+        database.check_and_add_user(netid)
+        database.update_activity(netid)
 
-    gigID = flask.request.args.get('gigID')
-    html_code = flask.render_template('apply_err.html', gigID=gigID)
-    response = flask.make_response(html_code)
-    return response
+        gigID = flask.request.args.get('gigID')
+        html_code = flask.render_template('apply_err.html', gigID=gigID)
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
+    
 #-----------------------------------------------------------------------
 @app.route('/postgig', methods=['GET', 'POST'])
 def postgig():
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    database.update_activity(netid)
+    try:
+        netid = auth.authenticate()
+        database.check_and_add_user(netid)
+        database.update_activity(netid)
 
-    user = database.get_user(netid)
-    gig_form = PostGigForm()
-    if gig_form.validate_on_submit():
-        gig_id = database.create_gig(netid, gig_form.title.data, gig_form.categories.data,
-                                gig_form.description.data, gig_form.qualifications.data,
-                                gig_form.start_date.data, gig_form.end_date.data,
-                                datetime.now().date())
-        return flask.redirect(flask.url_for('gigposted_success', gigID=gig_id))
-    else:
-            #TODO: Error handling
-            pass
-    
-    username = user.get_name()
-    user_email = f"{netid}@princeton.edu"
-    html_code = flask.render_template('postgig.html', username=username,
-                                      user_email=user_email,
-                                      gig_form=gig_form) 
-    response = flask.make_response(html_code)
-    return response
+        user = database.get_user(netid)
+        gig_form = PostGigForm()
+        if gig_form.validate_on_submit():
+            gig_id = database.create_gig(netid, gig_form.title.data, gig_form.categories.data,
+                                    gig_form.description.data, gig_form.qualifications.data,
+                                    gig_form.start_date.data, gig_form.end_date.data,
+                                    datetime.now().date())
+            return flask.redirect(flask.url_for('gigposted_success', gigID=gig_id))
+        else:
+                #TODO: Error handling
+                pass
+        
+        username = user.get_name()
+        user_email = f"{netid}@princeton.edu"
+        html_code = flask.render_template('postgig.html', username=username,
+                                        user_email=user_email,
+                                        gig_form=gig_form) 
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 #-----------------------------------------------------------------------
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    database.update_activity(netid)
+    try: 
+        netid = auth.authenticate()
+        database.check_and_add_user(netid)
+        database.update_activity(netid)
 
-    user = database.get_user(netid)
-    username = user.get_name()
-    user_email = f"{netid}@princeton.edu"
+        user = database.get_user(netid)
+        username = user.get_name()
+        user_email = f"{netid}@princeton.edu"
 
-    if request.method == 'POST':
-        if 'toggle_visibility' in request.form:
-            # Call the function to toggle visibility
-            database.set_visibility(netid, not user.is_visible())
-            # Redirect to the profile page with a GET request to prevent double-submit
-            return flask.redirect(flask.url_for('profile'))
+        if request.method == 'POST':
+            if 'toggle_visibility' in request.form:
+                # Call the function to toggle visibility
+                database.set_visibility(netid, not user.is_visible())
+                # Redirect to the profile page with a GET request to prevent double-submit
+                return flask.redirect(flask.url_for('profile'))
 
-    mygigs = database.get_gigs_posted_by(netid)
-    myapps = database.get_apps_by(netid)
+        mygigs = database.get_gigs_posted_by(netid)
+        myapps = database.get_apps_by(netid)
 
-    html_code = flask.render_template('profile.html', username=username,
-                                      user_email=user_email,
-                                      mygigs=mygigs,
-                                      myapps=myapps,
-                                      is_visible=user.is_visible())  # Pass the visibility status to the template
-    response = flask.make_response(html_code)     
-    return response
+        html_code = flask.render_template('profile.html', username=username,
+                                        user_email=user_email,
+                                        mygigs=mygigs,
+                                        myapps=myapps,
+                                        is_visible=user.is_visible())  # Pass the visibility status to the template
+        response = flask.make_response(html_code)     
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 #-----------------------------------------------------------------------
 @app.route('/profilesearch', methods=['GET', 'POST'])
 def profilesearch():
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    database.update_activity(netid)
+    try: 
+        netid = auth.authenticate()
+        database.check_and_add_user(netid)
+        database.update_activity(netid)
 
-    # Initialize the form with the query parameters from the request
-    psearch_form = ProfileSearchForm()
+        # Initialize the form with the query parameters from the request
+        psearch_form = ProfileSearchForm()
 
-    if psearch_form.validate_on_submit():
-        keyword = psearch_form.keyword.data
-        specialty = psearch_form.specialty.data
-        return flask.redirect(flask.url_for('profilesearch',spec=specialty, kw=keyword ))
-    else: # If form fails to validate (in case something goes wrong with the form submission)
-        specialty = flask.request.args.get('spec')
-        keyword = flask.request.args.get('kw')
-        psearch_form.specialty.data = specialty
-    
-    freelancers = database.get_freelancers(keyword=keyword, specialty=specialty)
+        if psearch_form.validate_on_submit():
+            keyword = psearch_form.keyword.data
+            specialty = psearch_form.specialty.data
+            return flask.redirect(flask.url_for('profilesearch',spec=specialty, kw=keyword ))
+        else: # If form fails to validate (in case something goes wrong with the form submission)
+            specialty = flask.request.args.get('spec')
+            keyword = flask.request.args.get('kw')
+            psearch_form.specialty.data = specialty
+        
+        freelancers = database.get_freelancers(keyword=keyword, specialty=specialty)
 
-    # Render the template with the search results and the form
-    html_code = render_template('profilesearch.html', psearch_form=psearch_form, freelancers=freelancers, spec=specialty, kw=keyword)
+        # Render the template with the search results and the form
+        html_code = render_template('profilesearch.html', psearch_form=psearch_form, freelancers=freelancers, spec=specialty, kw=keyword)
 
-    response = make_response(html_code)
+        response = make_response(html_code)
 
-    return response
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 #-----------------------------------------------------------------------
 @app.route('/gigdeleted/<int:gig_id>', methods=['GET'])
 def gigdeleted(gig_id):
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    database.update_activity(netid)
+    try: 
+        netid = auth.authenticate()
+        database.check_and_add_user(netid)
+        database.update_activity(netid)
 
-    database.delete_gig_from_db(gig_id)
-    html_code = flask.render_template('gigdeleted.html')
-    response = flask.make_response(html_code)
-    return response
+        database.delete_gig_from_db(gig_id)
+        html_code = flask.render_template('gigdeleted.html')
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 #-----------------------------------------------------------------------
 @app.route('/gigposted_success/<int:gigID>', methods=['GET'])
 def gigposted_success(gigID):
-    netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    database.update_activity(netid)
+    try: 
+        netid = auth.authenticate()
+        database.check_and_add_user(netid)
+        database.update_activity(netid)
 
-    return flask.render_template('gigposted.html', gigID=gigID)
+        return flask.render_template('gigposted.html', gigID=gigID)
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 #-----------------------------------------------------------------------
 @app.route('/logout', methods=['GET'])
 def logout():
-    flask.session.clear()
-    html_code = flask.render_template('index.html')
-    response = flask.redirect(flask.url_for('index'))
-    return response
+    try: 
+        flask.session.clear()
+        html_code = flask.render_template('index.html')
+        response = flask.redirect(flask.url_for('index'))
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 #-----------------------------------------------------------------------
 @app.route('/freelancer/<netid>')
 def freelancer_profile(netid):
-    # Fetch freelancer details from the database using netid
-    id = auth.authenticate()
-    database.update_activity(id)
+    try: 
+        # Fetch freelancer details from the database using netid
+        id = auth.authenticate()
+        database.update_activity(id)
 
-    freelancer = database.get_user(netid)
-    if freelancer and freelancer.is_visible():
-        return render_template('freelancer.html', freelancer=freelancer)
-    else:
-        # Handle the case where the freelancer does not exist or is not visible
-        return "You cannot access this page", 404
+        freelancer = database.get_user(netid)
+        if freelancer and freelancer.is_visible():
+            return render_template('freelancer.html', freelancer=freelancer)
+        else:
+            # Handle the case where the freelancer does not exist or is not visible
+            return render_template('error_404.html'), 404
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 #-----------------------------------------------------------------------
