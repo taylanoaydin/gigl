@@ -1,0 +1,23 @@
+<div class="flex justify-between items-center p-4">
+  <div class="mb-4">
+    <h2 class="text-xl font-bold">Bio:</h2>
+    <p id="bioDisplay" class="mt-2">
+      {{ bio }}
+    </p>
+    <br>
+    <p>Submission didn't go through due to an authentication error.</p> <!-- fix this, not good -->
+    <form hidden id="bioEditForm" method="post">
+      {{ bioeditform.hidden_tag() }}
+      <div class="flex space-x-10">
+        {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+        focus:border-teal-500", rows=1, id="message") }}
+        {{ bioeditform.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
+      </div>
+    </form>
+  </div>
+  <div>
+    <button id="bioEditButton" class="bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 px-4 rounded">
+      Edit
+    </button>
+  </div>
+</div>

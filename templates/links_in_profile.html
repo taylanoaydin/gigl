@@ -1,0 +1,32 @@
+<div class="flex justify-between items-center p-4">
+  <div>
+    <h2 class="text-xl font-bold">Links:</h2>
+    <ul id="linksDisplay" class="list-inside list-disc mt-2">
+      {% for link in links %}
+      <li class="hover:text-orange-500 mt-1">
+        <a href="{{ link }}" class="transition-colors duration-200">{{ link }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    <form hidden id="linkEditForm" method="post">
+      {{ linkeditform.hidden_tag() }}
+      <div class="flex flex-col space-y-4">
+        {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+        focus:border-teal-500", id="link1") }}
+        {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+        focus:border-teal-500", id="link2") }}
+        {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+        focus:border-teal-500", id="link3") }}
+        {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+        focus:border-teal-500", id="link4") }}
+        {{ linkeditform.submit(class_="p-2 mt-2 w-auto rounded-lg bg-purple-200") }}
+      </div>
+    </form>
+  </div>
+  <div>
+    <button id="linksEditButton" type="submit"
+      class="bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 px-4 rounded">
+      Edit
+    </button>
+  </div>
+</div>
