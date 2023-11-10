@@ -10,6 +10,17 @@ class ApplyForm(FlaskForm):
     message = TextAreaField('Give them your pitch!', [InputRequired(), Length(min=1, max=1000)])
     submit = SubmitField('Apply')
 
+class BioEditForm(FlaskForm):
+    bio = TextAreaField('Bio', [Length(min=0, max=1000)])
+    submit = SubmitField('Submit')
+
+class LinkEditForm(FlaskForm):
+    link1 = StringField('Link1', [Length(min=0, max=100)])
+    link2 = StringField('Link1', [Length(min=0, max=100)])
+    link3 = StringField('Link1', [Length(min=0, max=100)])
+    link4 = StringField('Link1', [Length(min=0, max=100)])
+    submit = SubmitField('Submit')
+
 class DeleteGigForm(FlaskForm):
     delete = SubmitField('Delete')
     confirm = SubmitField('Yes')

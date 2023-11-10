@@ -14,7 +14,7 @@ import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm
+from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm
 from flask import current_app
 import sys
 from flask import render_template, request, make_response
@@ -517,7 +517,48 @@ def freelancer_profile(netid):
         app.logger.error(f"Unexpected Error: {e}")
         flask.abort(500)  # This will trigger the internal_error_handler
 
+#-----------------------------------------------------------------------
+@app.route('/editbio', methods=['POST'])
+def editbio():
+    netid = auth.authenticate()
+    bioeditform = BioEditForm(flask.request.form)
+    if bioeditform.validate_on_submit():
+        newbio = bioeditform.bio.data
+        database.update_bio(netid, newbio) 
+        html_code = flask.render_template('bio_in_profile.html', bio=newbio, bioeditform=bioeditform)
+        response = flask.make_response(html_code)
+        return response
+    else:
+        bioeditform = BioEditForm()
+        bio = database.get_user(netid).get_bio()
+        html_code = flask.render_template('bio_in_profile_error.html', bio=bio, bioeditform=bioeditform)
+        response = flask.make_response(html_code)
+        return response
+#----------------------------------------------------------------------
+@app.route('/editlinks', methods=['POST'])
+def editlinks():
+    netid = auth.authenticate()
+    linkeditform = LinkEditForm(flask.request.form)
+    if linkeditform.validate_on_submit():
+        link1 = linkeditform.link1.data
+        link2 = linkeditform.link2.data
+        link3 = linkeditform.link3.data
+        link4 = linkeditform.link4.data
+        links = [link1, link2, link3, link4]
+        links = filter(lambda x : x != '', links)
+        database.update_links(netid, links)
+        links = database.get_user(netid).get_links()
+        html_code = flask.render_template('links_in_profile.html', links=links, linkeditform=linkeditform)
+        response = flask.make_response(html_code)
+        return response
+    else:
+        linkeditform = LinkEditForm()
+        links = database.get_user(netid).get_links()
+        html_code = flask.render_template('links_in_profile_error.html', links=links, linkeditform=linkeditform)
+        response = flask.make_response(html_code)
+        return response
 
+    
 #-----------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(host = 'localhost', debug=True, port=8888)
