@@ -440,6 +440,7 @@ def profile():
     user_email = f"{netid}@princeton.edu"
 
     bioeditform = BioEditForm()
+    bioeditform.bio.data=bio
     linkeditform = LinkEditForm()
 
     if request.method == 'POST':
@@ -648,6 +649,7 @@ def editlinks():
         links = filter(lambda x: x != '', links)
         database.update_links(netid, links)
         links = database.get_user(netid).get_links()
+        linkeditform = LinkEditForm()
         html_code = flask.render_template(
             'links_in_profile.html',
             links=links,
