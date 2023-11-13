@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS apps;
 DROP TABLE IF EXISTS gigs;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS bookmarks;
 
 CREATE TABLE users
 (
@@ -38,5 +39,12 @@ CREATE TABLE apps
   netid VARCHAR(10),
   gigID INTEGER,
   message VARCHAR(1000),
+  PRIMARY KEY (netid, gigID)
+);
+
+CREATE TABLE bookmarks
+(
+  netid VARCHAR(10),
+  gigID INTEGER,
   PRIMARY KEY (netid, gigID)
 );
