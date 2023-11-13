@@ -168,9 +168,9 @@ def home():
             send_email_welcome(email, "Welcome to Gigl!", username)
         else:
             database.update_activity(netid)
+
         # Initialize the form with the query parameters from the request
         search_form = SearchForm()
-        print("what's going on")
         if search_form.validate_on_submit():
             keyword = search_form.keyword.data
             category = search_form.category.data
@@ -187,12 +187,10 @@ def home():
             category = None
             categories = []  # This will fetch gigs filtered by the selected category
 
-        print("what's going on")
         username = database.get_user(netid).get_name()
         html_code = flask.render_template('home.html', usrname=username,
                                           search_form=search_form)
         response = flask.make_response(html_code)
-        print("what's going on")
         return response
     except AuthenticationError as e:
         app.logger.error(f"Authentication Error: {e}")
