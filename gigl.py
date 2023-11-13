@@ -80,6 +80,9 @@ def internal_error_handler(error):
     return render_template('error_500.html'), 500
 # -----------------------------------------------------------------------
 
+# This makes 'app' importable from other modules
+def get_app():
+    return app
 
 def send_email(to_email, subject, body):
     msg = Message(subject,

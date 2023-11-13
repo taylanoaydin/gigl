@@ -10,10 +10,11 @@ import psycopg2
 import dotenv
 from cas_details import cas_details
 import queue
-import application as app
+import application as Application
 import gig
 import user
 from datetime import datetime
+from gigl import get_app
 
 # -----------------------------------------------------------------------
 
@@ -23,7 +24,7 @@ DATABASE_URL = os.environ['DATABASE_URL']
 _connection_pool = queue.Queue()
 
 # -----------------------------------------------------------------------
-
+app = get_app()
 
 def _get_connection():
     try:
@@ -141,7 +142,7 @@ def get_apps_for(gigID):
             received_apps = cursor.fetchall()
 
             for row in received_apps:
-                thisapp = app.Application(*row)
+                thisapp = Application.Application(*row)
                 apps.append(thisapp)
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
@@ -162,7 +163,7 @@ def get_apps_by(netid):
             sent_apps = cursor.fetchall()
 
             for row in sent_apps:
-                thisapp = app.Application(*row)
+                thisapp = Application.Application(*row)
                 apps.append(thisapp)
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
@@ -189,7 +190,7 @@ def get_application(netid, gigID):
             if row is None:
                 return None
 
-            thisapp = app.Application(*row)
+            thisapp = Application.Application(*row)
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
         raise
@@ -334,7 +335,8 @@ def create_gig(netid, title, category, description, qualf, startfrom,
             cursor.execute('COMMIT')
             return gigID
     except Exception as ex:
-        return -1
+        app.logger.error(f"Database Error: {ex}")
+        raise
     finally:
         _put_connection(connection)
 
