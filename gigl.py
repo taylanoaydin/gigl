@@ -168,9 +168,9 @@ def home():
             send_email_welcome(email, "Welcome to Gigl!", username)
         else:
             database.update_activity(netid)
+
         # Initialize the form with the query parameters from the request
         search_form = SearchForm()
-        print("what's going on")
         if search_form.validate_on_submit():
             keyword = search_form.keyword.data
             category = search_form.category.data
@@ -187,12 +187,10 @@ def home():
             category = None
             categories = []  # This will fetch gigs filtered by the selected category
 
-        print("what's going on")
         username = database.get_user(netid).get_name()
         html_code = flask.render_template('home.html', usrname=username,
                                           search_form=search_form)
         response = flask.make_response(html_code)
-        print("what's going on")
         return response
     except AuthenticationError as e:
         app.logger.error(f"Authentication Error: {e}")
@@ -280,6 +278,7 @@ def details(id):
         gigPostedDate = gig.get_post_date()
 
         owns = database.owns_gig(netid, id)  # boolean
+        isAdmin = (netid == 'cos-gigl')
         if owns:
             all_apps = database.get_apps_for(id)
             application = None
@@ -326,13 +325,18 @@ def details(id):
     delete_form = DeleteGigForm()
     show_confirm = False
     if delete_form.validate_on_submit():
-        url = flask.url_for('details', id=id)
         _ = flask.get_flashed_messages()  # clears flashed messages
+        url = flask.url_for('details', id=id)
         if delete_form.delete.data:
             show_confirm = True
         elif delete_form.confirm.data:
-            flask.flash("Your Gig has been successfully deleted!", "success")
-            return flask.redirect(flask.url_for('gigdeleted', gig_id=id))
+            if owns or isAdmin:
+                database.delete_gig_from_db(id)
+                flask.flash("Your Gig has been successfully deleted!", "success")
+                return flask.redirect(flask.url_for('gigdeleted'))
+            else:
+                flask.flash("You are not authorized to delete this gig.", "error")
+                return flask.redirect(flask.url_for('gigdeleted'))
         elif delete_form.cancel.data:
             return flask.redirect(url)
 
@@ -351,7 +355,8 @@ def details(id):
                                       gigID=id,
                                       apply_form=apply_form,
                                       delete_form=delete_form,
-                                      show_confirm=show_confirm)
+                                      show_confirm=show_confirm,
+                                      isAdmin=isAdmin)
     response = flask.make_response(html_code)
     return response
 # -----------------------------------------------------------------------
@@ -523,14 +528,13 @@ def profilesearch():
 # -----------------------------------------------------------------------
 
 
-@app.route('/gigdeleted/<int:gig_id>', methods=['GET'])
-def gigdeleted(gig_id):
+@app.route('/gigdeleted', methods=['GET'])
+def gigdeleted():
     netid = auth.authenticate()
     try:
         database.check_and_add_user(netid)
         database.update_activity(netid)
 
-        database.delete_gig_from_db(gig_id)
         html_code = flask.render_template('gigdeleted.html')
         response = flask.make_response(html_code)
         return response
