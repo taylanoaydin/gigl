@@ -19,6 +19,80 @@
          display: none;
       }
 
+      .btn {
+         padding: 10px 15px;
+         border: none;
+         border-radius: 5px;
+         cursor: pointer;
+         font-size: 16px;
+         transition: background-color 0.3s;
+      }
+
+      /* Toggle Visibility Button */
+      #toggleVisibilityBtn {
+         padding: 10px 20px;
+         border: none;
+         border-radius: 50px; /* Rounded edges */
+         font-size: 16px;
+         font-weight: bold;
+         transition: all 0.3s ease;
+         outline: none; /* Removes the outline */
+         box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
+      }
+
+      .btn-visible {
+         background-color: #76c893; /* A nicer shade of green */
+         color: white;
+      }
+
+      .btn-invisible {
+         background-color: #ff867c; /* A nicer shade of red */
+         color: white;
+      }
+
+      /* Hover effects */
+      .btn-visible:hover {
+         background-color: #45a049;
+      }
+
+      .btn-invisible:hover {
+         background-color: #d32f2f;
+      }
+
+      /* Hover effects */
+      .btn:hover {
+         opacity: 0.9;
+      }
+
+
+      /* Edit and Submit Button Styling */
+      .edit-btn, .submit-btn {
+         background-color: #f3f3f3; /* Muted background */
+         color: #333; /* Muted text color */
+         border-radius: 50px; /* Oval shape */
+         padding: 10px 20px;
+         border: 2px solid #ccc; /* Muted border */
+         transition: all 0.3s ease;
+         /* ... other styles ... */
+      }
+
+      .edit-btn:hover, .submit-btn:hover {
+         box-shadow: 2px 5px 10px rgba(0,0,0,0.1); /* Subtle hover effect */
+         background-color: #e6e6e6; /* Slightly darker on hover */
+      }
+
+      /* Specific style for the submit button */
+      .submit-btn {
+         background-color: #d1c4e9; /* Muted purple */
+         color: #fff;
+         position: absolute; /* Positioning to the right */
+         right: 20px;
+      }
+
+      .submit-btn:hover {
+         background-color: #b39ddb; /* Darker purple on hover */
+      }
+
       /* By default, hide the collapsible content */
       .collapsible-content {
          display: none;
@@ -72,15 +146,9 @@
             </div>
             <!-- Toggle Visibility Form -->
             <div>
-               <form action="{{ url_for('profile') }}" method="post">
-                  <input type="hidden" name="toggle_visibility" value="1">
-                  <button type="submit" class="bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 px-4 rounded">
-                     {{ 'Make Visible' if not is_visible else 'Make Invisible' }}
-                  </button>
-                  <p class="text-sm text-gray-600 mt-1">
-                     Your freelancer profile is {{ 'invisible' if not is_visible else 'visible for search' }}.
-                  </p>
-               </form>
+               <button id="toggleVisibilityBtn" class="{{ 'btn-invisible' if not user.is_visible() else 'btn-visible' }}">
+                  {{ 'Invisible' if not user.is_visible() else 'Visible' }}
+               </button>
             </div>
          </div>
       </section>
@@ -337,6 +405,36 @@
          $.ajax(requestData)
       }
 
+      function toggleProfileVisibility(section) {
+         if (section === 'visibility') {
+            let isVisible = $('#toggleVisibilityButton').text().trim() === 'Make Invisible';
+            $('#toggleVisibilityButton').text(isVisible ? 'Make Visible' : 'Make Invisible');
+            // Add AJAX call here if needed to update the server
+         }
+      }
+
+      function toggleProfileVisibility(section) {
+         if (section === 'visibility') {
+            let url = '/toggle-visibility';
+            let requestData = {
+               type: 'POST',
+               url: url,
+               // Add any necessary data or headers
+               success: function(response) {
+                  if (response.success) {
+                     let buttonText = response.new_visibility ? 'Make Invisible' : 'Make Visible';
+                     $('#toggleVisibilityButton').text(buttonText);
+                  }
+               },
+               error: function() {
+                  alert('Error: Failed to update visibility status.');
+               }
+            };
+            $.ajax(requestData);
+         }
+      }
+
+
       function setup() {
          console.log('setup complete');
          $('#bioEditButton').on('click', function () { editProfile('bio'); })
@@ -344,10 +442,40 @@
 
          $('#bioEditForm').on('submit', function (e) { changeBio(e); });
          $('#linkEditForm').on('submit', function (e) { changeLinks(e); });
+         $('#toggleVisibilityButton').on('click', function () { toggleProfileVisibility('visibility'); });
       }
+
+      
+     
+
 
       document.addEventListener('DOMContentLoaded', setup)
    </script>
+   <!-- Add this script in profile.html or in a separate JavaScript file -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+      $(document).ready(function() {
+         $('#toggleVisibilityBtn').click(function() {
+            var btn = $(this);
+            // Change button appearance immediately
+            if (btn.hasClass('btn-visible')) {
+                  btn.removeClass('btn-visible').addClass('btn-invisible').text('Invisible');
+            } else {
+                  btn.removeClass('btn-invisible').addClass('btn-visible').text('Visible');
+            }
+            // AJAX request to update the server
+            $.ajax({
+                  type: 'POST',
+                  url: '{{ url_for("profile") }}',
+                  data: { toggle_visibility: 'true' },
+                  success: function(response) {
+                     // Additional actions on success, if needed
+                  }
+            });
+         });
+      });
+   </script>
+
 </body>
 
 </html>
