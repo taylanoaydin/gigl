@@ -9,6 +9,7 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
    <style>
       section {
          margin: 0 auto;
@@ -59,7 +60,34 @@
             }
          }
       }
-
+      function toggleBookmark(gigID, element) {
+         const isBookmarked = element.classList.contains('fas');
+         console.log('Bookmark action:', isBookmarked ? 'remove' : 'add');
+         console.log('Gig ID:', gigID);
+         const url = isBookmarked ? '/remove_bookmark/' + gigID : '/add_bookmark/' + gigID;
+         console.log('URL:', url);
+         fetch(url, { method: 'POST' })
+         .then(response => response.json())
+         .then(data => {
+            if (data.status === 'success') {
+                  // Toggle the icon class based on the action
+                  if (data.action === 'added') {
+                     element.classList.remove('far');
+                     element.classList.add('fas');
+                  } else if (data.action === 'removed') {
+                     element.classList.remove('fas');
+                     element.classList.add('far');
+                  }
+                  else if (data.action === 'login') {
+                     element.classList.remove('fas');
+                     element.classList.add('far');
+                  }
+            } else {
+                  console.error('Error in bookmark action:', data); 
+            }
+         })
+         .catch(error => console.error('Error:', error));
+      }
 
    </script>
 
@@ -104,6 +132,7 @@
                      onclick="sortTable('endDate')">End Date</th>
                   <th id="category" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer"
                      onclick="sortTable('category')">Category</th>
+                  <th></th>
                </tr>
             </thead>
             <tbody class="divide-y divide-gray-150">
@@ -117,7 +146,14 @@
                      </div>
                      <div class="text-gray-500">
                         {% set name = author(gig.get_netid()).get_name() %}
+                        {% set profileID = profileIDChecker(gig.get_netid()) %}
+                        {% if profileID %}
+                        <a href="{{ url_for('freelancer_profile', netid=gig.get_netid()) }}" class="text-gray-500 hover:underline">
+                           by {{ name }}
+                        </a>
+                        {% else %}
                         by {{ name }}
+                        {% endif %}
                      </div>
                   </td>
                   <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}</td>
@@ -185,6 +221,9 @@
                         Other
                      </span>
                      {% endif %}
+                  </td>
+                  <td class="p-3 text-center">
+                     <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark" onclick="toggleBookmark('{{ gig.get_gigID() }}', this)"></i>
                   </td>
                </tr>
                {% endfor %}
