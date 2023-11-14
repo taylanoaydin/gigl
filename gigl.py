@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------
 import flask
 from flask_mail import Mail, Message
-from flask import Flask
+from flask import Flask, jsonify, request
 import auth
 import os
 import dotenv
