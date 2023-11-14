@@ -469,6 +469,7 @@ def profile():
         user_email=user_email,
         mygigs=mygigs,
         myapps=myapps,
+        user=user,
         is_visible=user.is_visible(),
         bio=bio,
         links=links,
