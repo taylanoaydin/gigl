@@ -453,8 +453,11 @@ def profile():
         if 'toggle_visibility' in request.form:
             # Call the function to toggle visibility
             database.set_visibility(netid, not user.is_visible())
-            # Redirect to the profile page with a GET request to prevent
-            # double-submit
+
+            if request.is_xhr:  # Check if the request is AJAX
+                return jsonify(success=True)  # Return a JSON response for AJAX
+
+            # Redirect for non-AJAX requests
             return flask.redirect(flask.url_for('profile'))
 
     mygigs = database.get_gigs_posted_by(netid)
