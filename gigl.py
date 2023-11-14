@@ -16,6 +16,7 @@ from cas_details import cas_details
 from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm
 from flask import current_app
 from flask import render_template, request, make_response
+from util import profileIDChecker
 
 # -----------------------------------------------------------------------
 app = Flask(__name__, template_folder='templates/')
@@ -203,8 +204,6 @@ def home():
         flask.abort(500)  # This will trigger the internal_error_handler
 
 # -----------------------------------------------------------------------
-
-
 @app.route('/searchresults', methods=['GET', 'POST'])
 def search_results():
     netid = auth.authenticate()
@@ -230,7 +229,10 @@ def search_results():
 
         gigs = database.get_gigs(keyword=keyword, categories=[
                                  category] if category else [])
-
+        
+        for gig in gigs:
+            gig.is_bookmarked = database.is_bookmarked(netid, gig.get_gigID())
+            print(f"Gig ID: {gig.get_gigID()}, is_bookmarked: {gig.is_bookmarked}")  # Debugging statement
         # Check if gigs is not an empty list
         if not gigs:
             gigs = []  # Ensure gigs is always a list
@@ -242,7 +244,10 @@ def search_results():
             mygigs=gigs,
             cat=category,
             kw=keyword,
-            author = database.get_user)
+            author = database.get_user,
+            profileIDChecker = profileIDChecker,
+            is_bookmarked = database.is_bookmarked,
+            netid = netid)
 
         response = make_response(html_code)
 
@@ -676,6 +681,34 @@ def editlinks():
         return response
 
 
+@app.route('/add_bookmark/<int:gig_id>', methods=['POST'])
+def add_bookmark_route(gig_id):
+    netid = auth.authenticate()
+    result = database.add_bookmark(netid, gig_id)
+    if result == True:
+        return flask.jsonify({'status': 'success', 'action': 'added'})
+    elif result == "already_exists":
+        return flask.jsonify({'status': 'success', 'action': 'exists'})
+    else:
+        return flask.jsonify({'status': 'error'})
+
+@app.route('/remove_bookmark/<int:gig_id>', methods=['POST'])
+def remove_bookmark(gig_id):
+    print("remove_bookmark")
+    print(gig_id)
+    netid = auth.authenticate()
+    try:
+        result = database.remove_bookmark(netid, gig_id)
+        if result == "already_exists":
+            print("success")
+            return flask.jsonify({'status': 'success', 'action': 'removed'})
+        if result == True:
+            print("success")
+            return flask.jsonify({'status': 'success', 'action': 'removed'})
+        else:
+            return flask.jsonify({'status': 'error'})
+    except Exception as e:
+        return flask.jsonify({'status': 'error'})
 # -----------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(host='localhost', debug=True, port=8888)

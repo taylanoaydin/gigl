@@ -460,6 +460,56 @@ def owns_gig(netid, gigID):
 
 # -----------------------------------------------------------------------
 
+def add_bookmark(netid, gigID):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # Check if the bookmark already exists
+            check_query = "SELECT COUNT(*) FROM bookmarks WHERE netid = %s AND gigID = %s"
+            cursor.execute(check_query, [netid, gigID])
+            if cursor.fetchone()[0] > 0:
+                return "already_exists"  # Bookmark already exists
+
+            # If not, add the new bookmark
+            query = "INSERT INTO bookmarks (netid, gigID) VALUES (%s, %s)"
+            cursor.execute(query, [netid, gigID])
+            connection.commit()
+            return True
+    except Exception as ex:
+        print(ex)
+        connection.rollback()
+        return False
+    finally:
+        _put_connection(connection)
+
+def remove_bookmark(netid, gigID):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = "DELETE FROM bookmarks WHERE netid = %s AND gigID = %s"
+            cursor.execute(query, [netid, gigID])
+            connection.commit()
+            return True
+    except Exception as ex:
+        print(ex)
+        connection.rollback()
+        return False
+    finally:
+        _put_connection(connection)
+
+def is_bookmarked(netid, gigID):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = "SELECT COUNT(*) FROM bookmarks WHERE netid = %s AND gigID = %s"
+            cursor.execute(query, [netid, gigID])
+            count = cursor.fetchone()[0]
+            return count > 0
+    except Exception as ex:
+        print(ex)
+        return False
+    finally:
+        _put_connection(connection)
 
 def _test():
     check_and_add_user('cos-gigl')
