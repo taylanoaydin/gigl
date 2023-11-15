@@ -1,0 +1,10 @@
+[2023-11-12T00:13:31,394][WARN ][o.e.t.ThreadPool         ] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] timer thread slept for [25.5m/1534148ms] on absolute clock which is above the warn threshold of [5000ms]
+[2023-11-12T00:45:41,695][INFO ][o.e.x.m.p.NativeController] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] Native controller process has stopped - no new native processes can be started
+[2023-11-12T00:45:41,764][INFO ][o.e.n.Node               ] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] stopping ...
+[2023-11-12T00:45:41,783][INFO ][o.e.c.f.AbstractFileWatchingService] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] shutting down watcher thread
+[2023-11-12T00:45:41,793][INFO ][o.e.c.f.AbstractFileWatchingService] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] watcher service stopped
+[2023-11-12T00:45:41,810][INFO ][o.e.x.w.WatcherService   ] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] stopping watch service, reason [shutdown initiated]
+[2023-11-12T00:45:41,814][INFO ][o.e.x.w.WatcherLifeCycleService] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] watcher has stopped and shutdown
+[2023-11-12T00:45:42,536][INFO ][o.e.n.Node               ] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] stopped
+[2023-11-12T00:45:42,541][INFO ][o.e.n.Node               ] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] closing ...
+[2023-11-12T00:45:42,741][INFO ][o.e.n.Node               ] [dynamic-oit-vapornet100-10-8-26-245.princeton.edu] closed
