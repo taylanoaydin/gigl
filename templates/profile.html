@@ -19,34 +19,30 @@
          display: none;
       }
 
-      .btn {
-         padding: 10px 15px;
-         border: none;
-         border-radius: 5px;
-         cursor: pointer;
-         font-size: 16px;
-         transition: background-color 0.3s;
-      }
-
       /* Toggle Visibility Button */
       #toggleVisibilityBtn {
          padding: 10px 20px;
          border: none;
-         border-radius: 50px; /* Rounded edges */
+         border-radius: 50px;
+         /* Rounded edges */
          font-size: 16px;
          font-weight: bold;
          transition: all 0.3s ease;
-         outline: none; /* Removes the outline */
-         box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
+         outline: none;
+         /* Removes the outline */
+         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+         /* Adds a subtle shadow */
       }
 
       .btn-visible {
-         background-color: #76c893; /* A nicer shade of green */
+         background-color: #76c893;
+         /* A nicer shade of green */
          color: white;
       }
 
       .btn-invisible {
-         background-color: #ff867c; /* A nicer shade of red */
+         background-color: #ff867c;
+         /* A nicer shade of red */
          color: white;
       }
 
@@ -70,6 +66,7 @@
          border-radius: 50px; /* Rounded edges */
          font-size: 16px;
          font-weight: bold;
+
          transition: all 0.3s ease;
          outline: none; /* Removes the outline */
          box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
@@ -78,6 +75,7 @@
          position: relative; /* Adjusted from absolute to relative */
          right: 0; /* Reset right positioning */
       }
+
 
       .edit-btn:hover {
          background-color: #40c847; /* Darker green on hover */
@@ -156,7 +154,8 @@
             </div>
             <!-- Toggle Visibility Form -->
             <div>
-               <button id="toggleVisibilityBtn" class="{{ 'btn-invisible' if not user.is_visible() else 'btn-visible' }}">
+               <button id="toggleVisibilityBtn"
+                  class="{{ 'btn-invisible' if not user.is_visible() else 'btn-visible' }}">
                   {{ 'Invisible' if not user.is_visible() else 'Visible' }}
                </button>
             </div>
@@ -434,13 +433,13 @@
                type: 'POST',
                url: url,
                // Add any necessary data or headers
-               success: function(response) {
+               success: function (response) {
                   if (response.success) {
                      let buttonText = response.new_visibility ? 'Make Invisible' : 'Make Visible';
                      $('#toggleVisibilityButton').text(buttonText);
                   }
                },
-               error: function() {
+               error: function () {
                   alert('Error: Failed to update visibility status.');
                }
             };
@@ -459,8 +458,8 @@
          $('#toggleVisibilityButton').on('click', function () { toggleProfileVisibility('visibility'); });
       }
 
-      
-     
+
+
 
 
       document.addEventListener('DOMContentLoaded', setup)
@@ -468,23 +467,23 @@
    <!-- Add this script in profile.html or in a separate JavaScript file -->
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
    <script>
-      $(document).ready(function() {
-         $('#toggleVisibilityBtn').click(function() {
+      $(document).ready(function () {
+         $('#toggleVisibilityBtn').click(function () {
             var btn = $(this);
             // Change button appearance immediately
             if (btn.hasClass('btn-visible')) {
-                  btn.removeClass('btn-visible').addClass('btn-invisible').text('Invisible');
+               btn.removeClass('btn-visible').addClass('btn-invisible').text('Invisible');
             } else {
-                  btn.removeClass('btn-invisible').addClass('btn-visible').text('Visible');
+               btn.removeClass('btn-invisible').addClass('btn-visible').text('Visible');
             }
             // AJAX request to update the server
             $.ajax({
-                  type: 'POST',
-                  url: '{{ url_for("profile") }}',
-                  data: { toggle_visibility: 'true' },
-                  success: function(response) {
-                     // Additional actions on success, if needed
-                  }
+               type: 'POST',
+               url: '{{ url_for("profile") }}',
+               data: { toggle_visibility: 'true' },
+               success: function (response) {
+                  // Additional actions on success, if needed
+               }
             });
          });
       });
