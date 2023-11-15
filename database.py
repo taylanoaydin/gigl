@@ -448,6 +448,8 @@ def ban_user(netid):
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
+            if is_banned(netid):
+                return True
             cursor.execute('BEGIN')
             query = "INSERT INTO banned_users (netid) VALUES (%s)"
 
@@ -463,10 +465,11 @@ def is_banned(netid): # finish
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
-            query = "INSERT INTO banned_users (netid) VALUES (%s)"
-
+            query = "SELECT FROM banned_users WHERE netid=%s"
             cursor.execute(query, [netid])
-            return True
+            row = cursor.fetchone()
+            
+            return not (row is None)
     except Exception as ex:
         raise ex
     finally:
