@@ -48,7 +48,7 @@ Thumbs.db  # For Windows
 *.env
 
 # External libraries
-elasticsearch*
+elasticsearch-8.11.0
 
 # Ibe's venv you can ignore this
 gigl/
