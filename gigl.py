@@ -17,6 +17,8 @@ from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSear
 from flask import current_app
 from flask import render_template, request, make_response
 from util import profileIDChecker
+from urllib.parse import urlparse
+
 
 # -----------------------------------------------------------------------
 app = Flask(__name__, template_folder='templates/')
@@ -83,6 +85,13 @@ def internal_error_handler(error):
 # This makes 'app' importable from other modules
 def get_app():
     return app
+
+def is_valid_url(url):
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
 
 def send_email(to_email, subject, body):
     msg = Message(subject,
@@ -664,6 +673,14 @@ def editlinks():
         link4 = linkeditform.link4.data
         links = [link1, link2, link3, link4]
         links = filter(lambda x: x != '', links)
+
+        # Validate each link
+        for link in links:
+            if not is_valid_url(link) or len(link) > 200:
+                # Handle invalid link
+                pass
+
+
         database.update_links(netid, links)
         links = database.get_user(netid).get_links()
         linkeditform = LinkEditForm()
@@ -712,6 +729,9 @@ def remove_bookmark(gig_id):
             return flask.jsonify({'status': 'error'})
     except Exception as e:
         return flask.jsonify({'status': 'error'})
+    
+
+
 # -----------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(host='localhost', debug=True, port=8888)
