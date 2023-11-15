@@ -40,6 +40,9 @@ wheels/
 # VS Code
 .vscode/
 
+# ElasticSearch
+elasticsearch-8.11.0
+
 # Operating system specific
 .DS_Store  # For Mac OS
 Thumbs.db  # For Windows
