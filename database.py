@@ -443,6 +443,34 @@ def update_links(netid, links):
         return False
     finally:
         _put_connection(connection)
+
+def ban_user(netid):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('BEGIN')
+            query = "INSERT INTO banned_users (netid) VALUES (%s)"
+
+            cursor.execute(query, [netid])
+            cursor.execute('COMMIT')
+            return True
+    except Exception as ex:
+        return False
+    finally:
+        _put_connection(connection)
+
+def is_banned(netid): # finish
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = "INSERT INTO banned_users (netid) VALUES (%s)"
+
+            cursor.execute(query, [netid])
+            return True
+    except Exception as ex:
+        raise ex
+    finally:
+        _put_connection(connection)
 # -----------------------------------------------------------------------
 
 # BOOLEAN RETURN FUNCTIONS
