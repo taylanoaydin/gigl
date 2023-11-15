@@ -60,45 +60,44 @@
          opacity: 0.9;
       }
 
-      .edit-btn {
-         padding: 10px 20px;
-         border: none;
-         border-radius: 50px; /* Rounded edges */
-         font-size: 16px;
-         font-weight: bold;
 
-         transition: all 0.3s ease;
-         outline: none; /* Removes the outline */
-         box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-         background-color: #87d0a0; /* Default green background */
-         color: white; /* White text */
-         position: relative; /* Adjusted from absolute to relative */
-         right: 0; /* Reset right positioning */
-      }
-
-
-      .edit-btn:hover {
-         background-color: #40c847; /* Darker green on hover */
-      }
-
-
+      /* Edit and Submit Button Styling */
+      .edit-btn,
       .submit-btn {
+         background-color: #f3f3f3;
+         /* Muted background */
+         color: #333;
+         /* Muted text color */
+         border-radius: 50px;
+         /* Oval shape */
          padding: 10px 20px;
-         border: none;
-         border-radius: 50px; /* Rounded edges */
-         font-size: 16px;
-         font-weight: bold;
+         border: 2px solid #ccc;
+         /* Muted border */
          transition: all 0.3s ease;
-         outline: none; /* Removes the outline */
-         box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-         background-color: #ce8bd2; /* Default green background */
-         color: white; /* White text */
-         position: relative; /* Adjusted from absolute to relative */
-         right: 0; /* Reset right positioning */
+         /* ... other styles ... */
+      }
+
+      .edit-btn:hover,
+      .submit-btn:hover {
+         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.1);
+         /* Subtle hover effect */
+         background-color: #e6e6e6;
+         /* Slightly darker on hover */
+      }
+
+      /* Specific style for the submit button */
+      .submit-btn {
+         background-color: #d1c4e9;
+         /* Muted purple */
+         color: #fff;
+         position: absolute;
+         /* Positioning to the right */
+         right: 20px;
       }
 
       .submit-btn:hover {
-         background-color: #ce3ed9; /* Darker green on hover */
+         background-color: #b39ddb;
+         /* Darker purple on hover */
       }
 
       /* By default, hide the collapsible content */
@@ -164,7 +163,7 @@
       <br>
       <section id="bioSection" class="rounded-lg bg-gray-100 border border-gray-200">
          <div class="flex justify-between items-center p-4">
-            <div class="mb-4 flex-grow">
+            <div class="mb-4">
                <h2 class="text-xl font-bold">Bio:</h2>
                <p id="bioDisplay" class="mt-2">
                   {{ bio }}
@@ -174,12 +173,12 @@
                   <div class="flex space-x-10">
                      {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
                      focus:border-teal-500", rows=1) }}
-                     {{ bioeditform.submit(class_="submit-btn") }}
+                     {{ bioeditform.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
                   </div>
                </form>
             </div>
             <div>
-               <button id="bioEditButton" class="edit-btn">
+               <button id="bioEditButton" class="bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 px-4 rounded">
                   Edit
                </button>
             </div>
@@ -193,7 +192,7 @@
                <ul id="linksDisplay" class="list-inside list-disc mt-2">
                   {% for link in links %}
                   <li class="hover:text-orange-500 mt-1">
-                     <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
+                     <a href="{{ link }}" class="transition-colors duration-200">{{ link }}</a>
                   </li>
                   {% endfor %}
                </ul>
@@ -201,21 +200,21 @@
                   {{ linkeditform.hidden_tag() }}
                   <div class="flex flex-col space-y-4">
                      {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", id="link1", maxlength="200", value=links[0] if links|length>0 else '') }}
+                     focus:border-teal-500", id="link1", value=links[0] if links|length>0 else '') }}
                      {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", id="link2", maxlength="200", value=links[1] if links|length>1 else '') }}
+                     focus:border-teal-500", id="link2", value=links[1] if links|length>1 else '') }}
                      {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", id="link3", maxlength="200", value=links[2] if links|length>2 else '') }}
+                     focus:border-teal-500", id="link3", value=links[2] if links|length>2 else '') }}
                      {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", id="link4", maxlength="200", value=links[3] if links|length>3 else '') }}
-                     {{ linkeditform.submit(class_="submit-btn") }}
+                     focus:border-teal-500", id="link4", value=links[3] if links|length>3 else '') }}
+                     {{ linkeditform.submit(class_="p-2 mt-2 w-auto rounded-lg bg-purple-200") }}
 
                   </div>
                </form>
             </div>
             <div>
                <button id="linksEditButton" type="submit"
-                  class="edit-btn">
+                  class="bg-orange-200 hover:bg-orange-300 text-orange-800 py-2 px-4 rounded">
                   Edit
                </button>
             </div>
@@ -358,10 +357,6 @@
             $('#bioDisplay').attr('hidden', '')
             $('#bioEditButton').attr('hidden', '')
             $('#bioEditForm').removeAttr('hidden')
-            // Focus on the bio text field and move cursor to the end of the text
-            var bioInput = $('#bioEditForm').find('textarea, input[type="text"]').first();
-            var bioText = bioInput.val();
-            bioInput.focus().val('').val(bioText); // Reset and set the value to move cursor to end
          }
          else if (section === 'links') {
             $('#linksDisplay').attr('hidden', '')

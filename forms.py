@@ -13,6 +13,7 @@ class ApplyForm(FlaskForm):
                 min=1, max=1000)])
     submit = SubmitField('Apply')
 
+
 class BioEditForm(FlaskForm):
     bio = TextAreaField('Bio', [Length(min=0, max=1000)])
     submit = SubmitField('Submit')
