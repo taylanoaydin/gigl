@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS apps;
 DROP TABLE IF EXISTS gigs;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS bookmarks;
+DROP TABLE IF EXISTS banned_users;
 
 CREATE TABLE users
 (
@@ -47,4 +48,9 @@ CREATE TABLE bookmarks
   netid VARCHAR(10),
   gigID INTEGER,
   PRIMARY KEY (netid, gigID)
+);
+
+CREATE TABLE banned_users
+(
+  netid VARCHAR(10) PRIMARY KEY
 );

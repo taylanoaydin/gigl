@@ -67,9 +67,9 @@
          const url = isBookmarked ? '/remove_bookmark/' + gigID : '/add_bookmark/' + gigID;
          console.log('URL:', url);
          fetch(url, { method: 'POST' })
-         .then(response => response.json())
-         .then(data => {
-            if (data.status === 'success') {
+            .then(response => response.json())
+            .then(data => {
+               if (data.status === 'success') {
                   // Toggle the icon class based on the action
                   if (data.action === 'added') {
                      element.classList.remove('far');
@@ -82,11 +82,11 @@
                      element.classList.remove('fas');
                      element.classList.add('far');
                   }
-            } else {
-                  console.error('Error in bookmark action:', data); 
-            }
-         })
-         .catch(error => console.error('Error:', error));
+               } else {
+                  console.error('Error in bookmark action:', data);
+               }
+            })
+            .catch(error => console.error('Error:', error));
       }
 
    </script>
@@ -137,10 +137,12 @@
             </thead>
             <tbody class="divide-y divide-gray-150">
                {% for gig in mygigs %}
+               {% if not is_banned(gig.get_netid()): %}
                <tr class="bg-gray-100">
                   <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
                      <div>
-                        <a href="{{ url_for('details', id=gig.get_gigID()) }}" class="font-bold text-blue-500 hover:underline">
+                        <a href="{{ url_for('details', id=gig.get_gigID()) }}"
+                           class="font-bold text-blue-500 hover:underline">
                            {{ gig.get_title() }}
                         </a>
                      </div>
@@ -148,7 +150,8 @@
                         {% set name = author(gig.get_netid()).get_name() %}
                         {% set profileID = profileIDChecker(gig.get_netid()) %}
                         {% if profileID %}
-                        <a href="{{ url_for('freelancer_profile', netid=gig.get_netid()) }}" class="text-gray-500 hover:underline">
+                        <a href="{{ url_for('freelancer_profile', netid=gig.get_netid()) }}"
+                           class="text-gray-500 hover:underline">
                            by {{ name }}
                         </a>
                         {% else %}
@@ -223,9 +226,11 @@
                      {% endif %}
                   </td>
                   <td class="p-3 text-center">
-                     <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark" onclick="toggleBookmark('{{ gig.get_gigID() }}', this)"></i>
+                     <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark"
+                        onclick="toggleBookmark('{{ gig.get_gigID() }}', this)"></i>
                   </td>
                </tr>
+               {% endif %}
                {% endfor %}
             </tbody>
          </table>

@@ -418,35 +418,6 @@
          $.ajax(requestData)
       }
 
-      function toggleProfileVisibility(section) {
-         if (section === 'visibility') {
-            let isVisible = $('#toggleVisibilityButton').text().trim() === 'Make Invisible';
-            $('#toggleVisibilityButton').text(isVisible ? 'Make Visible' : 'Make Invisible');
-            // Add AJAX call here if needed to update the server
-         }
-      }
-
-      function toggleProfileVisibility(section) {
-         if (section === 'visibility') {
-            let url = '/toggle-visibility';
-            let requestData = {
-               type: 'POST',
-               url: url,
-               // Add any necessary data or headers
-               success: function (response) {
-                  if (response.success) {
-                     let buttonText = response.new_visibility ? 'Make Invisible' : 'Make Visible';
-                     $('#toggleVisibilityButton').text(buttonText);
-                  }
-               },
-               error: function () {
-                  alert('Error: Failed to update visibility status.');
-               }
-            };
-            $.ajax(requestData);
-         }
-      }
-
 
       function setup() {
          console.log('setup complete');
@@ -455,18 +426,10 @@
 
          $('#bioEditForm').on('submit', function (e) { changeBio(e); });
          $('#linkEditForm').on('submit', function (e) { changeLinks(e); });
-         $('#toggleVisibilityButton').on('click', function () { toggleProfileVisibility('visibility'); });
       }
 
-
-
-
-
       document.addEventListener('DOMContentLoaded', setup)
-   </script>
-   <!-- Add this script in profile.html or in a separate JavaScript file -->
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   <script>
+
       $(document).ready(function () {
          $('#toggleVisibilityBtn').click(function () {
             var btn = $(this);

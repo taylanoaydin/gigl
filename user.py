@@ -13,7 +13,8 @@ class User:
             bio='',
             links='',
             specialty='',
-            last_active=''):
+            last_active='',
+            banned=False):
         self._netid = netid
         self._name = name
         self._visible = visible
@@ -21,6 +22,8 @@ class User:
         self._links = links.split(',')
         self._specialty = specialty
         self._last_active = last_active
+        self._banned = banned
+
 
     def get_netid(self):
         return self._netid
@@ -42,6 +45,9 @@ class User:
 
     def get_active(self):
         return self._last_active
+
+    def is_banned(self):
+        return self._banned
 
     def to_tuple(self):
         return (self._netid, self._name)

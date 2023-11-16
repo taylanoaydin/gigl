@@ -6,14 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>gigl</title>
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+    <style>
+        #toggleBanBtn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            /* Rounded edges */
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            outline: none;
+            /* Removes the outline */
+            box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+            /* Adds a subtle shadow */
+        }
+
+        .btn-notbanned {
+            background-color: #76c893;
+            /* A nicer shade of green */
+            color: white;
+        }
+
+        .btn-banned {
+            background-color: #ff867c;
+            /* A nicer shade of red */
+            color: white;
+        }
+
+        /* Hover effects */
+        .btn-notbanned:hover {
+            background-color: #45a049;
+        }
+
+        .btn-banned:hover {
+            background-color: #d32f2f;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
     {% include 'header.html' %}
     <main class="container mx-auto mt-10 p-4">
         <section class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
-            <div class="p-6">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ freelancer.get_name() }}</h2>
+            <div class="flex justify-between items-center p-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ freelancer.get_name() }}</h2>
+                </div>
+                {% if isAdmin: %}
+                <div>
+                    <button id="toggleBanBtn" class="{{ 'btn-banned' if freelancer.is_banned() else 'btn-notbanned' }}">
+                        {{ 'Banned' if freelancer.is_banned() else 'Not Banned' }}
+                    </button>
+                </div>
+                {% endif %}
             </div>
             <div class="px-6 py-4 bg-blue-100">
                 <p class="text-gray-700"><span class="font-semibold">Specialty:</span> {{ freelancer.get_specialty() }}
@@ -35,6 +80,32 @@
             </div>
         </section>
     </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#toggleBanBtn').click(function () {
+                var btn = $(this);
+                // Change button appearance immediately
+                if (btn.hasClass('btn-banned')) {
+                    btn.removeClass('btn-banned').addClass('btn-notbanned').text('Not Banned');
+                } else {
+                    btn.removeClass('btn-notbanned').addClass('btn-banned').text('Banned');
+                }
+
+                // AJAX request to update the server
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url_for("freelancer_profile", netid=freelancer.get_netid()) }}',
+                    data: { toggle_ban: 'true' },
+                    success: function (response) {
+                        // Additional actions on success, if needed
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

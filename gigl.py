@@ -24,7 +24,6 @@ from urllib.parse import urlparse
 app = Flask(__name__, template_folder='templates/')
 dotenv.load_dotenv()
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'developmenttemp123')
-# csrf = CSRFProtect(app)
 
 # -----------------------------------------------------------------------
 
@@ -180,6 +179,10 @@ def home():
             email = netid + "@princeton.edu"
             send_email_welcome(email, "Welcome to Gigl!", username)
         else:
+            if database.is_banned(netid):
+                html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+                response = flask.make_response(html_code)
+                return response
             database.update_activity(netid)
 
         # Initialize the form with the query parameters from the request
@@ -221,6 +224,10 @@ def search_results():
     netid = auth.authenticate()
     try:
         database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
         database.update_activity(netid)
 
         # Initialize the form with the query parameters from the request
@@ -244,7 +251,6 @@ def search_results():
         
         for gig in gigs:
             gig.is_bookmarked = database.is_bookmarked(netid, gig.get_gigID())
-            print(f"Gig ID: {gig.get_gigID()}, is_bookmarked: {gig.is_bookmarked}")  # Debugging statement
         # Check if gigs is not an empty list
         if not gigs:
             gigs = []  # Ensure gigs is always a list
@@ -259,7 +265,8 @@ def search_results():
             author = database.get_user,
             profileIDChecker = profileIDChecker,
             is_bookmarked = database.is_bookmarked,
-            netid = netid)
+            netid = netid,
+            is_banned=database.is_banned)
 
         response = make_response(html_code)
 
@@ -281,6 +288,10 @@ def details(id):
     netid = auth.authenticate()
     try:
         database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
         database.update_activity(netid)
 
         gig = database.get_gig_details(id)
@@ -383,8 +394,11 @@ def details(id):
 def apply_result():
     netid = auth.authenticate()
     try:
-
         database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
         database.update_activity(netid)
 
         gigID = flask.request.args.get('gigID')
@@ -402,13 +416,15 @@ def apply_result():
         flask.abort(500)  # This will trigger the internal_error_handler
 
 # -----------------------------------------------------------------------
-
-
 @app.route('/postgig', methods=['GET', 'POST'])
 def postgig():
     netid = auth.authenticate()
     try:
         database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
         database.update_activity(netid)
 
         user = database.get_user(netid)
@@ -454,6 +470,10 @@ def postgig():
 def profile():
     netid = auth.authenticate()
     database.check_and_add_user(netid)
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
     database.update_activity(netid)
 
     user = database.get_user(netid)
@@ -471,10 +491,6 @@ def profile():
             # Call the function to toggle visibility
             database.set_visibility(netid, not user.is_visible())
 
-            if request.is_xhr:  # Check if the request is AJAX
-                return jsonify(success=True)  # Return a JSON response for AJAX
-
-            # Redirect for non-AJAX requests
             return flask.redirect(flask.url_for('profile'))
 
     mygigs = database.get_gigs_posted_by(netid)
@@ -500,8 +516,13 @@ def profile():
 @app.route('/profilesearch', methods=['GET', 'POST'])
 def profilesearch():
     netid = auth.authenticate()
+    isAdmin = (netid == 'cos-gigl')
     try:
         database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
         database.update_activity(netid)
 
         # Initialize the form with the query parameters from the request
@@ -522,8 +543,12 @@ def profilesearch():
             keyword = flask.request.args.get('kw')
             psearch_form.specialty.data = specialty
 
-        freelancers = database.get_freelancers(
-            keyword=keyword, specialty=specialty)
+        if isAdmin:
+            freelancers = database.get_all_users(
+                keyword=keyword, specialty=specialty)
+        else:
+            freelancers = database.get_freelancers(
+                keyword=keyword, specialty=specialty)
 
         # Render the template with the search results and the form
         html_code = render_template(
@@ -531,7 +556,8 @@ def profilesearch():
             psearch_form=psearch_form,
             freelancers=freelancers,
             spec=specialty,
-            kw=keyword)
+            kw=keyword,
+            isAdmin=isAdmin)
 
         response = make_response(html_code)
 
@@ -554,6 +580,10 @@ def gigdeleted():
     netid = auth.authenticate()
     try:
         database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
         database.update_activity(netid)
 
         html_code = flask.render_template('gigdeleted.html')
@@ -577,6 +607,10 @@ def gigposted_success(gigID):
     netid = auth.authenticate()
     try:
         database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
         database.update_activity(netid)
 
         return flask.render_template('gigposted.html', gigID=gigID)
@@ -612,16 +646,34 @@ def logout():
 # -----------------------------------------------------------------------
 
 
-@app.route('/freelancer/<netid>')
+@app.route('/freelancer/<netid>', methods=['GET', 'POST'])
 def freelancer_profile(netid):
     id = auth.authenticate()
+    isAdmin = (id == 'cos-gigl')
     try:
         # Fetch freelancer details from the database using netid
+        database.check_and_add_user(id)
+        if database.is_banned(id):
+            html_code = flask.render_template('banneduser.html', name=database.get_user(id).get_name())
+            response = flask.make_response(html_code)
+            return response
         database.update_activity(id)
 
+        if request.method == 'POST':
+            print("what the fuck")
+            if 'toggle_ban' in request.form:
+                print("yeah")
+                # Call the function to toggle visibility
+                if database.is_banned(netid):
+                    database.unban_user(netid)
+                else:
+                    database.ban_user(netid)
+
+                return flask.redirect(flask.url_for('freelancer_profile', netid=netid))
+
         freelancer = database.get_user(netid)
-        if freelancer and freelancer.is_visible():
-            return render_template('freelancer.html', freelancer=freelancer)
+        if freelancer and (freelancer.is_visible() or isAdmin):
+            return render_template('freelancer.html', freelancer=freelancer, isAdmin = isAdmin)
         else:
             # Handle the case where the freelancer does not exist or is not
             # visible
@@ -642,6 +694,10 @@ def freelancer_profile(netid):
 @app.route('/editbio', methods=['POST'])
 def editbio():
     netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
     bioeditform = BioEditForm(flask.request.form)
     if bioeditform.validate_on_submit():
         newbio = bioeditform.bio.data
@@ -660,11 +716,13 @@ def editbio():
         response = flask.make_response(html_code)
         return response
 # ----------------------------------------------------------------------
-
-
 @app.route('/editlinks', methods=['POST'])
 def editlinks():
     netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
     linkeditform = LinkEditForm(flask.request.form)
     if linkeditform.validate_on_submit():
         link1 = linkeditform.link1.data
@@ -704,6 +762,10 @@ def editlinks():
 @app.route('/add_bookmark/<int:gig_id>', methods=['POST'])
 def add_bookmark_route(gig_id):
     netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
     result = database.add_bookmark(netid, gig_id)
     if result == True:
         return flask.jsonify({'status': 'success', 'action': 'added'})
@@ -714,9 +776,11 @@ def add_bookmark_route(gig_id):
 
 @app.route('/remove_bookmark/<int:gig_id>', methods=['POST'])
 def remove_bookmark(gig_id):
-    print("remove_bookmark")
-    print(gig_id)
     netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
     try:
         result = database.remove_bookmark(netid, gig_id)
         if result == "already_exists":
@@ -729,8 +793,6 @@ def remove_bookmark(gig_id):
             return flask.jsonify({'status': 'error'})
     except Exception as e:
         return flask.jsonify({'status': 'error'})
-    
-
 
 # -----------------------------------------------------------------------
 if __name__ == '__main__':

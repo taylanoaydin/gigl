@@ -213,7 +213,7 @@ def get_user(netid):
             if row is None:
                 return None
 
-            thisuser = user.User(*row)
+            thisuser = user.User(*row, banned=is_banned(row[0]))
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
         raise
@@ -223,8 +223,6 @@ def get_user(netid):
 
 # returns list of visible users with only RELEVANT information for the
 # overall profile search: netid, name, specialty, last_active
-
-
 def get_freelancers(keyword='', specialty=''):
     users = []
     connection = _get_connection()
@@ -232,7 +230,7 @@ def get_freelancers(keyword='', specialty=''):
         with connection.cursor() as cursor:
             kw = '%' + keyword + '%'
             all_args = [kw]
-            query = """SELECT netid, name, specialty, last_active FROM users
+            query = """SELECT netid, name, specialty, last_active, visible FROM users
                        WHERE name ILIKE %s AND visible"""
             if specialty != '':
                 query += " AND specialty=%s"
@@ -245,6 +243,38 @@ def get_freelancers(keyword='', specialty=''):
                 thisuser = user.User(
                     netid=row[0],
                     name=row[1],
+                    visible=row[4],
+                    specialty=row[2],
+                    last_active=row[3])
+                users.append(thisuser)
+            return users
+    except Exception as ex:
+        app.logger.error(f"Database Error: {ex}")
+        raise
+    finally:
+        _put_connection(connection)
+
+def get_all_users(keyword='', specialty=''):
+    users = []
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            kw = '%' + keyword + '%'
+            all_args = [kw]
+            query = """SELECT netid, name, specialty, last_active, visible FROM users
+                       WHERE name ILIKE %s"""
+            if specialty != '':
+                query += " AND specialty=%s"
+                all_args.append(specialty)
+            query += " ORDER BY last_active DESC"
+
+            cursor.execute(query, all_args)
+            table = cursor.fetchall()
+            for row in table:
+                thisuser = user.User(
+                    netid=row[0],
+                    name=row[1],
+                    visible=row[4],
                     specialty=row[2],
                     last_active=row[3])
                 users.append(thisuser)
@@ -443,6 +473,52 @@ def update_links(netid, links):
             return True
     except Exception as ex:
         return False
+    finally:
+        _put_connection(connection)
+
+def ban_user(netid):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            if is_banned(netid):
+                return True
+            cursor.execute('BEGIN')
+            query = "INSERT INTO banned_users (netid) VALUES (%s)"
+
+            cursor.execute(query, [netid])
+            cursor.execute('COMMIT')
+            return True
+    except Exception as ex:
+        return False
+    finally:
+        _put_connection(connection)
+
+def unban_user(netid):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('BEGIN')
+            query = "DELETE FROM banned_users WHERE netid=%s"
+
+            cursor.execute(query, [netid])
+            cursor.execute('COMMIT')
+            return True
+    except Exception as ex:
+        return False
+    finally:
+        _put_connection(connection)
+
+def is_banned(netid): # finish
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = "SELECT FROM banned_users WHERE netid=%s"
+            cursor.execute(query, [netid])
+            row = cursor.fetchone()
+            
+            return not (row is None)
+    except Exception as ex:
+        raise ex
     finally:
         _put_connection(connection)
 # -----------------------------------------------------------------------
