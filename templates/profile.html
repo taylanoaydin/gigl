@@ -272,25 +272,29 @@
       <section id="bioSection" class="rounded-lg bg-gray-100 border border-gray-200">
          <div class="flex justify-between items-center p-4">
             <div class="mb-4 flex-grow">
-               <h2 class="text-xl font-bold">Bio:</h2>
-               <p id="bioDisplay" class="mt-2 break-all">
+              <h2 class="text-xl font-bold">Bio:</h2>
+              <p id="bioDisplay" class="mt-2">
+                {% if bio %}
                   {{ bio }}
-               </p>
-               <form hidden id="bioEditForm" method="post">
-                  {{ bioeditform.hidden_tag() }}
-                  <div class="flex space-x-10">
-                     {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", rows=1) }}
-                     {{ bioeditform.submit(class_="submit-btn") }}
-                  </div>
-               </form>
+                {% else %}
+                  <span class="text-black-400">[empty bio]</span>
+                {% endif %}
+              </p>
+              <form hidden id="bioEditForm" method="post">
+                {{ bioeditform.hidden_tag() }}
+                <div class="flex space-x-10">
+                  {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", rows=1, placeholder="Who are you and what do you do?" if bio == '' else '', id="bio") }}
+          
+                  {{ bioeditform.submit(class_="submit-btn") }}
+                </div>
+              </form>
             </div>
             <div>
-               <button id="bioEditButton" class="edit-btn">
-                  Edit
-               </button>
+              <button id="bioEditButton" class="edit-btn">
+                Edit
+              </button>
             </div>
-         </div>
+          </div>
       </section>
       <br>
       <section id="linksSection" class="rounded-lg bg-gray-100 border border-gray-200">
@@ -298,24 +302,26 @@
             <div>
                <h2 class="text-xl font-bold">Links:</h2>
                <ul id="linksDisplay" class="list-inside list-disc mt-2">
+                  {% if links|length == 0 or links|join == '' %}
+                  <li class="text-black-400">[blank link]</li>
+                  {% else %}
                   {% for link in links %}
-                  <li class="hover:text-orange-500 mt-1">
-                     <a href="{{ link }}" target="_blank" rel="noopener noreferrer"
-                        class="transition-colors duration-200">{{ link }}</a>
-                  </li>
+                     <li class="hover:text-orange-500 mt-1">
+                        <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
+                     </li>
                   {% endfor %}
+                  {% endif %}
                </ul>
                <form hidden id="linkEditForm" method="post">
                   {{ linkeditform.hidden_tag() }}
                   <div class="flex flex-col space-y-4">
-                     {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", id="link1", maxlength="200", value=links[0] if links|length>0 else '') }}
-                     {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", id="link2", maxlength="200", value=links[1] if links|length>1 else '') }}
-                     {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", id="link3", maxlength="200", value=links[2] if links|length>2 else '') }}
-                     {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-                     focus:border-teal-500", id="link4", maxlength="200", value=links[3] if links|length>3 else '') }}
+                     {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link1", maxlength="200", placeholder="http://example_link.com", value=links[0] if links|length >= 1 else '') }}
+
+                     {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link2", maxlength="200", placeholder="http://example_link.com", value=links[1] if links|length >= 2 else '') }}
+             
+                     {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link3", maxlength="200", placeholder="http://example_link.com", value=links[2] if links|length >= 3 else '') }}
+             
+                     {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link4", maxlength="200", placeholder="http://example_link.com", value=links[3] if links|length >= 4 else '') }}
                      {{ linkeditform.submit(class_="submit-btn") }}
                   </div>
                </form>
