@@ -332,6 +332,9 @@ def delete_gig_from_db(gigID):
             q2 = "DELETE FROM gigs WHERE gigID = %s"
             cursor.execute(q2, [gigID])
 
+            q3 = "DELETE FROM bookmarks WHERE gigID = %s"
+            cursor.execute(q3, [gigID])
+
             cursor.execute('COMMIT')
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
