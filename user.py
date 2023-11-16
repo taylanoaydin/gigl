@@ -3,6 +3,8 @@
 # user.py
 # Author: Taylan Aydin
 # -----------------------------------------------------------------------
+import database
+
 class User:
 
     def __init__(
@@ -42,6 +44,9 @@ class User:
 
     def get_active(self):
         return self._last_active
+
+    def is_banned(self):
+        return database.is_banned(self._netid)
 
     def to_tuple(self):
         return (self._netid, self._name)

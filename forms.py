@@ -21,9 +21,9 @@ class BioEditForm(FlaskForm):
 
 class LinkEditForm(FlaskForm):
     link1 = StringField('Link1', [Length(min=0, max=100)])
-    link2 = StringField('Link1', [Length(min=0, max=100)])
-    link3 = StringField('Link1', [Length(min=0, max=100)])
-    link4 = StringField('Link1', [Length(min=0, max=100)])
+    link2 = StringField('Link2', [Length(min=0, max=100)])
+    link3 = StringField('Link3', [Length(min=0, max=100)])
+    link4 = StringField('Link4', [Length(min=0, max=100)])
     submit = SubmitField('Submit')
 
 
