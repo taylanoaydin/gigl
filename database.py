@@ -212,7 +212,7 @@ def get_user(netid):
             if row is None:
                 return None
 
-            thisuser = user.User(*row)
+            thisuser = user.User(*row, banned=is_banned(row[0]))
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
         raise
@@ -229,7 +229,7 @@ def get_freelancers(keyword='', specialty=''):
         with connection.cursor() as cursor:
             kw = '%' + keyword + '%'
             all_args = [kw]
-            query = """SELECT netid, name, specialty, last_active FROM users
+            query = """SELECT netid, name, specialty, last_active, visible FROM users
                        WHERE name ILIKE %s AND visible"""
             if specialty != '':
                 query += " AND specialty=%s"
@@ -242,6 +242,7 @@ def get_freelancers(keyword='', specialty=''):
                 thisuser = user.User(
                     netid=row[0],
                     name=row[1],
+                    visible=row[4],
                     specialty=row[2],
                     last_active=row[3])
                 users.append(thisuser)
