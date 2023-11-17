@@ -629,20 +629,8 @@ def gigposted_success(gigID):
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    try:
-        flask.session.clear()
-        html_code = flask.render_template('index.html')
-        response = flask.redirect(flask.url_for('index'))
-        return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
-    except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
-    except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+    # Log out of the CAS session, and then the application.
+    return auth.logoutcas()
 # -----------------------------------------------------------------------
 
 
@@ -660,7 +648,6 @@ def freelancer_profile(netid):
         database.update_activity(id)
 
         if request.method == 'POST':
-            print("what the fuck")
             if 'toggle_ban' in request.form:
                 print("yeah")
                 # Call the function to toggle visibility
