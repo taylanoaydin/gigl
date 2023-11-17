@@ -186,7 +186,6 @@ def get_bookmarks(netid):
                 gigfromDB = get_gig_details(row[1])
                 if gigfromDB is not None:
                     bookmarks.append(gigfromDB)
-            print(bookmarks)
     except Exception as ex:
         app.logger.error(f"Database Error: {ex}")
         raise
