@@ -3,6 +3,7 @@ from wtforms.validators import InputRequired, ValidationError, Length, DataRequi
 import wtforms.validators as validators
 from wtforms.validators import Optional
 from flask_wtf import FlaskForm
+import datetime
 from flask_wtf import Form  # Import Form instead of FlaskForm
 
 
@@ -73,6 +74,17 @@ class ProfileSearchForm(FlaskForm):
 
 
 class PostGigForm(FlaskForm):
+    
+    def validate_end_date(self, field):
+        if self.start_date.data and field.data:  # Check if both dates are not None
+            if field.data < self.start_date.data:
+                raise ValidationError(
+                    'End date must not be earlier than start date.')
+        elif field.data is None:
+            raise ValidationError('End date is required.')
+        elif self.start_date.data is None:
+            raise ValidationError('Start date must be set before end date.')
+        
     title = StringField('Title', validators=[InputRequired(), Length(max=50)])
     start_date = DateField(
         'Start Date',
@@ -81,8 +93,6 @@ class PostGigForm(FlaskForm):
         format='%Y-%m-%d')
     end_date = DateField(
         'End Date',
-        validators=[
-            validators.optional()],
         format='%Y-%m-%d')
     qualifications = TextAreaField(
         'Qualifications', validators=[
@@ -127,12 +137,5 @@ class PostGigForm(FlaskForm):
              'Other')])
     submit = SubmitField('Submit')
 
-    def validate_end_date(self, field):
-        if self.start_date.data and field.data:  # Check if both dates are not None
-            if field.data < self.start_date.data:
-                raise ValidationError(
-                    'End date must not be earlier than start date.')
-        elif field.data is None:
-            raise ValidationError('End date is required.')
-        elif self.start_date.data is None:
-            raise ValidationError('Start date must be set before end date.')
+    def validate_start_date(self, field):
+        pass
