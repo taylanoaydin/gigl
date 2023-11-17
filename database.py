@@ -172,6 +172,28 @@ def get_apps_by(netid):
         _put_connection(connection)
     return apps
 
+
+def get_bookmarks(netid):
+    connection = _get_connection()
+    bookmarks = []
+    try:
+        with connection.cursor() as cursor:
+            query = "SELECT * FROM bookmarks WHERE netid = %s"
+            cursor.execute(query, [netid])
+            bookmarked_gigs = cursor.fetchall()
+
+            for row in bookmarked_gigs:
+                gigfromDB = get_gig_details(row[1])
+                if gigfromDB is not None:
+                    bookmarks.append(gigfromDB)
+            print(bookmarks)
+    except Exception as ex:
+        app.logger.error(f"Database Error: {ex}")
+        raise
+    finally:
+        _put_connection(connection)
+    return bookmarks
+
 # returns the single application sent by user with netid to gig with
 # gigID. Returns None if no application sent by netid to gigID.
 # note to devs: compare return value with None to see if

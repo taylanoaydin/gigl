@@ -501,6 +501,7 @@ def profile():
         username=username,
         user_email=user_email,
         mygigs=mygigs,
+        mybookmarks=database.get_bookmarks(netid),
         myapps=myapps,
         user=user,
         is_visible=user.is_visible(),
