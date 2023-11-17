@@ -14,7 +14,6 @@ import application as Application
 import gig
 import user
 from datetime import datetime
-from gigl import get_app
 
 # -----------------------------------------------------------------------
 
@@ -24,7 +23,6 @@ DATABASE_URL = os.environ['DATABASE_URL']
 _connection_pool = queue.Queue()
 
 # -----------------------------------------------------------------------
-app = get_app()
 
 def _get_connection():
     try:
@@ -78,7 +76,6 @@ def get_gigs(keyword='', categories=None):
                 gigs.append(a_gig)
     except Exception as ex:
         # Log the exception as in gigl.py
-        app.logger.error(f"Database Error: {ex}")
         raise  # Reraise the exception or handle it as needed
     finally:
         _put_connection(connection)
@@ -101,7 +98,7 @@ def get_gig_details(gigID):
 
             thisgig = gig.Gig(*gigdetails)
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -123,7 +120,7 @@ def get_gigs_posted_by(netid):
                 thisgig = gig.Gig(*row)
                 gigs.append(thisgig)
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -145,7 +142,7 @@ def get_apps_for(gigID):
                 thisapp = Application.Application(*row)
                 apps.append(thisapp)
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -166,7 +163,7 @@ def get_apps_by(netid):
                 thisapp = Application.Application(*row)
                 apps.append(thisapp)
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -187,7 +184,7 @@ def get_bookmarks(netid):
                 if gigfromDB is not None:
                     bookmarks.append(gigfromDB)
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -213,7 +210,7 @@ def get_application(netid, gigID):
 
             thisapp = Application.Application(*row)
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -236,7 +233,7 @@ def get_user(netid):
 
             thisuser = user.User(*row, banned=is_banned(row[0]))
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -270,7 +267,7 @@ def get_freelancers(keyword='', specialty=''):
                 users.append(thisuser)
             return users
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -301,7 +298,7 @@ def get_all_users(keyword='', specialty=''):
                 users.append(thisuser)
             return users
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -330,7 +327,7 @@ def check_and_add_user(netid):
                 return "user_created"
         except Exception as ex:
             # Log the exception as in gigl.py
-            app.logger.error(f"Database Error: {ex}")
+            
             raise  # Reraise the exception or handle it as needed
         finally:
             _put_connection(connection)
@@ -358,7 +355,7 @@ def delete_gig_from_db(gigID):
 
             cursor.execute('COMMIT')
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -389,7 +386,7 @@ def create_gig(netid, title, category, description, qualf, startfrom,
             cursor.execute('COMMIT')
             return gigID
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -420,7 +417,7 @@ def send_application(netid, gigID, message):
             cursor.execute('COMMIT')
             return True
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -442,7 +439,7 @@ def set_visibility(netid, visible):
             cursor.execute('COMMIT')
             return True
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -460,7 +457,7 @@ def update_activity(netid):
             cursor.execute('COMMIT')
             return True
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
     finally:
         _put_connection(connection)
@@ -574,7 +571,7 @@ def owns_gig(netid, gigID):
         thisgig = get_gig_details(gigID)
         return (thisgig is not None) and (thisgig.get_netid() == netid)
     except Exception as ex:
-        app.logger.error(f"Database Error: {ex}")
+        
         raise
 
 # -----------------------------------------------------------------------
