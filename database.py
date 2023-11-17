@@ -319,7 +319,7 @@ def check_and_add_user(netid):
                 cursor.execute('BEGIN')
 
                 usrname = cas_details(netid)[0]
-                query = "INSERT INTO users (netid, name, visible, bio, links, specialty, last_active) VALUES (%s, %s, 'n', '', '', '', %s)"
+                query = "INSERT INTO users (netid, name, visible, bio, links, specialty, last_active) VALUES (%s, %s, 'n', '', '', 'Not Chosen', %s)"
                 cursor.execute(query, [netid, usrname, datetime.now().date()])
 
                 cursor.execute('COMMIT')
