@@ -354,7 +354,7 @@ def details(id):
     show_confirm = False
     if delete_form.validate_on_submit():
         _ = flask.get_flashed_messages()  # clears flashed messages
-        url = flask.url_for('details', id=id)
+        # url = flask.url_for('details', id=id)
         if delete_form.delete.data:
             show_confirm = True
         elif delete_form.confirm.data:
@@ -365,8 +365,8 @@ def details(id):
             else:
                 flask.flash("You are not authorized to delete this gig.", "error")
                 return flask.redirect(flask.url_for('gigdeleted'))
-        elif delete_form.cancel.data:
-            return flask.redirect(url)
+        # elif delete_form.cancel.data:
+        #     return flask.redirect(url)
 
     html_code = flask.render_template('details.html',
                                       gigTitle=gigTitle,

@@ -13,6 +13,9 @@
             width: 80%;
             padding: 1em;
         }
+        #cancelButton {
+            margin-left: 10px;
+        }
     </style>
 </head>
 
@@ -138,7 +141,7 @@
             </div>
         </section>
         <section class="w-full md:w-1/2 rounded-lg ">
-            <form align="center" method="post">
+            <form align="center" method="post" class="deleteGigForm" id="deleteForm">
                 {{ delete_form.hidden_tag() }} <!-- CSRF token -->
                 {% if show_confirm %}
                 <p> Are you sure? </p>
@@ -152,7 +155,7 @@
 
         {% elif isAdmin: %}
         <section class="w-full md:w-1/2 rounded-lg ">
-            <form align="center" method="post">
+            <form align="center" method="post" class="deleteGigForm" id="adminDeleteForm">
                 {{ delete_form.hidden_tag() }} <!-- CSRF token -->
                 {% if show_confirm %}
                 <p> Are you sure? </p>
@@ -193,6 +196,51 @@
         {% endif %}
 
     </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        'use strict';
+
+        function toggleFormButtons(formId, showConfirm) {
+            let form = $('#' + formId);
+
+            if (showConfirm) {
+                // Show confirm and cancel buttons
+                form.html('{{ delete_form.hidden_tag() }}' +
+                    '<p>Are you sure?</p>' +
+                    '{{ delete_form.confirm(class="p-2 w-auto rounded-lg bg-green-200") }}' +
+                    '{{ delete_form.cancel(class="p-2 w-auto rounded-lg bg-red-200") }}');
+            } else {
+                // Show delete button
+                form.html('{{ delete_form.hidden_tag() }}' +
+                    '{{ delete_form.delete(class="p-2 w-auto rounded-lg bg-red-200") }}');
+            }
+        }
+
+        $(document).ready(function () {
+            $('.deleteGigForm').submit(function (e) {
+                if ($('input[type=submit][clicked=true]').val() === 'Delete') {
+                    console.log('delete button clicked')
+                    e.preventDefault(); // Prevent form from submitting
+                    // because there are two forms, one for owner one for admin
+                    let formId = $(this).attr('id')
+                    toggleFormButtons(formId, true)
+                }
+            });
+
+            $(document).on('click', '#cancelButton', function () {
+                console.log('cancel button clicked')
+                let formId = $(this).closest('form').attr('id');
+                toggleFormButtons(formId, false);
+
+            });
+
+            $(document).on('click', 'input[type=submit]', function () {
+                $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
+                $(this).attr('clicked', 'true');
+            });
+            console.log('setup complete')
+        })
+    </script>
 </body>
 
 </html>

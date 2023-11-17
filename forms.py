@@ -29,7 +29,7 @@ class LinkEditForm(FlaskForm):
 class DeleteGigForm(FlaskForm):
     delete = SubmitField('Delete')
     confirm = SubmitField('Yes')
-    cancel = SubmitField('No')
+    cancel = SubmitField('No', render_kw={'id': 'cancelButton'})
 
 
 class SearchForm(FlaskForm):
