@@ -505,6 +505,7 @@ def profile():
         username=username,
         user_email=user_email,
         mygigs=mygigs,
+        mybookmarks=database.get_bookmarks(netid),
         myapps=myapps,
         user=user,
         specialty=spec,
@@ -802,4 +803,4 @@ def remove_bookmark(gig_id):
 
 # -----------------------------------------------------------------------
 if __name__ == '__main__':
-    app.run(host='localhost', debug=True, port=8888)
+    app.run(host='localhost', debug=True, port=4444)
