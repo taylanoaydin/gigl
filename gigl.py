@@ -479,7 +479,6 @@ def profile():
     user = database.get_user(netid)
     bio = user.get_bio()
     links = user.get_links()
-    print(links)
     spec = user.get_specialty()
     username = user.get_name()
     user_email = f"{netid}@princeton.edu"
@@ -656,7 +655,6 @@ def freelancer_profile(netid):
 
         if request.method == 'POST':
             if 'toggle_ban' in request.form:
-                print("yeah")
                 # Call the function to toggle visibility
                 if database.is_banned(netid):
                     database.unban_user(netid)
@@ -791,10 +789,8 @@ def remove_bookmark(gig_id):
     try:
         result = database.remove_bookmark(netid, gig_id)
         if result == "already_exists":
-            print("success")
             return flask.jsonify({'status': 'success', 'action': 'removed'})
         if result == True:
-            print("success")
             return flask.jsonify({'status': 'success', 'action': 'removed'})
         else:
             return flask.jsonify({'status': 'error'})
