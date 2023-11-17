@@ -63,42 +63,58 @@
       .edit-btn {
          padding: 10px 20px;
          border: none;
-         border-radius: 50px; /* Rounded edges */
+         border-radius: 50px;
+         /* Rounded edges */
          font-size: 16px;
          font-weight: bold;
 
          transition: all 0.3s ease;
-         outline: none; /* Removes the outline */
-         box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-         background-color: #87d0a0; /* Default green background */
-         color: white; /* White text */
-         position: relative; /* Adjusted from absolute to relative */
-         right: 0; /* Reset right positioning */
+         outline: none;
+         /* Removes the outline */
+         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+         /* Adds a subtle shadow */
+         background-color: #87d0a0;
+         /* Default green background */
+         color: white;
+         /* White text */
+         position: relative;
+         /* Adjusted from absolute to relative */
+         right: 0;
+         /* Reset right positioning */
       }
 
 
       .edit-btn:hover {
-         background-color: #40c847; /* Darker green on hover */
+         background-color: #40c847;
+         /* Darker green on hover */
       }
 
 
       .submit-btn {
          padding: 10px 20px;
          border: none;
-         border-radius: 50px; /* Rounded edges */
+         border-radius: 50px;
+         /* Rounded edges */
          font-size: 16px;
          font-weight: bold;
          transition: all 0.3s ease;
-         outline: none; /* Removes the outline */
-         box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-         background-color: #ce8bd2; /* Default green background */
-         color: white; /* White text */
-         position: relative; /* Adjusted from absolute to relative */
-         right: 0; /* Reset right positioning */
+         outline: none;
+         /* Removes the outline */
+         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+         /* Adds a subtle shadow */
+         background-color: #ce8bd2;
+         /* Default green background */
+         color: white;
+         /* White text */
+         position: relative;
+         /* Adjusted from absolute to relative */
+         right: 0;
+         /* Reset right positioning */
       }
 
       .submit-btn:hover {
-         background-color: #ce3ed9; /* Darker green on hover */
+         background-color: #ce3ed9;
+         /* Darker green on hover */
       }
 
       /* By default, hide the collapsible content */
@@ -193,7 +209,8 @@
                <ul id="linksDisplay" class="list-inside list-disc mt-2">
                   {% for link in links %}
                   <li class="hover:text-orange-500 mt-1">
-                     <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
+                     <a href="{{ link }}" target="_blank" rel="noopener noreferrer"
+                        class="transition-colors duration-200">{{ link }}</a>
                   </li>
                   {% endfor %}
                </ul>
@@ -209,13 +226,11 @@
                      {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
                      focus:border-teal-500", id="link4", maxlength="200", value=links[3] if links|length>3 else '') }}
                      {{ linkeditform.submit(class_="submit-btn") }}
-
                   </div>
                </form>
             </div>
             <div>
-               <button id="linksEditButton" type="submit"
-                  class="edit-btn">
+               <button id="linksEditButton" type="submit" class="edit-btn">
                   Edit
                </button>
             </div>

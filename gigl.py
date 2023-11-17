@@ -717,15 +717,9 @@ def editlinks():
         link3 = linkeditform.link3.data
         link4 = linkeditform.link4.data
         links = [link1, link2, link3, link4]
-        links = filter(lambda x: x != '', links)
-
-        # Validate each link
-        for link in links:
-            if not is_valid_url(link) or len(link) > 200:
-                # Handle invalid link
-                pass
-
-
+        links = list(filter(lambda x: x != '', links))
+        print(links)
+        
         database.update_links(netid, links)
         links = database.get_user(netid).get_links()
         linkeditform = LinkEditForm()
@@ -736,12 +730,22 @@ def editlinks():
         response = flask.make_response(html_code)
         return response
     else:
+        errors = []
+        if linkeditform.link1.errors != []:
+            errors.append(linkeditform.link1.errors[0])
+        if linkeditform.link2.errors != []:
+            errors.append(linkeditform.link2.errors[0])
+        if linkeditform.link3.errors != []:
+            errors.append(linkeditform.link3.errors[0])
+        if linkeditform.link4.errors != []:
+            errors.append(linkeditform.link4.errors[0])
         linkeditform = LinkEditForm()
         links = database.get_user(netid).get_links()
         html_code = flask.render_template(
             'links_in_profile_error.html',
             links=links,
-            linkeditform=linkeditform)
+            linkeditform=linkeditform,
+            errors=errors)
         response = flask.make_response(html_code)
         return response
 
