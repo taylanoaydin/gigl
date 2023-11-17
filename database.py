@@ -493,6 +493,7 @@ def update_specialty(netid, newspec):
         _put_connection(connection)    
 
 def ban_user(netid):
+    set_visibility(netid, False)
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
