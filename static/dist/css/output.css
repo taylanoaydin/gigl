@@ -915,13 +915,13 @@ video {
 }
 
 .from-\[\#ff80b5\] {
-  --tw-gradient-from: #ff80b5 var(--tw-gradient-from-position);
+  --tw-gradient-from: #0A2D85 var(--tw-gradient-from-position);
   --tw-gradient-to: rgb(255 128 181 / 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
 .to-\[\#9089fc\] {
-  --tw-gradient-to: #9089fc var(--tw-gradient-to-position);
+  --tw-gradient-to: #114BDF var(--tw-gradient-to-position);
 }
 
 .fill-gray-900 {
@@ -1160,7 +1160,7 @@ video {
 }
 
 .focus-visible\:outline-indigo-600:focus-visible {
-  outline-color: #4f46e5;
+  outline-color: #114BDF;
 }
 
 @media (min-width: 640px) {

@@ -796,4 +796,4 @@ def remove_bookmark(gig_id):
 
 # -----------------------------------------------------------------------
 if __name__ == '__main__':
-    app.run(host='localhost', debug=True, port=8888)
+    app.run(host='localhost', debug=True, port=4444)
