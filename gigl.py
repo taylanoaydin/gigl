@@ -629,20 +629,8 @@ def gigposted_success(gigID):
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    try:
-        flask.session.clear()
-        html_code = flask.render_template('index.html')
-        response = flask.redirect(flask.url_for('index'))
-        return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
-    except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
-    except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+    # Log out of the CAS session, and then the application.
+    return auth.logoutcas()
 # -----------------------------------------------------------------------
 
 
@@ -660,7 +648,6 @@ def freelancer_profile(netid):
         database.update_activity(id)
 
         if request.method == 'POST':
-            print("what the fuck")
             if 'toggle_ban' in request.form:
                 print("yeah")
                 # Call the function to toggle visibility
@@ -730,15 +717,9 @@ def editlinks():
         link3 = linkeditform.link3.data
         link4 = linkeditform.link4.data
         links = [link1, link2, link3, link4]
-        links = filter(lambda x: x != '', links)
-
-        # Validate each link
-        for link in links:
-            if not is_valid_url(link) or len(link) > 200:
-                # Handle invalid link
-                pass
-
-
+        links = list(filter(lambda x: x != '', links))
+        print(links)
+        
         database.update_links(netid, links)
         links = database.get_user(netid).get_links()
         linkeditform = LinkEditForm()
@@ -749,12 +730,22 @@ def editlinks():
         response = flask.make_response(html_code)
         return response
     else:
+        errors = []
+        if linkeditform.link1.errors != []:
+            errors.append(linkeditform.link1.errors[0])
+        if linkeditform.link2.errors != []:
+            errors.append(linkeditform.link2.errors[0])
+        if linkeditform.link3.errors != []:
+            errors.append(linkeditform.link3.errors[0])
+        if linkeditform.link4.errors != []:
+            errors.append(linkeditform.link4.errors[0])
         linkeditform = LinkEditForm()
         links = database.get_user(netid).get_links()
         html_code = flask.render_template(
             'links_in_profile_error.html',
             links=links,
-            linkeditform=linkeditform)
+            linkeditform=linkeditform,
+            errors=errors)
         response = flask.make_response(html_code)
         return response
 
