@@ -10,11 +10,13 @@
     <style>
       /* Define background gradients */
       .gradient-blue-purple {
-        background: radial-gradient(
-  116.18% 118% at 50% 100%,
-  rgba(99, 102, 241, 0.1)0%, 
-  rgba(241, 244, 253, 0.9) 82.52%
+        background: linear-gradient(
+  rgba(10, 45, 133, 0.1)0%, 
+  rgba(229, 235, 250, 1) 100%
 );
+      }
+      .bg-custom {
+        background-color: #E5EBFA; /* New background color */
       }
 
       .header-nav {
@@ -26,7 +28,7 @@
 
       .header-nav a {
         text-decoration: none;
-        color: #333; /* Change the color as needed */
+        color: #07112C; /* Change the color as needed */
         padding: 0.5rem 0.75rem; /* Slightly increased padding for larger links */
         margin: 0 0.5rem; /* Increased margin to balance the larger links */
         font-size: 0.875rem; /* Slightly larger font size */
@@ -38,7 +40,7 @@
 
       /* Style for active/current page */
       .header-nav a.active {
-        border-bottom: 2px solid #333; /* Adjust active indicator as needed */
+        border-bottom: 2px solid #07112C; /* Adjust active indicator as needed */
       }
 
       .text-gradient {
@@ -49,7 +51,7 @@
 
       /* Change the color of the description below the title */
       .description-text {
-        color: #000000; /* Set your desired color */
+        color: #07112C; /* Set your desired color */
       }
 
       .title span {
@@ -60,7 +62,7 @@
   </style>
 </head>
 <body>
-  <div class="bg-white">
+  <div class="bg-custom">
     <header class="absolute inset-x-0 top-0 z-50">
       <nav class="header-nav" aria-label="Global">
         <a href="/index" class="active">Home</a>
