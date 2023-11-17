@@ -10,31 +10,75 @@
     <style>
       /* Define background gradients */
       .gradient-blue-purple {
-        background: linear-gradient(rgba(52, 152, 219, 0.8), rgba(155, 89, 182, 0.8));
+        background: radial-gradient(
+  116.18% 118% at 50% 100%,
+  rgba(99, 102, 241, 0.1)0%, 
+  rgba(241, 244, 253, 0.9) 82.52%
+);
       }
 
-      .gradient-green-yellow {
-          background: linear-gradient(90deg, #2ecc71, #f1c40f);
+      .header-nav {
+        display: flex;
+        justify-content: center; /* Centering the nav items */
+        align-items: center;
+        padding: 0.75rem 1rem; /* Reduced padding for tighter spacing */
+      }
+
+      .header-nav a {
+        text-decoration: none;
+        color: #333; /* Change the color as needed */
+        padding: 0.5rem 0.75rem; /* Slightly increased padding for larger links */
+        margin: 0 0.5rem; /* Increased margin to balance the larger links */
+        font-size: 0.875rem; /* Slightly larger font size */
+      }
+
+      .header-nav a:hover {
+        color: #000; /* Change hover color as needed */
+      }
+
+      /* Style for active/current page */
+      .header-nav a.active {
+        border-bottom: 2px solid #333; /* Adjust active indicator as needed */
+      }
+
+      .text-gradient {
+        background: -webkit-linear-gradient(left, #40c9ff, #e81cff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Change the color of the description below the title */
+      .description-text {
+        color: #000000; /* Set your desired color */
+      }
+
+      .title span {
+        background: -webkit-linear-gradient(left, rgba(77,201,230, 0.8), rgba(33,12,174, 0.8));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
   </style>
 </head>
 <body>
   <div class="bg-white">
     <header class="absolute inset-x-0 top-0 z-50">
-      <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-        <div class="lg:flex lg:flex-1 lg:justify-end">
-          <a href="/home" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
-        </div>
+      <nav class="header-nav" aria-label="Global">
+        <a href="/index" class="active">Home</a>
+        <a href="/features">Features</a>
+        <a href="/about">About</a>
+        <a href="/recent-thoughts">Recent Testimonials</a>
+        <a href="/home" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
       </nav>
     </header>
   
     <div class="relative gradient-blue-purple isolate px-6 pt-14 lg:px-8">
       <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
         <div class="text-center">
-          <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Unlock Your Potential, Freelance with Ease!</h1>
-          <p class="mt-6 text-lg leading-8 text-gray-600">Introducing the future of freelancing. Work, earn, and thrive on your terms. Freelance smarter and achieve your goals with ease.</p>
+          <div class="text-gradient text-4xl font-bold sm:text-3xl mb-2">Freelancing Redefined</div>
+          <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl title">Unlock Your Potential, <span>Freelance</span> with Ease!</h1>
+          <p class="mt-6 text-lg leading-8 description-text">Introducing the future of freelancing. Work, earn, and thrive on your terms. Freelance smarter and achieve your goals with ease.</p>
           <div class="mt-10 flex items-center justify-center gap-x-6">
-            <a href="/home" class="rounded-full bg-indigo-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
+            <a href="/home" class="rounded-md bg-blue-800 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
             <a href="https://github.com/taylanoaydin/gigl" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
           </div>
         </div>
