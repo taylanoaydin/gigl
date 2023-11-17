@@ -11,7 +11,7 @@
       /* Define background gradients */
       .gradient-blue-purple {
         background: linear-gradient(
-  rgba(10, 45, 133, 0.1)0%, 
+  rgba(10, 45, 133, 0.2)0%, 
   rgba(229, 235, 250, 1) 100%
 );
       }
@@ -44,14 +44,20 @@
       }
 
       .text-gradient {
-        background: -webkit-linear-gradient(left, #40c9ff, #e81cff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #0A2D85
       }
 
       /* Change the color of the description below the title */
       .description-text {
         color: #07112C; /* Set your desired color */
+      }
+
+      .bg-button {
+        background-color: #0A2D85;
+      }
+
+      .bg-button-hover {
+        background-color: #114BDF;
       }
 
       .title span {
@@ -66,9 +72,9 @@
     <header class="absolute inset-x-0 top-0 z-50">
       <nav class="header-nav" aria-label="Global">
         <a href="/index" class="active">Home</a>
-        <a href="/features">Features</a>
-        <a href="/about">About</a>
-        <a href="/recent-thoughts">Recent Testimonials</a>
+        <a href="/index">Features</a>
+        <a href="/index">About</a>
+        <a href="/index">Recent Testimonials</a>
         <a href="/home" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
       </nav>
     </header>
@@ -80,7 +86,7 @@
           <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl title">Unlock Your Potential, <span>Freelance</span> with Ease!</h1>
           <p class="mt-6 text-lg leading-8 description-text">Introducing the future of freelancing. Work, earn, and thrive on your terms. Freelance smarter and achieve your goals with ease.</p>
           <div class="mt-10 flex items-center justify-center gap-x-6">
-            <a href="/home" class="rounded-md bg-blue-800 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
+            <a href="/home" class="rounded-md bg-button px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-button-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-100">Get started</a>
             <a href="https://github.com/taylanoaydin/gigl" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
           </div>
         </div>
@@ -102,6 +108,58 @@
         </div>
       </dl>
     </div>
+    <div class="py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:text-center">
+          <h2 class="text-base font-semibold leading-7 text-gradient">Find your next gig!</h2>
+          <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Student-Driven Freelancing Platform for Princeton University</p>
+          <p class="mt-6 text-lg leading-8 text-gray-600">Gigl is an innovative peer-to-peer freelancing platform exclusively for the students of Princeton University. It serves as a bridge, connecting those in need of specific services with those possessing the right skills and expertise. The platform aims to create a vibrant, community-driven marketplace within the campus, accessible through a user-friendly web interface.</p>
+        </div>
+        <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
+          <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-button">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  </svg>
+                </div>
+                Seamless Connection for Campus Needs
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">Gigl simplifies the process of finding or offering services within the Princeton community. Whether you're in need of a quick graduation headshot or offering tutoring services, Gigl connects you with the right people. Just sign in, detail your requirements, and start engaging with peers who either need your skills or have the skills you require.</dd>
+            </div>
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-button">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  </svg>
+                </div>
+                Tailored to the University Community
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">Designed with the unique dynamics of campus life in mind, Gigl is the perfect solution for students looking for an easy, efficient way to navigate freelancing opportunities. It's a platform where the entire university community can participate, ensuring that every service offered or sought is within a familiar and trusted environment.</dd>
+            </div>
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-button">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  </svg>
+                </div>
+                Creating and Finding Gigs Made Simple
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">Gigl makes it effortless to post and find gigs. If you need a job done, simply create a gig with all the necessary details like requirements, deadline, and contact info. These gigs are then searchable for freelancers on campus, who can easily scan through them to find jobs that match their skills and interests.</dd>
+            </div>
+            <div class="relative pl-16">
+              <dt class="text-base font-semibold leading-7 text-gray-900">
+                <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-button">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  </svg>
+                </div>
+                A Marketplace of Skills and Opportunities
+              </dt>
+              <dd class="mt-2 text-base leading-7 text-gray-600">The platform is more than just a job board; it's a marketplace brimming with talent and opportunities. Whether you're a budding photographer, a programming whiz, or a skilled writer, Gigl provides the perfect stage to showcase your talents and find engaging work right on campus.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
   </div>
 </body>
 </html>
