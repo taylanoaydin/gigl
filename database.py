@@ -476,6 +476,22 @@ def update_links(netid, links):
     finally:
         _put_connection(connection)
 
+def update_specialty(netid, newspec):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('BEGIN')
+            query = "UPDATE users SET specialty = %s"
+            query += " WHERE netid = %s"
+
+            cursor.execute(query, [newspec, netid])
+            cursor.execute('COMMIT')
+            return True
+    except Exception as ex:
+        return False
+    finally:
+        _put_connection(connection)    
+
 def ban_user(netid):
     connection = _get_connection()
     try:

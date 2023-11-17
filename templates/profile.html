@@ -20,6 +20,12 @@
       }
 
       /* Toggle Visibility Button */
+      #specialtyBtn {
+         transition: all 0.3s ease;
+         outline: none;
+      }
+
+      /* Toggle Visibility Button */
       #toggleVisibilityBtn {
          padding: 10px 20px;
          border: none;
@@ -170,7 +176,7 @@
                <h3> Specialty:
                   <br>
                   <div>
-                     <button>
+                     <button id="specialtyBtn">
                         {% if specialty == 'Tutor' %}
                         <span
                            class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
@@ -238,6 +244,18 @@
                         </span>
                         {% endif %}
                      </button>
+                     <form hidden id="specialtySelectForm" method="post">
+                        {{ specialtyform.hidden_tag() }}
+                        <div class="flex flex-col space-y-4">
+                           <!-- Render the category select field using WTForms -->
+                           {{ specialtyform.specialty(class_="border border-gray-200 p-2 rounded-lg focus:outline-none
+                           focus:border-teal-500",
+                           value=specialty) }}
+
+                           <!-- Render the submit button using WTForms -->
+                           {{ specialtyform.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
+                        </div>
+                     </form>
                   </div>
                </h3>
             </div>
@@ -456,7 +474,12 @@
             $('#linksEditButton').attr('hidden', '')
             $('#linkEditForm').removeAttr('hidden')
          }
+         else if (section === 'specialty') {
+            $('#specialtyBtn').attr('hidden', '')
+            $('#specialtySelectForm').removeAttr('hidden')
+         }
       }
+
       function handleBioResponse(data) {
          $('#bioSection').html(data)
          $('#bioEditButton').on('click', function () { editProfile('bio'); })
@@ -506,14 +529,38 @@
          $.ajax(requestData)
       }
 
+      function handleSpecialtyResponse(data) {
+         $('#specialtyBtn').html(data)
+         $('#specialtyBtn').removeAttr('hidden')
+         $('#specialtySelectForm').attr('hidden', '')
+      }
+
+      function handleSpecialtyError() {
+         alert('Error: Failed to update data on server')
+      }
+
+      function changeSpecialty(e) {
+         e.preventDefault()
+         let url = '/changespecialty'
+         let requestData = {
+            type: 'POST',
+            url: url,
+            data: $('#specialtySelectForm').serialize(),
+            success: handleSpecialtyResponse,
+            error: handleSpecialtyError
+         }
+         $.ajax(requestData)
+      }
 
       function setup() {
          console.log('setup complete');
          $('#bioEditButton').on('click', function () { editProfile('bio'); })
          $('#linksEditButton').on('click', function () { editProfile('links'); })
+         $('#specialtyBtn').on('click', function () { editProfile('specialty'); })
 
          $('#bioEditForm').on('submit', function (e) { changeBio(e); });
          $('#linkEditForm').on('submit', function (e) { changeLinks(e); });
+         $('#specialtySelectForm').on('submit', function (e) { changeSpecialty(e); })
       }
 
       document.addEventListener('DOMContentLoaded', setup)

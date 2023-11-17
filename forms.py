@@ -88,7 +88,7 @@ class SpecialtySelectForm(FlaskForm):
         ('Fashion Designer', 'Fashion Designer'),
         ('Miscellaneous', 'Miscellaneous')
     ])
-    submit = SubmitField('Search')
+    submit = SubmitField('Choose')
 
 class PostGigForm(FlaskForm):
     def validate_end_date(self, field):

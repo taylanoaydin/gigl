@@ -479,6 +479,7 @@ def profile():
     user = database.get_user(netid)
     bio = user.get_bio()
     links = user.get_links()
+    print(links)
     spec = user.get_specialty()
     username = user.get_name()
     user_email = f"{netid}@princeton.edu"
@@ -486,6 +487,8 @@ def profile():
     bioeditform = BioEditForm()
     bioeditform.bio.data=bio
     linkeditform = LinkEditForm()
+    specialtyform = SpecialtySelectForm()
+    specialtyform.specialty.data = spec
 
     if request.method == 'POST':
         if 'toggle_visibility' in request.form:
@@ -509,7 +512,8 @@ def profile():
         bio=bio,
         links=links,
         bioeditform=bioeditform,
-        linkeditform=linkeditform)  # Pass the visibility status to the template
+        linkeditform=linkeditform,
+        specialtyform=specialtyform)  # Pass the visibility status to the template
     response = flask.make_response(html_code)
     return response
 # -----------------------------------------------------------------------
@@ -677,9 +681,29 @@ def freelancer_profile(netid):
         app.logger.error(f"Unexpected Error: {e}")
         flask.abort(500)  # This will trigger the internal_error_handler
 
-# -----------------------------------------------------------------------
-
-
+# ----------------------------------------------------------------------
+@app.route('/changespecialty', methods=['POST'])
+def changespecialty():
+    netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    specialtyform = SpecialtySelectForm(flask.request.form)
+    if specialtyform.validate_on_submit():
+        newspec = specialtyform.specialty.data
+        database.update_specialty(netid, newspec)
+        html_code = flask.render_template(
+            'newspecialty.html', specialty=newspec)
+        response = flask.make_response(html_code)
+        return response
+    else:
+        spec = database.get_user(netid).get_specialty()
+        html_code = flask.render_template(
+            'newspecialty.html', specialty=spec)
+        response = flask.make_response(html_code)
+        return response
+#-----------------------------------------------------------------------
 @app.route('/editbio', methods=['POST'])
 def editbio():
     netid = auth.authenticate()
@@ -720,7 +744,6 @@ def editlinks():
         link4 = linkeditform.link4.data
         links = [link1, link2, link3, link4]
         links = list(filter(lambda x: x != '', links))
-        print(links)
         
         database.update_links(netid, links)
         links = database.get_user(netid).get_links()
@@ -732,22 +755,12 @@ def editlinks():
         response = flask.make_response(html_code)
         return response
     else:
-        errors = []
-        if linkeditform.link1.errors != []:
-            errors.append(linkeditform.link1.errors[0])
-        if linkeditform.link2.errors != []:
-            errors.append(linkeditform.link2.errors[0])
-        if linkeditform.link3.errors != []:
-            errors.append(linkeditform.link3.errors[0])
-        if linkeditform.link4.errors != []:
-            errors.append(linkeditform.link4.errors[0])
         linkeditform = LinkEditForm()
         links = database.get_user(netid).get_links()
         html_code = flask.render_template(
             'links_in_profile_error.html',
             links=links,
-            linkeditform=linkeditform,
-            errors=errors)
+            linkeditform=linkeditform)
         response = flask.make_response(html_code)
         return response
 
