@@ -63,42 +63,58 @@
       .edit-btn {
          padding: 10px 20px;
          border: none;
-         border-radius: 50px; /* Rounded edges */
+         border-radius: 50px;
+         /* Rounded edges */
          font-size: 16px;
          font-weight: bold;
 
          transition: all 0.3s ease;
-         outline: none; /* Removes the outline */
-         box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-         background-color: #87d0a0; /* Default green background */
-         color: white; /* White text */
-         position: relative; /* Adjusted from absolute to relative */
-         right: 0; /* Reset right positioning */
+         outline: none;
+         /* Removes the outline */
+         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+         /* Adds a subtle shadow */
+         background-color: #87d0a0;
+         /* Default green background */
+         color: white;
+         /* White text */
+         position: relative;
+         /* Adjusted from absolute to relative */
+         right: 0;
+         /* Reset right positioning */
       }
 
 
       .edit-btn:hover {
-         background-color: #40c847; /* Darker green on hover */
+         background-color: #40c847;
+         /* Darker green on hover */
       }
 
 
       .submit-btn {
          padding: 10px 20px;
          border: none;
-         border-radius: 50px; /* Rounded edges */
+         border-radius: 50px;
+         /* Rounded edges */
          font-size: 16px;
          font-weight: bold;
          transition: all 0.3s ease;
-         outline: none; /* Removes the outline */
-         box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-         background-color: #ce8bd2; /* Default green background */
-         color: white; /* White text */
-         position: relative; /* Adjusted from absolute to relative */
-         right: 0; /* Reset right positioning */
+         outline: none;
+         /* Removes the outline */
+         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+         /* Adds a subtle shadow */
+         background-color: #ce8bd2;
+         /* Default green background */
+         color: white;
+         /* White text */
+         position: relative;
+         /* Adjusted from absolute to relative */
+         right: 0;
+         /* Reset right positioning */
       }
 
       .submit-btn:hover {
-         background-color: #ce3ed9; /* Darker green on hover */
+         background-color: #ce3ed9;
+         /* Darker green on hover */
       }
 
       /* By default, hide the collapsible content */
@@ -151,6 +167,79 @@
                <h2 class="text-xl font-bold"> Your Profile </h2>
                <h3> Name: {{username}} </h3>
                <h3> Email: {{user_email}} </h3>
+               <h3> Specialty:
+                  <br>
+                  <div>
+                     <button>
+                        {% if specialty == 'Tutor' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                           Tutor
+                        </span>
+                        {% elif specialty == 'Not Chosen' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                           Not Chosen
+                        </span>
+                        {% elif specialty == 'Researcher' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                           Researcher
+                        </span>
+                        {% elif specialty == 'Developer' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                           Developer
+                        </span>
+                        {% elif specialty == 'Writer' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                           Writer
+                        </span>
+                        {% elif specialty == 'Graphic Designer' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
+                           Graphic Designer
+                        </span>
+                        {% elif specialty == 'Photographer' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
+                           Photographer
+                        </span>
+                        {% elif specialty == 'Volunteer' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
+                           Volunteer
+                        </span>
+                        {% elif specialty == 'Fitness Coach' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
+                           Fitness Coach
+                        </span>
+                        {% elif specialty == 'Cosmetician' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                           Cosmetician
+                        </span>
+                        {% elif specialty == 'Cook' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                           Cook
+                        </span>
+                        {% elif specialty == 'Fashion Designer' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                           Fashion Designer
+                        </span>
+                        {% elif specialty == 'Miscellaneous' %}
+                        <span
+                           class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                           Miscellaneous
+                        </span>
+                        {% endif %}
+                     </button>
+                  </div>
+               </h3>
             </div>
             <!-- Toggle Visibility Form -->
             <div>
@@ -193,7 +282,8 @@
                <ul id="linksDisplay" class="list-inside list-disc mt-2">
                   {% for link in links %}
                   <li class="hover:text-orange-500 mt-1">
-                     <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
+                     <a href="{{ link }}" target="_blank" rel="noopener noreferrer"
+                        class="transition-colors duration-200">{{ link }}</a>
                   </li>
                   {% endfor %}
                </ul>
@@ -214,8 +304,7 @@
                </form>
             </div>
             <div>
-               <button id="linksEditButton" type="submit"
-                  class="edit-btn">
+               <button id="linksEditButton" type="submit" class="edit-btn">
                   Edit
                </button>
             </div>
@@ -258,62 +347,62 @@
                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
                            {% if gig.get_category() == 'teaching' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
                               Teaching
                            </span>
                            {% elif gig.get_category() == 'research' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
                               Research
                            </span>
                            {% elif gig.get_category() == 'technical' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
                               Technical
                            </span>
                            {% elif gig.get_category() == 'writing' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
                               Writing
                            </span>
                            {% elif gig.get_category() == 'graphic_design' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
                               Graphic Design
                            </span>
                            {% elif gig.get_category() == 'photography_film' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
                               Photography/Film
                            </span>
                            {% elif gig.get_category() == 'events' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
                               Events
                            </span>
                            {% elif gig.get_category() == 'marketing' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
                               Marketing
                            </span>
                            {% elif gig.get_category() == 'administrative' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
                               Administrative
                            </span>
                            {% elif gig.get_category() == 'volunteer' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
                               Volunteer
                            </span>
                            {% elif gig.get_category() == 'fitness' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
                               Fitness
                            </span>
                            {% elif gig.get_category() == 'other' %}
                            <span
-                              class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
                               Other
                            </span>
                            {% endif %}

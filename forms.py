@@ -72,9 +72,25 @@ class ProfileSearchForm(FlaskForm):
     ])
     submit = SubmitField('Search')
 
+class SpecialtySelectForm(FlaskForm):
+    specialty = SelectField('Specialty', choices=[
+        ('Not Chosen', 'Not Chosen'),
+        ('Tutor', 'Tutor'),
+        ('Researcher', 'Researcher'),
+        ('Developer', 'Developer'),
+        ('Writer', 'Writer'),
+        ('Graphic Designer', 'Graphic Designer'),
+        ('Photographer', 'Photographer'),
+        ('Volunteer', 'Volunteer'),
+        ('Fitness Coach', 'Fitness Coach'),
+        ('Cosmetician', 'Cosmetician'),
+        ('Cook', 'Cook'),
+        ('Fashion Designer', 'Fashion Designer'),
+        ('Miscellaneous', 'Miscellaneous')
+    ])
+    submit = SubmitField('Search')
 
 class PostGigForm(FlaskForm):
-    
     def validate_end_date(self, field):
         if self.start_date.data and field.data:  # Check if both dates are not None
             if field.data < self.start_date.data:

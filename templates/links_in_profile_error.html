@@ -13,14 +13,14 @@
       {{ linkeditform.hidden_tag() }}
       <div class="flex flex-col space-y-4">
         {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-        focus:border-teal-500", id="link1") }}
+        focus:border-teal-500", id="link1", maxlength="200", value=links[0] if links|length>0 else '') }}
         {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-        focus:border-teal-500", id="link2") }}
+        focus:border-teal-500", id="link2", maxlength="200", value=links[1] if links|length>1 else '') }}
         {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-        focus:border-teal-500", id="link3") }}
+        focus:border-teal-500", id="link3", maxlength="200", value=links[2] if links|length>2 else '') }}
         {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-        focus:border-teal-500", id="link4") }}
-        {{ linkeditform.submit(class_="p-2 mt-2 w-auto rounded-lg bg-purple-200") }}
+        focus:border-teal-500", id="link4", maxlength="200", value=links[3] if links|length>3 else '') }}
+        {{ linkeditform.submit(class_="submit-btn") }}
       </div>
     </form>
   </div>

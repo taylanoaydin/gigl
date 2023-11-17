@@ -13,7 +13,7 @@ import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm
+from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm, SpecialtySelectForm
 from flask import current_app
 from flask import render_template, request, make_response
 from util import profileIDChecker
@@ -479,6 +479,7 @@ def profile():
     user = database.get_user(netid)
     bio = user.get_bio()
     links = user.get_links()
+    spec = user.get_specialty()
     username = user.get_name()
     user_email = f"{netid}@princeton.edu"
 
@@ -503,6 +504,7 @@ def profile():
         mygigs=mygigs,
         myapps=myapps,
         user=user,
+        specialty=spec,
         is_visible=user.is_visible(),
         bio=bio,
         links=links,
