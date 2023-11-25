@@ -133,8 +133,13 @@
                     <tbody class="divide-y divide-gray-200">
                         {% for app in all_apps %}
                         <tr>
-                            <td scope="row" class="p-3 whitespace-nowrap">{{
-                                get_usr(app.get_applicant_netid()).get_name() }}</td>
+                            {% set nid = app.get_applicant_netid() %}
+                            <td scope="row" class="p-3 whitespace-nowrap">
+                                {{ get_usr(nid).get_name() }}
+                                <div class="text-gray-500">
+                                    {{ nid }}@princeton.edu
+                                </div>
+                            </td>
                             <td scope="row" class="p-3 whitespace-nowrap">{{ app.get_message() }}</td>
                         </tr>
                         {% endfor %}
