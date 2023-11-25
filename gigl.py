@@ -384,7 +384,8 @@ def details(id):
                                       apply_form=apply_form,
                                       delete_form=delete_form,
                                       show_confirm=show_confirm,
-                                      isAdmin=isAdmin)
+                                      isAdmin=isAdmin,
+                                      get_usr = database.get_user)
     response = flask.make_response(html_code)
     return response
 # -----------------------------------------------------------------------

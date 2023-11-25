@@ -13,6 +13,7 @@
             width: 80%;
             padding: 1em;
         }
+
         #cancelButton {
             margin-left: 10px;
         }
@@ -125,14 +126,15 @@
                 <table class="w-full">
                     <thead>
                         <tr>
-                            <th class="w-40 p-3 font-semibold tracking-wide text-left">Applicant netid</th>
+                            <th class="w-40 p-3 font-semibold tracking-wide text-left">Applicant Name</th>
                             <th class="w-auto p-3 font-semibold tracking-wide text-left">Message</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         {% for app in all_apps %}
                         <tr>
-                            <td scope="row" class="p-3 whitespace-nowrap">{{ app.get_applicant_netid() }}</td>
+                            <td scope="row" class="p-3 whitespace-nowrap">{{
+                                get_usr(app.get_applicant_netid()).get_name() }}</td>
                             <td scope="row" class="p-3 whitespace-nowrap">{{ app.get_message() }}</td>
                         </tr>
                         {% endfor %}
@@ -188,9 +190,9 @@
             </div>
 
             <div>
-                <blockquote>
-                    Your response: {{ application.get_message() }}
-                </blockquote>
+                Your response: <div scope="row" class="break-word overflow-auto p3 whitespace-nowrap">{{
+                    application.get_message() }}
+                </div>
             </div>
         </section>
         {% endif %}
