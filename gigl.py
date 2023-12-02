@@ -241,19 +241,29 @@ def search_results():
                     'search_results',
                     cat=category,
                     kw=keyword))
+        
+        # Retrieve the current page number and set items per page
+        page = request.args.get('page', 1, type=int)
+        per_page = 6
 
         category = flask.request.args.get('cat')
         keyword = flask.request.args.get('kw')
         search_form.category.data = category
 
         gigs = database.get_gigs(keyword=keyword, categories=[
-                                 category] if category else [])
+                                 category] if category else [], page=page, per_page=per_page)
+        
+        # Calculate total pages for pagination
+        total_gigs = len(database.get_gigs(keyword=keyword, categories=[category] if category else []))
+        total_pages = (total_gigs + per_page - 1) // per_page
         
         for gig in gigs:
             gig.is_bookmarked = database.is_bookmarked(netid, gig.get_gigID())
         # Check if gigs is not an empty list
         if not gigs:
             gigs = []  # Ensure gigs is always a list
+
+    
 
         # Render the template with the search results and the form
         html_code = render_template(
@@ -262,6 +272,8 @@ def search_results():
             mygigs=gigs,
             cat=category,
             kw=keyword,
+            total_pages = total_pages,
+            current_page = page,
             author = database.get_user,
             profileIDChecker = profileIDChecker,
             is_bookmarked = database.is_bookmarked,
@@ -799,5 +811,32 @@ def remove_bookmark(gig_id):
         return flask.jsonify({'status': 'error'})
 
 # -----------------------------------------------------------------------
+
+def pagination_pages(current_page, total_pages, window=3):
+    # Ensure window size is reasonable
+    window = max(2, window)
+    pages = [1, total_pages]
+    # Add the current page and the 'window' pages on either side of it
+    pages.extend([
+        current_page,
+        *range(max(1, current_page - window), min(total_pages + 1, current_page + window + 1))
+    ])
+    # Ensure the start and end ranges are within bounds
+    pages.extend([
+        *range(2, min(window + 2, total_pages)),
+        *range(max(1, total_pages - window), total_pages)
+    ])
+    # Remove duplicates and sort
+    pages = sorted(set(pages))
+
+    # Insert ellipses where there are gaps
+    final_pages = []
+    for i, page in enumerate(pages):
+        if i > 0 and page - pages[i - 1] > 1:
+            final_pages.append('...')
+        final_pages.append(page)
+    return final_pages
+# -----------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run(host='localhost', debug=True, port=8000)
