@@ -243,7 +243,7 @@ def search_results():
                     kw=keyword))
         
         # Retrieve the current page number and set items per page
-        page = request.args.get('page', 6, type=int)
+        page = request.args.get('page', 1, type=int)
         per_page = 6
 
         category = flask.request.args.get('cat')
