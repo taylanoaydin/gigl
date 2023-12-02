@@ -5,7 +5,6 @@
 # -----------------------------------------------------------------------
 
 import os
-import sys
 import psycopg2
 import dotenv
 from cas_details import cas_details

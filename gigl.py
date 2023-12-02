@@ -734,6 +734,7 @@ def editbio():
     else:
         bioeditform = BioEditForm()
         bio = database.get_user(netid).get_bio()
+        bioeditform.bio.data=bio
         html_code = flask.render_template(
             'bio_in_profile_error.html',
             bio=bio,
