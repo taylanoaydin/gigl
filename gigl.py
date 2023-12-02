@@ -455,6 +455,8 @@ def postgig():
                     'gigposted_success',
                     gigID=gig_id))
         else:
+            print(gig_form.start_date.errors)
+            print(gig_form.end_date.errors)
             # TODO: Error handling
             pass
 

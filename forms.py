@@ -3,7 +3,7 @@ from wtforms.validators import InputRequired, ValidationError, Length, DataRequi
 import wtforms.validators as validators
 from wtforms.validators import Optional
 from flask_wtf import FlaskForm
-import datetime
+from datetime import datetime
 from flask_wtf import Form  # Import Form instead of FlaskForm
 
 
@@ -92,23 +92,45 @@ class SpecialtySelectForm(FlaskForm):
 
 class PostGigForm(FlaskForm):
     def validate_end_date(self, field):
-        if self.start_date.data and field.data:  # Check if both dates are not None
-            if field.data < self.start_date.data:
-                raise ValidationError(
-                    'End date must not be earlier than start date.')
-        elif field.data is None:
-            raise ValidationError('End date is required.')
-        elif self.start_date.data is None:
-            raise ValidationError('Start date must be set before end date.')
+        if field.data is None:
+            raise ValidationError(
+                'End Date is required'
+            )
+        elif field.data < datetime.now().date():
+            raise ValidationError(
+                "End date cannot be in the past"
+            )
+        if field.data < self.start_date.data:
+            raise ValidationError(
+                'End date must not be earlier than start date.'
+                )
+        
+    def validate_start_date(self, field):
+        if field.data is None:
+            raise ValidationError(
+                'Start Date is required'
+            )
+        elif field.data < datetime.now().date():
+            raise ValidationError(
+                'Start date cannot be in the past'
+            )
+        if field.data > self.end_date.data:
+            raise ValidationError(
+                'Start date cannot be after the end date'
+            )
         
     title = StringField('Title', validators=[InputRequired(), Length(max=100)])
     start_date = DateField(
         'Start Date',
         validators=[
-            validators.optional()],
+            validate_start_date
+            ],
         format='%Y-%m-%d')
     end_date = DateField(
         'End Date',
+        validators=[
+            validate_end_date
+        ],
         format='%Y-%m-%d')
     qualifications = TextAreaField(
         'Qualifications', validators=[
@@ -152,6 +174,3 @@ class PostGigForm(FlaskForm):
             ('other',
              'Other')])
     submit = SubmitField('Submit')
-
-    def validate_start_date(self, field):
-        pass
