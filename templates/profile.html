@@ -607,12 +607,15 @@
       }
 
       function handleBioError() {
-         alert('Error: Failed to update data on server')
+         alert('Error: Failed to update data on server');
+
+         $('#bioEditForm').find(':submit').prop('disabled', false);
       }
 
       function changeBio(e) {
          e.preventDefault()
-         console.log('Reached change bio function');
+         $('#bioEditForm').find(':submit').prop('disabled', true);
+
          let url = '/editbio'
          let requestData = {
             type: 'POST',
@@ -632,11 +635,14 @@
       }
 
       function handleLinkError() {
-         alert('Error: Failed to update data on server')
+         alert('Error: Failed to update data on server');
+         $('#linkEditForm').find(':submit').prop('disabled', false);
       }
 
       function changeLinks(e) {
          e.preventDefault()
+         $('#linkEditForm').find(':submit').prop('disabled', true);
+
          let url = '/editlinks'
          let requestData = {
             type: 'POST',
@@ -652,14 +658,20 @@
          $('#specialtyBtn').html(data)
          $('#specialtyBtn').removeAttr('hidden')
          $('#specialtySelectForm').attr('hidden', '')
+
+         $('#specialtySelectForm').find(':submit').prop('disabled', false);
       }
 
       function handleSpecialtyError() {
-         alert('Error: Failed to update data on server')
+         alert('Error: Failed to update data on server');
+
+         $('#specialtySelectForm').find(':submit').prop('disabled', false);
       }
 
       function changeSpecialty(e) {
          e.preventDefault()
+         $('#specialtySelectForm').find(':submit').prop('disabled', true);
+
          let url = '/changespecialty'
          let requestData = {
             type: 'POST',
