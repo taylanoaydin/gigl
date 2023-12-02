@@ -104,7 +104,7 @@
          {{ search_form.hidden_tag() }}
          <div class="flex space-x-10">
             <!-- Render the keyword field using WTForms -->
-            {{ search_form.keyword(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+            {{ search_form.keyword(class_="border border-gray-400 p-2 w-full rounded-lg focus:outline-none
             focus:border-teal-500", placeholder="Search for any gig now!", value=kw) }}
 
             <!-- Render the category select field using WTForms -->
@@ -139,7 +139,7 @@
                {% for gig in mygigs %}
                {% if not is_banned(gig.get_netid()): %}
                <tr class="bg-gray-100">
-                  <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                  <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap break-all">
                      <div>
                         <a href="{{ url_for('details', id=gig.get_gigID()) }}"
                            class="font-bold text-blue-500 hover:underline">

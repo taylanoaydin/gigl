@@ -57,17 +57,17 @@
 <div class="flex justify-between items-center p-4">
   <div>
     <h2 class="text-xl font-bold">Links:</h2>
+    {% if links|length == 0 or links|join == '' %}
+    <span class="text-black-400">[You don't have any links yet. Show your portfolio here!]</span>
+  {% else %}
     <ul id="linksDisplay" class="list-inside list-disc mt-2">
-      {% if links|length == 0 or links|join == '' %}
-        <li class="text-black-400">[blank link]</li>
-      {% else %}
         {% for link in links %}
           <li class="hover:text-orange-500 mt-1">
             <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
           </li>
         {% endfor %}
-      {% endif %}
     </ul>
+    {% endif %}
     <form hidden id="linkEditForm" method="post">
       {{ linkeditform.hidden_tag() }}
       <div class="flex flex-col space-y-4">

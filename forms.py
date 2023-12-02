@@ -101,7 +101,7 @@ class PostGigForm(FlaskForm):
         elif self.start_date.data is None:
             raise ValidationError('Start date must be set before end date.')
         
-    title = StringField('Title', validators=[InputRequired(), Length(max=50)])
+    title = StringField('Title', validators=[InputRequired(), Length(max=100)])
     start_date = DateField(
         'Start Date',
         validators=[
@@ -113,11 +113,11 @@ class PostGigForm(FlaskForm):
     qualifications = TextAreaField(
         'Qualifications', validators=[
             InputRequired(), Length(
-                max=900, message='')])
+                max=500)])
     description = TextAreaField(
         'Description', validators=[
             InputRequired(), Length(
-                max=1200, message='')])
+                max=1000)])
     categories = SelectField(
         'Categories',
         validators=[
