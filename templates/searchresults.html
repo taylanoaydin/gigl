@@ -296,6 +296,7 @@
             </tbody>
          </table>
       </div>
+      {% if total_pages > 1 %}
       <div class="flex justify-center space-x-1 mt-4">
          <!-- Always show the first page link and use conditional styling for the current page -->
          <a href="{{ url_for('search_results', page=1, kw=kw, cat=cat) }}"
@@ -325,7 +326,7 @@
          <a href="{{ url_for('search_results', page=total_pages, kw=kw, cat=cat) }}"
             class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == total_pages else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{ total_pages }}</a>
      </div>
-     
+     {% endif %}
      
      
      
