@@ -629,6 +629,43 @@ def is_bookmarked(netid, gigID):
         return False
     finally:
         _put_connection(connection)
+def get_popular_gigs(limit=10):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = """SELECT * FROM gigs ORDER BY posted DESC LIMIT %s"""
+            cursor.execute(query, [limit])
+            gigs = cursor.fetchall()
+            return [gig.Gig(*row) for row in gigs]
+    except Exception as ex:
+        raise
+    finally:
+        _put_connection(connection)
+def get_featured_gigs(limit=10):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = """SELECT * FROM gigs ORDER BY RANDOM() LIMIT %s"""
+            cursor.execute(query, [limit])
+            gigs = cursor.fetchall()
+            return [gig.Gig(*row) for row in gigs]
+    except Exception as ex:
+        raise
+    finally:
+        _put_connection(connection)
+
+def get_new_gigs(limit=10):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = """SELECT * FROM gigs ORDER BY posted DESC LIMIT %s"""
+            cursor.execute(query, [limit])
+            gigs = cursor.fetchall()
+            return [gig.Gig(*row) for row in gigs]
+    except Exception as ex:
+        raise
+    finally:
+        _put_connection(connection)
 
 def _test():
     check_and_add_user('cos-gigl')

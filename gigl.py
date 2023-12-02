@@ -204,8 +204,16 @@ def home():
             categories = []  # This will fetch gigs filtered by the selected category
 
         username = database.get_user(netid).get_name()
+        print(username)
+        popular_gigs = database.get_popular_gigs()  # Function to be implemented
+        print(popular_gigs)
+        featured_gigs = database.get_featured_gigs()  # Adjust to fetch based on user preferences
+        new_gigs = database.get_new_gigs()  # Function to be implemented
         html_code = flask.render_template('home.html', usrname=username,
-                                          search_form=search_form)
+                                      search_form=search_form,
+                                      popular_gigs=popular_gigs,
+                                      featured_gigs=featured_gigs,
+                                      new_gigs=new_gigs)
         response = flask.make_response(html_code)
         return response
     except AuthenticationError as e:

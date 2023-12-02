@@ -54,6 +54,48 @@
       with no registration required!
     </div>
     </sections>
+    <section>
+      <h2 class="text-xl font-bold my-4">Popular Gigs</h2>
+      <div class="grid grid-cols-3 gap-4">
+          {% for gig in popular_gigs %}
+          <div class="border p-4 rounded-lg shadow-md">
+              <h3 class="font-semibold text-lg">{{ gig.get_title() | truncate(30) }}</h3>
+              <p class="text-sm my-2">{{ gig.get_description() | truncate(40) }}</p>
+              <div class="text-right text-xs text-gray-600">Posted: {{ gig.get_post_date() }}</div>
+              <a href="/gig-details/{{ gig.get_gigID() }}" class="text-blue-500 hover:text-blue-700">View Details</a>
+          </div>
+          {% endfor %}
+      </div>
+  </section>
+  <section>
+    <h2 class="text-xl font-bold my-4">Featured Gigs for You</h2>
+    <div class="grid grid-cols-4 gap-4">
+        {% for gig in featured_gigs %}
+        <div class="border p-4 rounded-lg shadow-md">
+            <h3 class="font-semibold text-lg">{{ gig.get_title() | truncate(30) }}</h3>
+            <p class="text-sm my-2">{{ gig.get_description() | truncate(100) }}</p>
+            <div class="text-right text-xs text-gray-600">Posted: {{ gig.get_post_date() }}</div>
+            <a href="/gig-details/{{ gig.get_gigID() }}" class="text-blue-500 hover:text-blue-700">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section>
+  <h2 class="text-xl font-bold my-4">Newly Posted Gigs</h2>
+  <div class="grid grid-cols-4 gap-4">
+      {% for gig in new_gigs %}
+      <div class="border p-4 rounded-lg shadow-md">
+          <h3 class="font-semibold text-lg">{{ gig.get_title() | truncate(30) }}</h3>
+          <p class="text-sm my-2">{{ gig.get_description() | truncate(40) }}</p>
+          <div class="text-right text-xs text-gray-600">Posted: {{ gig.get_post_date() }}</div>
+          <a href="/gig-details/{{ gig.get_gigID() }}" class="text-blue-500 hover:text-blue-700">View Details</a>
+      </div>
+      {% endfor %}
+  </div>
+</section>
+
+
 </body>
 
 </html>
