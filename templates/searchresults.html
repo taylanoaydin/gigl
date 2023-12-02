@@ -18,6 +18,8 @@
       }
    </style>
    <script>
+      let sortStates = {};
+      // OLD SORT FUNCTION IGNORE THIS 
       function sortTable(th_id) {
          var table, rows, headers, i, x, y, shouldSwitch, dir, switchcount = 0;
          table = document.getElementById("resultsTable");
@@ -60,6 +62,62 @@
             }
          }
       }
+      // END OF OLD SORT FUNCTION, actual sorting happens below
+      function sortColumn(th_id, isAscending) {
+         let table = document.getElementById("resultsTable");
+         let headers = table.querySelectorAll("th");
+         const column = Array.from(headers).findIndex(header => header.id === th_id);
+         let tbody = table.tBodies[0];
+         let rows = Array.from(tbody.rows)
+
+         // sort dat
+         rows.sort(function (a, b) {
+            let textA = a.getElementsByTagName("TD")[column].textContent.toLowerCase();
+            let textB = b.getElementsByTagName("TD")[column].textContent.toLowerCase();
+            return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
+         });
+
+         rows.forEach(function (row) {
+            tbody.appendChild(row); // recreate rows
+         });
+      }
+
+      function sortTableByColumn(th_id) {
+         let table = document.getElementById("resultsTable");
+         let headers = table.querySelectorAll("th");
+         const column = Array.from(headers).findIndex(header => header.id === th_id)
+         let isAscending = sortStates[column] = !sortStates[column]; // cool toggl trick
+         sessionStorage.setItem('search_sortState', JSON.stringify(sortStates));
+         sortColumn(th_id, isAscending);
+      }
+
+      function setupTableSort() {
+         let table = document.getElementById("resultsTable");
+         let headers = table.tHead.rows[0].cells;
+         // load saved sort state
+         let savedSortStates = JSON.parse(sessionStorage.getItem('search_sortState'));
+         if (savedSortStates) {
+            sortStates = savedSortStates;
+            console.log('sort states found')
+            console.log(savedSortStates)
+         } else {
+            console.log('no current sort state')
+         }
+
+         for (let i = 0; i < headers.length; i++) {
+            headers[i].addEventListener('click', function () {
+               sortTableByColumn(headers[i].id);
+            });
+
+            // if there's a saved sort state for this column, sort it on page load
+            if (savedSortStates && savedSortStates[i] !== undefined) {
+               console.log('resorting table (old sort state found)')
+               sortColumn(headers[i].id, savedSortStates[i]);
+            }
+         }
+
+         console.log('table sorting setup completed')
+      }
       function toggleBookmark(gigID, element) {
          const isBookmarked = element.classList.contains('fas');
          console.log('Bookmark action:', isBookmarked ? 'remove' : 'add');
@@ -89,6 +147,9 @@
             .catch(error => console.error('Error:', error));
       }
 
+      document.addEventListener('DOMContentLoaded', function () {
+         setupTableSort();
+      });
    </script>
 
 
@@ -122,16 +183,16 @@
          <table id="resultsTable" class="w-full">
             <thead class="bg-gray-200 border-b-2 border-gray-200">
                <tr>
-                  <th id="gigTitle" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer"
-                     onclick="sortTable('gigTitle')">Gig Title</th>
-                  <th id="postedOn" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer"
-                     onclick="sortTable('postedOn')">Posted On</th>
-                  <th id="startDate" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer"
-                     onclick="sortTable('startDate')">Start Date</th>
-                  <th id="endDate" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer"
-                     onclick="sortTable('endDate')">End Date</th>
-                  <th id="category" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer"
-                     onclick="sortTable('category')">Category</th>
+                  <th id="gigTitle" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Gig Title
+                  </th>
+                  <th id="postedOn" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Posted On
+                  </th>
+                  <th id="startDate" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Start Date
+                  </th>
+                  <th id="endDate" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">End Date
+                  </th>
+                  <th id="category" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Category
+                  </th>
                   <th></th>
                </tr>
             </thead>
