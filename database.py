@@ -50,8 +50,9 @@ def _close_all_connections():
 # default returns Gig objects sorted rev-chron by submission date
 # Returns exception if there was an error in database handling
 
-
-def get_gigs(keyword='', categories=None):
+#per_page=1000 makes sure that there aren't more than 5000 gigs shown ever
+# this per_page variable identified how many gigs to pull from DB, so it can be toggled for performance later on
+def get_gigs(keyword='', categories=None, page=1, per_page=100):
     if categories is None:
         categories = []
     gigs = []
@@ -79,7 +80,10 @@ def get_gigs(keyword='', categories=None):
         raise  # Reraise the exception or handle it as needed
     finally:
         _put_connection(connection)
-    return gigs
+        # Pagination logic
+    start = (page - 1) * per_page
+    end = start + per_page
+    return gigs[start:end]
 
 # returns Gig object for the gig with gigID
 
