@@ -175,11 +175,11 @@
 
         {% elif application is none %}
         <section class="w-full md:w-1/2">
-            <form action="" method="post" novalidate>
+            <form action="" method="post" id="applyFormID" novalidate>
                 {{ apply_form.hidden_tag() }} <!-- the CSRF token -->
                 <div class="flex space-x-10">
                     {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none
-                    focus:border-teal-500", rows=1, id="message") }}
+                    focus:border-teal-500", rows=1, id="message", maxlength="1500") }}
                     {{ apply_form.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
                 </div>
             </form>
@@ -194,7 +194,7 @@
             </div>
 
             <div>
-                Your response: <div scope="row" class="break-word overflow-auto p3 whitespace-nowrap">{{
+                Your response: <div scope="row" class="break-all p3 whitespace-nowrap">{{
                     application.get_message() }}
                 </div>
             </div>
@@ -223,6 +223,10 @@
         }
 
         $(document).ready(function () {
+            $('#applyFormID').submit(function (e) {
+                $('#applyFormID').find(':submit').prop('disabled', true);
+            });
+
             $('.deleteGigForm').submit(function (e) {
                 if ($('input[type=submit][clicked=true]').val() === 'Delete') {
                     console.log('delete button clicked')
