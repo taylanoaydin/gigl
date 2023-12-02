@@ -16,6 +16,14 @@
         #cancelButton {
             margin-left: 10px;
         }
+        .status-yes {
+    background-color: #d4edda; /* Slight green */
+}
+
+.status-no {
+    background-color: #f8d7da; /* Slight red */
+}
+
     </style>
 </head>
 
@@ -131,17 +139,26 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         {% for app in all_apps %}
-                        <tr>
-                            {% set nid = app.get_applicant_netid() %}
-                            <td scope="row" class="p-3 whitespace-nowrap">
-                                {{ get_usr(nid).get_name() }}
-                                <div class="text-gray-500">
-                                    {{ nid }}@princeton.edu
-                                </div>
-                            </td>
-                            <td scope="row" class="p-3 whitespace-nowrap break-all">{{ app.get_message() }}</td>
-                        </tr>
-                        {% endfor %}
+{% set nid = app.get_applicant_netid() %}
+{% set status = app.get_status() %}
+<tr class="{{ 'status-yes' if status == 'YES' else 'status-no' if status == 'NO' else '' }}" id="{{ nid }}">
+    <td scope="row" class="p-3 whitespace-nowrap">
+        {{ get_usr(nid).get_name() }}
+        <div class="text-gray-500">
+            {{ nid }}@princeton.edu
+        </div>
+    </td>
+    <td scope="row" class="p-3 whitespace-nowrap break-all">{{ app.get_message() }}</td>
+    <td>
+        <button class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:shadow-outline" onclick="showDropdown('{{ nid }}')">Change Status</button>
+        <div id="dropdown-{{ nid }}" class="dropdown-content" style="display:none;">
+            <a href="#" onclick="updateStatus('{{ app.id }}', 'YES')">Accept</a>
+            <a href="#" onclick="updateStatus('{{ app.id }}', 'UNDECIDED')">Pending</a>
+            <a href="#" onclick="updateStatus('{{ app.id }}', 'NO')">Reject</a>
+        </div>
+    </td>
+</tr>
+{% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -205,6 +222,33 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         'use strict';
+
+        function showDropdown(appId) {
+    var dropdown = $("#dropdown-" + appId);
+    dropdown.toggle();
+}
+
+function updateStatus(appId, status) {
+    $.ajax({
+        url: '/update-status', // Your server-side route
+        method: 'POST',
+        data: {
+            appId: appId,
+            status: status
+        },
+        success: function(response) {
+            // Update the row display based on the response
+            // For example, change the row color or update a status text
+            $("#app-" + appId).css('background-color', getStatusColor(status));
+        }
+    });
+}
+
+function getStatusColor(status) {
+    if (status === 'YES') return '#d4edda'; // Slight green
+    if (status === 'NO') return '#f8d7da'; // Slight red
+    return ''; // Default color for UNDECIDED
+}
 
         function toggleFormButtons(formId, showConfirm) {
             let form = $('#' + formId);
