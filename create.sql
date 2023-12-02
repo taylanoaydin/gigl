@@ -43,6 +43,11 @@ CREATE TABLE apps
   PRIMARY KEY (netid, gigID)
 );
 
+CREATE TYPE status_type AS ENUM ('YES', 'UNDECIDED', 'NO');
+
+ALTER TABLE apps
+ADD COLUMN status status_type DEFAULT 'UNDECIDED';
+
 CREATE TABLE bookmarks
 (
   netid VARCHAR(10),

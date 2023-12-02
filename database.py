@@ -413,8 +413,8 @@ def send_application(netid, gigID, message):
             cursor.execute('BEGIN')
 
             query = """INSERT INTO apps
-                (netid, gigID, message) VALUES
-                (%s, %s, %s)"""
+                (netid, gigID, message, status) VALUES
+                (%s, %s, %s, 'UNDECIDED')"""
             cursor.execute(query, [netid, gigID, message])
 
             cursor.execute('COMMIT')
