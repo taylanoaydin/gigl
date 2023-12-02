@@ -19,10 +19,27 @@
          display: none;
       }
 
-      /* Toggle Visibility Button */
-      #specialtyBtn {
-         transition: all 0.3s ease;
-         outline: none;
+      .specialty-button {
+         display: inline-flex; /* Align items in a flex row */
+         align-items: center; /* Center items vertically */
+         justify-content: center; /* Center items horizontally */
+         padding: 12px 24px; /* Add more padding */
+         font-size: 1rem; /* Set font size */
+         gap: 8px; /* Space between the icon and text */
+         border-radius: 50px; /* Rounded corners */
+         transition: all 0.3s ease; /* Smooth transition for hover effects */
+         cursor: pointer; /* Change mouse cursor on hover */
+         border: none; /* Remove border */
+         color: white; /* Text color */
+         background-color: #76c893; /* Background color */
+         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+         outline: none; /* Remove focus outline */
+      }
+
+      /* Adjust the hover state */
+      .specialty-button:hover {
+         background-color: #45a049; /* Darker shade on hover */
+         box-shadow: 2px 8px 15px rgba(0, 0, 0, 0.3); /* Larger shadow on hover */
       }
 
       /* Toggle Visibility Button */
@@ -164,6 +181,7 @@
 </head>
 
 <body>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
    {% include 'header.html' %} <!--JINJA2 template for the header-->
    <main>
       <br>
@@ -177,6 +195,7 @@
                   <br>
                   <div>
                      <button id="specialtyBtn">
+                        <i class="fas fa-pencil-alt"></i> <!-- Add pencil icon -->
                         {% if specialty == 'Tutor' %}
                         <span
                            class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
@@ -372,62 +391,62 @@
                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
                            {% if gig.get_category() == 'teaching' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
                               Teaching
                            </span>
                            {% elif gig.get_category() == 'research' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
                               Research
                            </span>
                            {% elif gig.get_category() == 'technical' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
                               Technical
                            </span>
                            {% elif gig.get_category() == 'writing' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
                               Writing
                            </span>
                            {% elif gig.get_category() == 'graphic_design' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
                               Graphic Design
                            </span>
                            {% elif gig.get_category() == 'photography_film' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
                               Photography/Film
                            </span>
                            {% elif gig.get_category() == 'events' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
                               Events
                            </span>
                            {% elif gig.get_category() == 'marketing' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
                               Marketing
                            </span>
                            {% elif gig.get_category() == 'administrative' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
                               Administrative
                            </span>
                            {% elif gig.get_category() == 'volunteer' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
                               Volunteer
                            </span>
                            {% elif gig.get_category() == 'fitness' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
                               Fitness
                            </span>
                            {% elif gig.get_category() == 'other' %}
                            <span
-                              class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                              class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
                               Other
                            </span>
                            {% endif %}

@@ -243,7 +243,7 @@ def search_results():
                     kw=keyword))
         
         # Retrieve the current page number and set items per page
-        page = request.args.get('page', 1, type=int)
+        page = request.args.get('page', 6, type=int)
         per_page = 6
 
         category = flask.request.args.get('cat')
@@ -262,8 +262,6 @@ def search_results():
         # Check if gigs is not an empty list
         if not gigs:
             gigs = []  # Ensure gigs is always a list
-
-    
 
         # Render the template with the search results and the form
         html_code = render_template(
