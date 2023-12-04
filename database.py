@@ -629,7 +629,7 @@ def is_bookmarked(netid, gigID):
         return False
     finally:
         _put_connection(connection)
-def get_popular_gigs(limit=10):
+def get_popular_gigs(limit=6):
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
@@ -641,7 +641,7 @@ def get_popular_gigs(limit=10):
         raise
     finally:
         _put_connection(connection)
-def get_featured_gigs(limit=10):
+def get_featured_gigs(limit=6):
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
@@ -654,7 +654,7 @@ def get_featured_gigs(limit=10):
     finally:
         _put_connection(connection)
 
-def get_new_gigs(limit=10):
+def get_new_gigs(limit=6):
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:

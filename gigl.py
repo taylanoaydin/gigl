@@ -213,6 +213,10 @@ def home():
                                       search_form=search_form,
                                       popular_gigs=popular_gigs,
                                       featured_gigs=featured_gigs,
+                                      author = database.get_user,
+                                      profileIDChecker = profileIDChecker,
+                                      is_bookmarked = database.is_bookmarked,
+                                      netid = netid,
                                       new_gigs=new_gigs)
         response = flask.make_response(html_code)
         return response
