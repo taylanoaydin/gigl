@@ -16,14 +16,16 @@
         #cancelButton {
             margin-left: 10px;
         }
-        .status-yes {
-    background-color: #d4edda; /* Slight green */
+        .status-YES {
+    background-color: rgba(212, 237, 218, 0.5); /* Lighter and more transparent green */
 }
 
-.status-no {
-    background-color: #f8d7da; /* Slight red */
+.status-NO {
+    background-color: rgba(248, 215, 218, 0.5); /* Lighter and more transparent red */
 }
 
+.status-UNDECIDED { /* This is the default color */ 
+}
     </style>
 </head>
 
@@ -141,7 +143,7 @@
                         {% for app in all_apps %}
 {% set nid = app.get_applicant_netid() %}
 {% set status = app.get_status() %}
-<tr class="{{ 'status-yes' if status == 'YES' else 'status-no' if status == 'NO' else '' }}" id="{{ nid }}">
+<tr class="{{ 'status-YES' if status == 'YES' else 'status-NO' if status == 'NO' else 'status-UNDECIDED' }}" id="{{ nid }}-row">
     <td scope="row" class="p-3 whitespace-nowrap">
         {{ get_usr(nid).get_name() }}
         <div class="text-gray-500">
@@ -150,12 +152,12 @@
     </td>
     <td scope="row" class="p-3 whitespace-nowrap break-all">{{ app.get_message() }}</td>
     <td>
-        <button class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:shadow-outline" onclick="showDropdown('{{ nid }}')">Change Status</button>
-        <div id="dropdown-{{ nid }}" class="dropdown-content" style="display:none;">
-            <a href="#" onclick="updateStatus('{{ app.id }}', 'YES')">Accept</a>
-            <a href="#" onclick="updateStatus('{{ app.id }}', 'UNDECIDED')">Pending</a>
-            <a href="#" onclick="updateStatus('{{ app.id }}', 'NO')">Reject</a>
-        </div>
+        <form class ="stat_forms" id="{{ nid }}-StatusForm" method="post">
+            {{ setstatusforms[nid].hidden_tag() }}
+            {{ setstatusforms[nid].gigID() }}
+            {{ setstatusforms[nid].applicantID() }}
+            {{ setstatusforms[nid].status(class="p-2 w-auto rounded-lg") }}
+        </form>
     </td>
 </tr>
 {% endfor %}
@@ -222,33 +224,46 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         'use strict';
-
-        function showDropdown(appId) {
-    var dropdown = $("#dropdown-" + appId);
-    dropdown.toggle();
-}
-
-function updateStatus(appId, status) {
-    $.ajax({
-        url: '/update-status', // Your server-side route
-        method: 'POST',
-        data: {
-            appId: appId,
-            status: status
-        },
-        success: function(response) {
-            // Update the row display based on the response
-            // For example, change the row color or update a status text
-            $("#app-" + appId).css('background-color', getStatusColor(status));
+        function updateStatus(e, netid, status) {
+            e.preventDefault();
+            
+            console.log("HEY")
+            console.log($(`#${netid}-StatusForm`).serialize())
+            let requestData = {
+                type: 'POST',
+                url: '/update_status',
+                data: $(`#${netid}-StatusForm`).serialize(),
+                success: function (response) {
+                    if(response.status){
+                        $(`#${netid}-row`).removeClass('status-YES status-NO status-UNDECIDED');
+                        $(`#${netid}-row`).addClass(`status-${status}`);
+                        $(`#${netid}-StatusForm`).find(':input').prop('disabled', false);
+                    }
+                    else {
+                        $(`#${netid}-StatusForm`).find(':input').prop('disabled', false);
+                        if ($(`#${netid}-row`).hasClass('status-YES'))
+                            $(`#${netid}-StatusForm [name="status"]`).val('YES');
+                        else if ($(`#${netid}-row`).hasClass('status-NO'))
+                            $(`#${netid}-StatusForm [name="status"]`).val('NO');
+                        else
+                            $(`#${netid}-StatusForm [name="status"]`).val('UNDECIDED');
+                        alert('WOOPS');
+                    }
+                },
+                error: function (response) {
+                    $(`#${netid}-StatusForm`).find(':input').prop('disabled', false);
+                    if ($(`#${netid}-row`).hasClass('status-YES'))
+                        $(`#${netid}-StatusForm [name="status"]`).val('YES');
+                    else if ($(`#${netid}-row`).hasClass('status-NO'))
+                        $(`#${netid}-StatusForm [name="status"]`).val('NO');
+                    else
+                        $(`#${netid}-StatusForm [name="status"]`).val('UNDECIDED');
+                    alert('Error updating status. Please try again.');
+                }
+            };
+            $(`#${netid}-StatusForm`).find(':input').prop('disabled', true);
+            $.ajax(requestData);
         }
-    });
-}
-
-function getStatusColor(status) {
-    if (status === 'YES') return '#d4edda'; // Slight green
-    if (status === 'NO') return '#f8d7da'; // Slight red
-    return ''; // Default color for UNDECIDED
-}
 
         function toggleFormButtons(formId, showConfirm) {
             let form = $('#' + formId);
@@ -286,6 +301,12 @@ function getStatusColor(status) {
                 let formId = $(this).closest('form').attr('id');
                 toggleFormButtons(formId, false);
 
+            });
+
+            $('.stat_forms').on('change', function (e) {
+                let netid = $(this).attr('id').split('-')[0];
+                let status = $(this).find(':selected').val();
+                updateStatus(e, netid, status);
             });
 
             $(document).on('click', 'input[type=submit]', function () {

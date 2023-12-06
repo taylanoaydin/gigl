@@ -565,6 +565,21 @@ def is_banned(netid): # finish
         raise ex
     finally:
         _put_connection(connection)
+
+def update_status(gigID, netid, status):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('BEGIN')
+            query = "UPDATE apps SET status = %s"
+            query += " WHERE gigID = %s AND netid = %s"
+
+            cursor.execute(query, [status, gigID, netid])
+            cursor.execute('COMMIT')
+            return True
+    finally:
+        _put_connection(connection)
+
 # -----------------------------------------------------------------------
 
 # BOOLEAN RETURN FUNCTIONS
