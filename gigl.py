@@ -13,7 +13,7 @@ import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm, SpecialtySelectForm
+from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm, SpecialtySelectForm, SetStatusForm
 from flask import current_app
 from flask import render_template, request, make_response
 from util import profileIDChecker
@@ -390,6 +390,15 @@ def details(id):
         # elif delete_form.cancel.data:
         #     return flask.redirect(url)
 
+    setstatusforms = {}
+    if owns:
+        for app in all_apps:
+            setstatusform = SetStatusForm()
+            setstatusform.status.data = app.get_status()
+            setstatusform.gigID.data = app.get_gigID()
+            setstatusform.applicantID.data = app.get_applicant_netid()
+            setstatusforms[app.get_applicant_netid()] = setstatusform
+    
     html_code = flask.render_template('details.html',
                                       gigTitle=gigTitle,
                                       gigPoster=gigAuthor,
@@ -407,7 +416,8 @@ def details(id):
                                       delete_form=delete_form,
                                       show_confirm=show_confirm,
                                       isAdmin=isAdmin,
-                                      get_usr = database.get_user)
+                                      get_usr = database.get_user,
+                                      setstatusforms=setstatusforms)
     response = flask.make_response(html_code)
     return response
 # -----------------------------------------------------------------------
@@ -789,6 +799,29 @@ def editlinks():
         response = flask.make_response(html_code)
         return response
 
+@app.route('/update_status', methods=['POST'])
+def update_status():
+    netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    try:
+        status_form = SetStatusForm(flask.request.form)
+        print(flask.request.form)
+        if status_form.validate():
+            print("wow")
+            if not database.owns_gig(netid, status_form.gigID.data):
+                return flask.jsonify({'status': False})
+            database.update_status(status_form.gigID.data, status_form.applicantID.data, status_form.status.data)
+            return flask.jsonify({'status': True})
+        else:
+            print(status_form.errors)
+            print("wow2")
+            return flask.jsonify({'status': False})
+    except Exception as e:
+        print('wow3')
+        return flask.jsonify({'status': False})
 
 @app.route('/add_bookmark/<int:gig_id>', methods=['POST'])
 def add_bookmark_route(gig_id):

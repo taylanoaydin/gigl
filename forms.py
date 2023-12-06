@@ -1,4 +1,4 @@
-from wtforms import SubmitField, TextAreaField, StringField, DateField, SelectField
+from wtforms import SubmitField, TextAreaField, StringField, DateField, SelectField, HiddenField
 from wtforms.validators import InputRequired, ValidationError, Length, DataRequired
 import wtforms.validators as validators
 from wtforms.validators import Optional
@@ -89,6 +89,15 @@ class SpecialtySelectForm(FlaskForm):
         ('Miscellaneous', 'Miscellaneous')
     ])
     submit = SubmitField('Choose')
+
+class SetStatusForm(FlaskForm):
+    applicantID = HiddenField('AppID')
+    gigID = HiddenField('GigID')
+    status = SelectField('Status', choices=[
+        ('YES', 'Accepted'),
+        ('UNDECIDED', 'Pending'),
+        ('NO', 'Rejected')
+    ])
 
 class PostGigForm(FlaskForm):
     def validate_end_date(self, field):
