@@ -234,7 +234,7 @@ def get_user(netid):
             if row is None:
                 return None
 
-            thisuser = user.User(*row, banned=is_banned(row[0]))
+            thisuser = user.User(*row)
     except Exception as ex:
         
         raise
@@ -252,7 +252,7 @@ def get_freelancers(keyword='', specialty=''):
             kw = '%' + keyword + '%'
             all_args = [kw]
             query = """SELECT netid, name, specialty, last_active, visible FROM users
-                       WHERE name ILIKE %s AND visible"""
+                       WHERE name ILIKE %s AND visible AND NOT banned"""
             if specialty != '':
                 query += " AND specialty=%s"
                 all_args.append(specialty)
@@ -282,12 +282,12 @@ def get_all_users(keyword='', specialty=''):
         with connection.cursor() as cursor:
             kw = '%' + keyword + '%'
             all_args = [kw]
-            query = """SELECT netid, name, specialty, last_active, visible FROM users
+            query = """SELECT netid, name, specialty, last_active, visible, banned FROM users
                        WHERE name ILIKE %s"""
             if specialty != '':
                 query += " AND specialty=%s"
                 all_args.append(specialty)
-            query += " ORDER BY last_active DESC"
+            query += " ORDER BY banned DESC, last_active DESC"
 
             cursor.execute(query, all_args)
             table = cursor.fetchall()
@@ -297,7 +297,8 @@ def get_all_users(keyword='', specialty=''):
                     name=row[1],
                     visible=row[4],
                     specialty=row[2],
-                    last_active=row[3])
+                    last_active=row[3],
+                    banned=row[5])
                 users.append(thisuser)
             return users
     except Exception as ex:
@@ -322,7 +323,7 @@ def check_and_add_user(netid):
                 cursor.execute('BEGIN')
 
                 usrname = cas_details(netid)[0]
-                query = "INSERT INTO users (netid, name, visible, bio, links, specialty, last_active) VALUES (%s, %s, 'n', '', '', 'Not Chosen', %s)"
+                query = "INSERT INTO users (netid, name, visible, bio, links, specialty, last_active, banned) VALUES (%s, %s, 'n', '', '', 'Not Chosen', %s, false)"
                 cursor.execute(query, [netid, usrname, datetime.now().date()])
 
                 cursor.execute('COMMIT')
@@ -520,14 +521,13 @@ def update_specialty(netid, newspec):
         _put_connection(connection)    
 
 def ban_user(netid):
-    set_visibility(netid, False)
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
             if is_banned(netid):
                 return True
             cursor.execute('BEGIN')
-            query = "INSERT INTO banned_users (netid) VALUES (%s)"
+            query = "UPDATE users SET banned=true WHERE netid=%s"
 
             cursor.execute(query, [netid])
             cursor.execute('COMMIT')
@@ -542,7 +542,7 @@ def unban_user(netid):
     try:
         with connection.cursor() as cursor:
             cursor.execute('BEGIN')
-            query = "DELETE FROM banned_users WHERE netid=%s"
+            query = "UPDATE users SET banned=false WHERE netid=%s"
 
             cursor.execute(query, [netid])
             cursor.execute('COMMIT')
@@ -556,11 +556,11 @@ def is_banned(netid): # finish
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
-            query = "SELECT FROM banned_users WHERE netid=%s"
+            query = "SELECT banned FROM users WHERE netid=%s"
             cursor.execute(query, [netid])
             row = cursor.fetchone()
             
-            return not (row is None)
+            return row[0] if row else False
     except Exception as ex:
         raise ex
     finally:

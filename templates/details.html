@@ -226,9 +226,7 @@
         'use strict';
         function updateStatus(e, netid, status) {
             e.preventDefault();
-            
-            console.log("HEY")
-            console.log($(`#${netid}-StatusForm`).serialize())
+
             let requestData = {
                 type: 'POST',
                 url: '/update_status',
@@ -313,7 +311,6 @@
                 $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
                 $(this).attr('clicked', 'true');
             });
-            console.log('setup complete')
         })
     </script>
 </body>

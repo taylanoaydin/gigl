@@ -57,7 +57,7 @@
           <tr class="bg-gray-100">
             <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a
                 href="{{ url_for('freelancer_profile', netid=flancer.get_netid()) }}"
-                class="font-bold {{ 'text-blue-500' if flancer.is_visible() else 'text-red-500' }} hover:underline">{{
+                class="font-bold {{ 'text-red-500' if flancer.is_banned() else 'text-green-500' if flancer.is_visible() else 'text-gray-500' }} hover:underline">{{
                 flancer.get_name() }}</a></td>
             <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
               {% if flancer.get_specialty() == 'Tutor' %}
@@ -129,6 +129,15 @@
       </table>
     </div>
   </section>
+
+  <script>
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    };
+
+  </script>
 </body>
 
 </html>
