@@ -40,7 +40,7 @@ ADD COLUMN num_apps integer DEFAULT 0;
 ALTER TABLE users
 ADD COLUMN banned boolean not null DEFAULT FALSE;
 
-CREATE INDEX index_users_banned ON gigs(banned);
+CREATE INDEX index_users_banned ON users(banned);
 
 CREATE INDEX index_gigs_apps ON gigs(num_apps);
 
