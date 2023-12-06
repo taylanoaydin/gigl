@@ -34,6 +34,10 @@ CREATE INDEX index_gigs_netid ON gigs(netid);
 CREATE INDEX index_gigs_posted ON gigs(posted);
 CREATE INDEX index_gigs_category ON gigs(category);
 
+ALTER TABLE gigs
+ADD COLUMN num_apps integer DEFAULT 0;
+
+CREATE INDEX index_gigs_apps ON gigs(num_apps);
 
 CREATE TABLE apps
 (
