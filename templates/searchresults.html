@@ -120,10 +120,8 @@
       }
       function toggleBookmark(gigID, element) {
          const isBookmarked = element.classList.contains('fas');
-         console.log('Bookmark action:', isBookmarked ? 'remove' : 'add');
-         console.log('Gig ID:', gigID);
+
          const url = isBookmarked ? '/remove_bookmark/' + gigID : '/add_bookmark/' + gigID;
-         console.log('URL:', url);
          fetch(url, { method: 'POST' })
             .then(response => response.json())
             .then(data => {

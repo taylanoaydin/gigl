@@ -204,9 +204,7 @@ def home():
             categories = []  # This will fetch gigs filtered by the selected category
 
         username = database.get_user(netid).get_name()
-        print(username)
         popular_gigs = database.get_popular_gigs()  # Function to be implemented
-        print(popular_gigs)
         featured_gigs = database.get_featured_gigs()  # Adjust to fetch based on user preferences
         new_gigs = database.get_new_gigs()  # Function to be implemented
         html_code = flask.render_template('home.html', usrname=username,
@@ -548,7 +546,8 @@ def profile():
         links=links,
         bioeditform=bioeditform,
         linkeditform=linkeditform,
-        specialtyform=specialtyform)  # Pass the visibility status to the template
+        specialtyform=specialtyform,
+        get_this_gig = database.get_gig_details)  # Pass the visibility status to the template
     response = flask.make_response(html_code)
     return response
 # -----------------------------------------------------------------------
@@ -699,7 +698,7 @@ def freelancer_profile(netid):
                 return flask.redirect(flask.url_for('freelancer_profile', netid=netid))
 
         freelancer = database.get_user(netid)
-        if freelancer and (freelancer.is_visible() or isAdmin):
+        if freelancer and ((freelancer.is_visible() and not freelancer.is_banned()) or isAdmin):
             return render_template('freelancer.html', freelancer=freelancer, isAdmin = isAdmin)
         else:
             # Handle the case where the freelancer does not exist or is not
@@ -808,19 +807,14 @@ def update_status():
         return response
     try:
         status_form = SetStatusForm(flask.request.form)
-        print(flask.request.form)
         if status_form.validate():
-            print("wow")
             if not database.owns_gig(netid, status_form.gigID.data):
                 return flask.jsonify({'status': False})
             database.update_status(status_form.gigID.data, status_form.applicantID.data, status_form.status.data)
             return flask.jsonify({'status': True})
         else:
-            print(status_form.errors)
-            print("wow2")
             return flask.jsonify({'status': False})
     except Exception as e:
-        print('wow3')
         return flask.jsonify({'status': False})
 
 @app.route('/add_bookmark/<int:gig_id>', methods=['POST'])
