@@ -378,8 +378,8 @@ def create_gig(netid, title, category, description, qualf, startfrom,
 
             query = """INSERT INTO gigs
             (netid, title, category, description,
-            qualf, startfrom, until, posted)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING gigID"""
+            qualf, startfrom, until, posted, num_apps)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0) RETURNING gigID"""
 
             cursor.execute(
                 query, [
@@ -416,6 +416,9 @@ def send_application(netid, gigID, message):
                 (netid, gigID, message, status) VALUES
                 (%s, %s, %s, 'UNDECIDED')"""
             cursor.execute(query, [netid, gigID, message])
+
+            query = "UPDATE gigs SET num_apps = num_apps + 1 WHERE gigID = %s"
+            cursor.execute(query, [gigID])
 
             cursor.execute('COMMIT')
             return True

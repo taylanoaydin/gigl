@@ -7,7 +7,7 @@
 class Gig:
 
     def __init__(self, gigID, netid,
-                 title, cat, desc, qual, from_date, til_date, post_date):
+                 title, cat, desc, qual, from_date, til_date, post_date, num_apps):
         self._gigID = gigID
         self._netid = netid
         self._title = title
@@ -17,6 +17,7 @@ class Gig:
         self._from_date = from_date
         self._til_date = til_date
         self._post_date = post_date
+        self._num_apps = num_apps
 
     def get_netid(self):
         return self._netid
@@ -44,6 +45,9 @@ class Gig:
 
     def get_post_date(self):
         return self._post_date
+
+    def get_num_apps(self):
+        return self._num_apps
 
 # -----------------------------------------------------------------------
 
