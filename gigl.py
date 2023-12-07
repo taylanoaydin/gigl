@@ -789,12 +789,14 @@ def editlinks():
         response = flask.make_response(html_code)
         return response
     else:
+        err = linkeditform.errors
         linkeditform = LinkEditForm()
         links = database.get_user(netid).get_links()
         html_code = flask.render_template(
             'links_in_profile_error.html',
             links=links,
-            linkeditform=linkeditform)
+            linkeditform=linkeditform,
+            errs=err)
         response = flask.make_response(html_code)
         return response
 
