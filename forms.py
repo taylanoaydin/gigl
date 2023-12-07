@@ -1,10 +1,9 @@
 from wtforms import SubmitField, TextAreaField, StringField, DateField, SelectField, HiddenField
 from wtforms.validators import InputRequired, ValidationError, Length, DataRequired
-import wtforms.validators as validators
-from wtforms.validators import Optional
+from wtforms.validators import Optional, ValidationError
 from flask_wtf import FlaskForm
 from datetime import datetime
-from flask_wtf import Form  # Import Form instead of FlaskForm
+import validators
 
 
 class ApplyForm(FlaskForm):
@@ -20,10 +19,17 @@ class BioEditForm(FlaskForm):
 
 
 class LinkEditForm(FlaskForm):
-    link1 = StringField('Link1', [Length(min=0, max=50)])
-    link2 = StringField('Link2', [Length(min=0, max=50)])
-    link3 = StringField('Link3', [Length(min=0, max=50)])
-    link4 = StringField('Link4', [Length(min=0, max=50)])
+    def validate_url(form, field):
+        if (field.data.startswith('http://') or field.data.startswith('https://')):
+            if not validators.url(field.data):
+                raise ValidationError('This field must be a valid URL.')
+        elif field.data and not validators.url('https://' + field.data):
+            raise ValidationError('This field must be a valid URL.')
+
+    link1 = StringField('Link1', validators=[Length(min=0, max=50), validate_url])
+    link2 = StringField('Link2', validators=[Length(min=0, max=50), validate_url])
+    link3 = StringField('Link3', validators=[Length(min=0, max=50), validate_url])
+    link4 = StringField('Link4', validators=[Length(min=0, max=50), validate_url])
     submit = SubmitField('Submit')
 
 
