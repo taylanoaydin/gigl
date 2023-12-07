@@ -198,7 +198,7 @@
                 {{ apply_form.hidden_tag() }} <!-- the CSRF token -->
                 <div class="flex space-x-10">
                     {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none
-                    focus:border-teal-500", rows=1, id="message", maxlength="1500") }}
+                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your qualifications, availability, and any relevant info. You will be contacted if there is a match. ") }}
                     {{ apply_form.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
                 </div>
             </form>
@@ -312,6 +312,12 @@
                 $(this).attr('clicked', 'true');
             });
         })
+
+        window.onpageshow = function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    };
     </script>
 </body>
 
