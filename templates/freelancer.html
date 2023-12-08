@@ -1,48 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gigl</title>
-    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
-    <style>
-        #toggleBanBtn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 50px;
-            /* Rounded edges */
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            outline: none;
-            /* Removes the outline */
-            box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
-            /* Adds a subtle shadow */
-        }
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>gigl</title>
+   <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+   <style>
+       #toggleBanBtn {
+           padding: 10px 20px;
+           border: none;
+           border-radius: 50px;
+           /* Rounded edges */
+           font-size: 16px;
+           font-weight: bold;
+           transition: all 0.3s ease;
+           outline: none;
+           /* Removes the outline */
+           box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+           /* Adds a subtle shadow */
+       }
 
-        .btn-notbanned {
-            background-color: #76c893;
-            /* A nicer shade of green */
-            color: white;
-        }
 
-        .btn-banned {
-            background-color: #ff867c;
-            /* A nicer shade of red */
-            color: white;
-        }
+       .btn-notbanned {
+           background-color: #76c893;
+           /* A nicer shade of green */
+           color: white;
+       }
 
-        /* Hover effects */
-        .btn-notbanned:hover {
-            background-color: #45a049;
-        }
 
-        .btn-banned:hover {
-            background-color: #d32f2f;
-        }
-    </style>
+       .btn-banned {
+           background-color: #ff867c;
+           /* A nicer shade of red */
+           color: white;
+       }
+
+
+       /* Hover effects */
+       .btn-notbanned:hover {
+           background-color: #45a049;
+       }
+
+
+       .btn-banned:hover {
+           background-color: #d32f2f;
+       }
+   </style>
 </head>
+
 
 <body class="bg-gray-100">
     {% include 'header.html' %}
@@ -119,5 +125,6 @@
 
     </script>
 </body>
+
 
 </html>

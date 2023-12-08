@@ -1,143 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!--will scale to diff browser sizes-->
-  <title>gigl</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
-  <style>
-    section {
-      margin: 0 auto;
-      width: 80%;
-      padding: 1em;
-    }
-  </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <!--will scale to diff browser sizes-->
+ <title>gigl</title>
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+ <style>
+   section {
+     margin: 0 auto;
+     width: 80%;
+     padding: 1em;
+   }
+ </style>
 </head>
 
+
 <body>
-  {% include 'header.html' %}
-  <section>
-    <h1>Search for Freelancers</h1>
-    <!-- Update the form to use WTForms -->
-    <form method="POST">
-      {{ psearch_form.hidden_tag() }}
-      <div class="flex space-x-10">
-        <!-- Render the keyword field using WTForms -->
-        {{ psearch_form.keyword(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-        focus:border-teal-500", placeholder="Search for anybody now!", value=kw) }}
+ {% include 'header.html' %}
+ <section>
+   <h1>Search for Freelancers</h1>
+   <!-- Update the form to use WTForms -->
+   <form method="POST">
+     {{ psearch_form.hidden_tag() }}
+     <div class="flex space-x-10">
+       <!-- Render the keyword field using WTForms -->
+       {{ psearch_form.keyword(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+       focus:border-teal-500", placeholder="Search for anybody now!", value=kw) }}
 
-        <!-- Render the category select field using WTForms -->
-        {{ psearch_form.specialty(class_="border border-gray-200 p-2 rounded-lg focus:outline-none
-        focus:border-teal-500",
-        value=spec) }}
 
-        <!-- Render the submit button using WTForms -->
-        {{ psearch_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
-      </div>
-    </form>
-  </section>
-  <section>
-    <h2>Search Results</h2>
-    <div class="overflow-auto rounded-lg">
-      <table id="resultsTable" class="w-full">
-        <thead class="bg-gray-200 border-b-2 border-gray-200">
-          <tr>
-            <th id="name" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Name</th>
-            <th id="specialty" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Specialty</th>
-            <th id="lastactive" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Last Active
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-150">
-          {% for flancer in freelancers %}
-          <tr class="bg-gray-100">
-            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a
-                href="{{ url_for('freelancer_profile', netid=flancer.get_netid()) }}"
-                class="font-bold {{ 'text-red-500' if flancer.is_banned() else 'text-green-500' if flancer.is_visible() else 'text-gray-500' }} hover:underline">{{
-                flancer.get_name() }}</a></td>
-            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
-              {% if flancer.get_specialty() == 'Tutor' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
-                Tutor
-              </span>
-              {% elif flancer.get_specialty() == 'Researcher' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                Researcher
-              </span>
-              {% elif flancer.get_specialty() == 'Developer' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
-                Developer
-              </span>
-              {% elif flancer.get_specialty() == 'Writer' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
-                Writer
-              </span>
-              {% elif flancer.get_specialty() == 'Graphic Designer' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
-                Graphic Designer
-              </span>
-              {% elif flancer.get_specialty() == 'Photographer' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
-                Photographer
-              </span>
-              {% elif flancer.get_specialty() == 'Volunteer' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
-                Volunteer
-              </span>
-              {% elif flancer.get_specialty() == 'Fitness Coach' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
-                Fitness Coach
-              </span>
-              {% elif flancer.get_specialty() == 'Cosmetician' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
-                Cosmetician
-              </span>
-              {% elif flancer.get_specialty() == 'Cook' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                Cook
-              </span>
-              {% elif flancer.get_specialty() == 'Fashion Designer' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
-                Fashion Designer
-              </span>
-              {% elif flancer.get_specialty() == 'Miscellaneous' %}
-              <span
-                class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
-                Miscellaneous
-              </span>
-              {% endif %}
-            </td>
-            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ flancer.get_active() }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </section>
+       <!-- Render the category select field using WTForms -->
+       {{ psearch_form.specialty(class_="border border-gray-200 p-2 rounded-lg focus:outline-none
+       focus:border-teal-500",
+       value=spec) }}
 
-  <script>
-    window.onpageshow = function(event) {
-        if (event.persisted) {
-            window.location.reload();
-        }
-    };
 
-  </script>
+       <!-- Render the submit button using WTForms -->
+       {{ psearch_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
+     </div>
+   </form>
+ </section>
+ <section>
+   <h2>Search Results</h2>
+   <div class="overflow-auto rounded-lg">
+     <table id="resultsTable" class="w-full">
+       <thead class="bg-gray-200 border-b-2 border-gray-200">
+         <tr>
+           <th id="name" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Name</th>
+           <th id="specialty" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Specialty</th>
+           <th id="lastactive" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Last Active
+           </th>
+         </tr>
+       </thead>
+       <tbody class="divide-y divide-gray-150">
+         {% for freelancer in freelancers %}
+         <tr class="bg-gray-100">
+           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a
+               href="{{ url_for('freelancer_profile', netid=freelancer.get_netid()) }}"
+               class="font-bold {{ 'text-red-500' if freelancer.is_banned() else 'text-green-500' if freelancer.is_visible() else 'text-gray-500' }} hover:underline">{{
+               freelancer.get_name() }}</a></td>
+           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
+             {% if freelancer.get_specialty() == 'Tutor' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+               Tutor
+             </span>
+             {% elif freelancer.get_specialty() == 'Researcher' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+               Researcher
+             </span>
+             {% elif freelancer.get_specialty() == 'Developer' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+               Developer
+             </span>
+             {% elif freelancer.get_specialty() == 'Writer' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+               Writer
+             </span>
+             {% elif freelancer.get_specialty() == 'Graphic Designer' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
+               Graphic Designer
+             </span>
+             {% elif freelancer.get_specialty() == 'Photographer' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
+               Photographer
+             </span>
+             {% elif freelancer.get_specialty() == 'Volunteer' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
+               Volunteer
+             </span>
+             {% elif freelancer.get_specialty() == 'Fitness Coach' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
+               Fitness Coach
+             </span>
+             {% elif freelancer.get_specialty() == 'Cosmetician' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+               Cosmetician
+             </span>
+             {% elif freelancer.get_specialty() == 'Cook' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+               Cook
+             </span>
+             {% elif freelancer.get_specialty() == 'Fashion Designer' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+               Fashion Designer
+             </span>
+             {% elif freelancer.get_specialty() == 'Miscellaneous' %}
+             <span
+               class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+               Miscellaneous
+             </span>
+             {% endif %}
+           </td>
+           <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ freelancer.get_active() }}</td>
+         </tr>
+         {% endfor %}
+       </tbody>
+     </table>
+   </div>
+ </section>
+
+
+ <script>
+   window.onpageshow = function(event) {
+       if (event.persisted) {
+           window.location.reload();
+       }
+   };
+
+
+ </script>
+ {% if total_pages > 1 %}
+ <div class="flex justify-center space-x-1 mt-4">
+     <!-- Always show the first page link and use conditional styling for the current page -->
+     <a href="{{ url_for('profilesearch', page=1, spec=spec, kw=kw) }}"
+       class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == 1 else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">1</a>
+
+
+     <!-- Show ellipsis if there are pages between the first and the current range start -->
+     {% if current_page > 3 %}
+         <span class="px-3 py-1">...</span>
+     {% endif %}
+
+
+     <!-- Determine the range of page numbers to display -->
+     {% set start_page = current_page - 2 if current_page > 2 else 2 %}
+     {% set end_page = current_page + 2 if current_page < total_pages - 1 else total_pages - 1 %}
+
+
+     <!-- Display the range of page numbers -->
+     {% for page_num in range(start_page, end_page + 1) %}
+         <a href="{{ url_for('profilesearch', page=page_num, spec=spec, kw=kw) }}"
+           class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if page_num == current_page else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{ page_num }}</a>
+     {% endfor %}
+
+
+     <!-- Show ellipsis if there are pages between the current range end and the last page -->
+     {% if current_page < total_pages - 2 %}
+         <span class="px-3 py-1">...</span>
+     {% endif %}
+
+
+     <!-- Always show the last page link and use conditional styling for the current page -->
+     <a href="{{ url_for('profilesearch', page=total_pages, spec=spec, kw=kw) }}"
+       class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == total_pages else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{ total_pages }}</a>
+ </div>
+ {% endif %}
+
+
 </body>
+
 
 </html>

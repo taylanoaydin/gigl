@@ -1,7 +1,8 @@
 import database
 
 def profileIDChecker(netID):
-    for i in database.get_freelancers():
+    ls, _ = database.get_freelancers()
+    for i in ls:
         if i.get_netid() == netID:
             return True
     return False
