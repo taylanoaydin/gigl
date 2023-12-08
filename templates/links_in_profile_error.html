@@ -63,26 +63,30 @@
     <ul id="linksDisplay" class="list-inside list-disc mt-2">
       {% for link in links %}
       <li class="hover:text-orange-500 mt-1">
-        <a href="{{ link }}" class="transition-colors duration-200">{{ link }}</a>
+        <a href="{{ 'https://' + link if not link.startswith(('http://', 'https://')) else link }}" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
       </li>
       {% endfor %}
     </ul>
     {% endif %}
-    <p class="text-red-800">Input wasn't validated. Make sure the links are at most 50 characters. </p>
     <form hidden id="linkEditForm" method="post">
       {{ linkeditform.hidden_tag() }}
       <div class="flex flex-col space-y-4">
-        {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link1", maxlength="200", placeholder="http://example_link.com", value=links[0] if links|length >= 1 else '') }}
+        {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link1", maxlength="200", placeholder="example_link.com", value=links[0] if links|length >= 1 else '') }}
 
-        {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link2", maxlength="200", placeholder="http://example_link.com", value=links[1] if links|length >= 2 else '') }}
+        {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link2", maxlength="200", placeholder="example_link.com", value=links[1] if links|length >= 2 else '') }}
 
-        {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link3", maxlength="200", placeholder="http://example_link.com", value=links[2] if links|length >= 3 else '') }}
+        {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link3", maxlength="200", placeholder="example_link.com", value=links[2] if links|length >= 3 else '') }}
 
-        {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link4", maxlength="200", placeholder="http://example_link.com", value=links[3] if links|length >= 4 else '') }}
+        {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link4", maxlength="200", placeholder="example_link.com", value=links[3] if links|length >= 4 else '') }}
 
         {{ linkeditform.submit(class_="submit-btn") }}
       </div>
     </form>
+    {% for _, messages in errs.items(): %}
+    {% for err in messages: %}
+      <p class="text-red-800">{{ err }}</p>
+    {% endfor %}
+    {% endfor %}
   </div>
   <div>
     <button id="linksEditButton" type="submit" class="edit-btn">

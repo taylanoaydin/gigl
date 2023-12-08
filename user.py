@@ -19,7 +19,7 @@ class User:
         self._name = name
         self._visible = visible
         self._bio = bio
-        self._links = links.split(',')
+        self._links = links.split(',') if links else []
         self._specialty = specialty
         self._last_active = last_active
         self._banned = banned
