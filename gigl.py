@@ -317,6 +317,10 @@ def details(id):
         gig = database.get_gig_details(id)
         gigTitle = gig.get_title()
         gigNetID = gig.get_netid()
+
+        if database.is_banned(gigNetID):
+            return render_template('error_404.html'), 404
+        
         gigAuthor = database.get_user(gigNetID).get_name()
         gigCategory = gig.get_category()
         gigDescription = gig.get_description()
@@ -753,13 +757,15 @@ def editbio():
         response = flask.make_response(html_code)
         return response
     else:
+        errs = bioeditform.errors
         bioeditform = BioEditForm()
         bio = database.get_user(netid).get_bio()
         bioeditform.bio.data=bio
         html_code = flask.render_template(
             'bio_in_profile_error.html',
             bio=bio,
-            bioeditform=bioeditform)
+            bioeditform=bioeditform,
+            errs=errs)
         response = flask.make_response(html_code)
         return response
 # ----------------------------------------------------------------------
