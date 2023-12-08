@@ -656,7 +656,7 @@ def profilesearch():
       
        # Retrieve the current page number and set items per page
        page = request.args.get('page', 1, type=int)
-       per_page = 2  # Define the number of items per page
+       per_page = 7  # Define the number of items per page
 
 
        specialty = request.args.get('spec', '')
@@ -665,7 +665,7 @@ def profilesearch():
 
 
        if isAdmin:
-           freelancers = database.get_all_users(
+           freelancers, total_freelancers = database.get_all_users(
                keyword=keyword, specialty=specialty, page=page, per_page=per_page)
        else:
            freelancers, total_freelancers = database.get_freelancers(
@@ -692,15 +692,8 @@ def profilesearch():
 
 
        return response
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
    except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+       raise e
 
 
 # -----------------------------------------------------------------------

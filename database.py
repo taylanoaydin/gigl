@@ -335,7 +335,7 @@ def get_freelancers(keyword='', specialty='', page=1, per_page=100):
        _put_connection(connection)
 
 
-def get_all_users(keyword='', specialty=''):
+def get_all_users(keyword='', specialty='', page=1, per_page=100):
    users = []
    connection = _get_connection()
    try:
@@ -352,7 +352,14 @@ def get_all_users(keyword='', specialty=''):
 
            cursor.execute(query, all_args)
            table = cursor.fetchall()
-           for row in table:
+           total_freelancers = len(table)  # Get total count before slicing
+
+
+           # Pagination logic
+           start = (page - 1) * per_page
+           end = min(start + per_page, len(table))
+
+           for row in table[start:end]:
                thisuser = user.User(
                    netid=row[0],
                    name=row[1],
@@ -361,7 +368,7 @@ def get_all_users(keyword='', specialty=''):
                    last_active=row[3],
                    banned=row[5])
                users.append(thisuser)
-           return users
+           return users, total_freelancers
    except Exception as ex:
       
        raise
