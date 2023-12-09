@@ -13,19 +13,24 @@
             width: 80%;
             padding: 1em;
         }
+
         #cancelButton {
             margin-left: 10px;
         }
+
         .status-YES {
-    background-color: rgba(212, 237, 218, 0.5); /* Lighter and more transparent green */
-}
+            background-color: rgba(212, 237, 218, 0.5);
+            /* Lighter and more transparent green */
+        }
 
-.status-NO {
-    background-color: rgba(248, 215, 218, 0.5); /* Lighter and more transparent red */
-}
+        .status-NO {
+            background-color: rgba(248, 215, 218, 0.5);
+            /* Lighter and more transparent red */
+        }
 
-.status-UNDECIDED { /* This is the default color */ 
-}
+        .status-UNDECIDED {
+            /* This is the default color */
+        }
     </style>
 </head>
 
@@ -141,26 +146,27 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         {% for app in all_apps %}
-{% set nid = app.get_applicant_netid() %}
-{% set status = app.get_status() %}
-<tr class="{{ 'status-YES' if status == 'YES' else 'status-NO' if status == 'NO' else 'status-UNDECIDED' }}" id="{{ nid }}-row">
-    <td scope="row" class="p-3 whitespace-nowrap">
-        {{ get_usr(nid).get_name() }}
-        <div class="text-gray-500">
-            {{ nid }}@princeton.edu
-        </div>
-    </td>
-    <td scope="row" class="p-3 whitespace-nowrap break-all">{{ app.get_message() }}</td>
-    <td>
-        <form class ="stat_forms" id="{{ nid }}-StatusForm" method="post">
-            {{ setstatusforms[nid].hidden_tag() }}
-            {{ setstatusforms[nid].gigID() }}
-            {{ setstatusforms[nid].applicantID() }}
-            {{ setstatusforms[nid].status(class="p-2 w-auto rounded-lg") }}
-        </form>
-    </td>
-</tr>
-{% endfor %}
+                        {% set nid = app.get_applicant_netid() %}
+                        {% set status = app.get_status() %}
+                        <tr class="{{ 'status-YES' if status == 'YES' else 'status-NO' if status == 'NO' else 'status-UNDECIDED' }}"
+                            id="{{ nid }}-row">
+                            <td scope="row" class="p-3 whitespace-nowrap">
+                                {{ get_usr(nid).get_name() }}
+                                <div class="text-gray-500">
+                                    {{ nid }}@princeton.edu
+                                </div>
+                            </td>
+                            <td scope="row" class="p-3 whitespace-nowrap break-all">{{ app.get_message() }}</td>
+                            <td>
+                                <form class="stat_forms" id="{{ nid }}-StatusForm" method="post">
+                                    {{ setstatusforms[nid].hidden_tag() }}
+                                    {{ setstatusforms[nid].gigID() }}
+                                    {{ setstatusforms[nid].applicantID() }}
+                                    {{ setstatusforms[nid].status(class="p-2 w-auto rounded-lg") }}
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -198,7 +204,9 @@
                 {{ apply_form.hidden_tag() }} <!-- the CSRF token -->
                 <div class="flex space-x-10">
                     {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none
-                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your qualifications, availability, and any relevant info. You will be contacted if there is a match. ") }}
+                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your
+                    qualifications, availability, and any relevant info. You will be contacted if there is a match. ")
+                    }}
                     {{ apply_form.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
                 </div>
             </form>
@@ -232,7 +240,7 @@
                 url: '/update_status',
                 data: $(`#${netid}-StatusForm`).serialize(),
                 success: function (response) {
-                    if(response.status){
+                    if (response.status) {
                         $(`#${netid}-row`).removeClass('status-YES status-NO status-UNDECIDED');
                         $(`#${netid}-row`).addClass(`status-${status}`);
                         $(`#${netid}-StatusForm`).find(':input').prop('disabled', false);
@@ -320,12 +328,12 @@
                     type: "POST",
                     url: url,
                     data: deleteGigForm,
-                    success: function(response){
-                        if(response.redirect) {
+                    success: function (response) {
+                        if (response.redirect) {
                             window.location.href = response.redirect;
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.log('whoopsie, something went wrong') // change this later obv
                     }
                 })
@@ -339,11 +347,11 @@
 
         })
 
-        window.onpageshow = function(event) {
-        if (event.persisted) {
-            window.location.reload();
-        }
-    };
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
     </script>
 </body>
 

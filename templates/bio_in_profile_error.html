@@ -1,43 +1,58 @@
 <style>
   .edit-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 50px; /* Rounded edges */
-      font-size: 16px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      outline: none; /* Removes the outline */
-      box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-      background-color: #87d0a0; /* Default green background */
-      color: white; /* White text */
-      position: relative; /* Adjusted from absolute to relative */
-      right: 0; /* Reset right positioning */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    /* Rounded edges */
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    outline: none;
+    /* Removes the outline */
+    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+    /* Adds a subtle shadow */
+    background-color: #87d0a0;
+    /* Default green background */
+    color: white;
+    /* White text */
+    position: relative;
+    /* Adjusted from absolute to relative */
+    right: 0;
+    /* Reset right positioning */
   }
 
   .edit-btn:hover {
-      background-color: #40c847; /* Darker green on hover */
+    background-color: #40c847;
+    /* Darker green on hover */
   }
 
 
   .submit-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 50px; /* Rounded edges */
-      font-size: 16px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      outline: none; /* Removes the outline */
-      box-shadow: 2px 5px 10px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-      background-color: #ce8bd2; /* Default green background */
-      color: white; /* White text */
-      position: relative; /* Adjusted from absolute to relative */
-      right: 0; /* Reset right positioning */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    /* Rounded edges */
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    outline: none;
+    /* Removes the outline */
+    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+    /* Adds a subtle shadow */
+    background-color: #ce8bd2;
+    /* Default green background */
+    color: white;
+    /* White text */
+    position: relative;
+    /* Adjusted from absolute to relative */
+    right: 0;
+    /* Reset right positioning */
   }
 
   .submit-btn:hover {
-      background-color: #ce3ed9; /* Darker green on hover */
+    background-color: #ce3ed9;
+    /* Darker green on hover */
   }
-
 </style>
 <div class="flex justify-between items-center p-4">
   <div class="mb-4 flex-grow">
@@ -45,22 +60,23 @@
     <p id="bioDisplay" class="mt-2 break-all">
       {% if bio %}
       {{ bio }}
-    {% else %}
+      {% else %}
       <span class="text-black-400">[You haven't written your bio yet.]</span>
-    {% endif %}
+      {% endif %}
     </p>
     <form hidden id="bioEditForm" method="post">
       {{ bioeditform.hidden_tag() }}
       <div class="flex space-x-10">
-        {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, placeholder="Who are you and what do you do?", id="bio") }}
+        {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+        focus:border-teal-500", maxlength="1500", rows=1, placeholder="Who are you and what do you do?", id="bio") }}
         {{ bioeditform.submit(class_="submit-btn") }}
       </div>
     </form>
-  {% for _, messages in errs.items() %}
+    {% for _, messages in errs.items() %}
     {% for message in messages %}
-      <p class="text-red-800">{{ message }}</p>
+    <p class="text-red-800">{{ message }}</p>
     {% endfor %}
-  {% endfor %}
+    {% endfor %}
   </div>
   <div>
     <button id="bioEditButton" class="edit-btn">

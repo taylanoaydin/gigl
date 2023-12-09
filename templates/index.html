@@ -1,102 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>gigl | The next big thing</title>
-    <!-- Include Tailwind CSS from CDN -->
-    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
-    <style>
-      html {
-    scroll-behavior: smooth;
-}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gigl | The next big thing</title>
+  <!-- Include Tailwind CSS from CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
 
-      /* Define background gradients */
-      .gradient-blue-purple {
-        background: linear-gradient(
-  rgba(10, 45, 133, 0.2)0%, 
-  rgba(229, 235, 250, 1) 100%
-);
-      }
-      .bg-custom {
-        background-color: #E5EBFA; /* New background color */
-      }
+    /* Define background gradients */
+    .gradient-blue-purple {
+      background: linear-gradient(rgba(10, 45, 133, 0.2)0%,
+          rgba(229, 235, 250, 1) 100%);
+    }
 
-      .header-nav {
-        display: flex;
-        justify-content: center; /* Centering the nav items */
-        align-items: center;
-        padding: 0.75rem 1rem; /* Reduced padding for tighter spacing */
-      }
+    .bg-custom {
+      background-color: #E5EBFA;
+      /* New background color */
+    }
 
-      .header-nav a {
-        text-decoration: none;
-        color: #07112C; /* Change the color as needed */
-        padding: 0.5rem 0.75rem; /* Slightly increased padding for larger links */
-        margin: 0 0.5rem; /* Increased margin to balance the larger links */
-        font-size: 0.875rem; /* Slightly larger font size */
-      }
+    .header-nav {
+      display: flex;
+      justify-content: center;
+      /* Centering the nav items */
+      align-items: center;
+      padding: 0.75rem 1rem;
+      /* Reduced padding for tighter spacing */
+    }
 
-      .header-nav a:hover {
-        color: #000; /* Change hover color as needed */
-      }
+    .header-nav a {
+      text-decoration: none;
+      color: #07112C;
+      /* Change the color as needed */
+      padding: 0.5rem 0.75rem;
+      /* Slightly increased padding for larger links */
+      margin: 0 0.5rem;
+      /* Increased margin to balance the larger links */
+      font-size: 0.875rem;
+      /* Slightly larger font size */
+    }
 
-      /* Style for active/current page */
-      .header-nav a.active {
-        border-bottom: 2px solid #07112C; /* Adjust active indicator as needed */
-      }
+    .header-nav a:hover {
+      color: #000;
+      /* Change hover color as needed */
+    }
 
-      .text-gradient {
-        color: #0A2D85
-      }
+    /* Style for active/current page */
+    .header-nav a.active {
+      border-bottom: 2px solid #07112C;
+      /* Adjust active indicator as needed */
+    }
 
-      /* Change the color of the description below the title */
-      .description-text {
-        color: #07112C; /* Set your desired color */
-      }
+    .text-gradient {
+      color: #0A2D85
+    }
 
-      .bg-button {
-        background-color: #0A2D85;
-      }
+    /* Change the color of the description below the title */
+    .description-text {
+      color: #07112C;
+      /* Set your desired color */
+    }
 
-      .bg-button-hover {
-        background-color: #114BDF;
-      }
+    .bg-button {
+      background-color: #0A2D85;
+    }
 
-      .title span {
-        background: -webkit-linear-gradient(left, rgba(77,201,230, 0.8), rgba(33,12,174, 0.8));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
+    .bg-button-hover {
+      background-color: #114BDF;
+    }
+
+    .title span {
+      background: -webkit-linear-gradient(left, rgba(77, 201, 230, 0.8), rgba(33, 12, 174, 0.8));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   </style>
 </head>
+
 <body>
-<!-- HERE IS THE HEADER SECTION -->
+  <!-- HERE IS THE HEADER SECTION -->
   <div class="bg-custom">
     <header class="absolute inset-x-0 top-0 z-50">
       <nav class="header-nav" aria-label="Global">
         <a href="/index" class="active">Home</a>
         <a href="#about-section">About</a>
         <a href="#features-section">Features</a>
-        <a href="/home" class="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">&rarr;</span></a>
+        <a href="/home" class="text-sm font-semibold leading-6 text-gray-900">Log in <span
+            aria-hidden="true">&rarr;</span></a>
       </nav>
     </header>
-<!-- HERE IS THE HERO SECTION -->
+    <!-- HERE IS THE HERO SECTION -->
     <div class="relative gradient-blue-purple isolate px-6 pt-14 lg:px-8">
       <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
         <div class="text-center">
           <div class="text-gradient text-4xl font-bold sm:text-3xl mb-2">Freelancing Redefined</div>
-          <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl title">Unlock Your Potential, <span>Freelance</span> with Ease!</h1>
-          <p class="mt-6 text-lg leading-8 description-text">Introducing the future of freelancing. Work, earn, and thrive on your terms. Freelance smarter and achieve your goals with ease.</p>
+          <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl title">Unlock Your Potential,
+            <span>Freelance</span> with Ease!</h1>
+          <p class="mt-6 text-lg leading-8 description-text">Introducing the future of freelancing. Work, earn, and
+            thrive on your terms. Freelance smarter and achieve your goals with ease.</p>
           <div class="mt-10 flex items-center justify-center gap-x-6">
-            <a href="/home" class="rounded-md bg-button px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-button-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-100">Get started</a>
-            <a href="https://github.com/taylanoaydin/gigl" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
+            <a href="/home"
+              class="rounded-md bg-button px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-button-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-100">Get
+              started</a>
+            <a href="https://github.com/taylanoaydin/gigl" class="text-sm font-semibold leading-6 text-gray-900">Learn
+              more <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </div>
     </div>
-<!-- HERE IS THE NUMERICAL DATA SECTION -->
+    <!-- HERE IS THE NUMERICAL DATA SECTION -->
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
       <dl class="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
         <div class="mx-auto flex max-w-xs flex-col gap-y-4">
@@ -114,86 +131,120 @@
       </dl>
     </div>
 
-<!-- BEGIN About Section -->
-<div id="about-section" class="py-12 sm:py-24"> <!-- Optimized top spacing -->
-  <div class="mx-auto max-w-7xl px-20 lg:px-30">
-    <div class="flex flex-col lg:flex-row justify-center items-center"> <!-- Flex container for two-column layout -->
+    <!-- BEGIN About Section -->
+    <div id="about-section" class="py-12 sm:py-24"> <!-- Optimized top spacing -->
+      <div class="mx-auto max-w-7xl px-20 lg:px-30">
+        <div class="flex flex-col lg:flex-row justify-center items-center">
+          <!-- Flex container for two-column layout -->
 
-      <!-- Text Column -->
-      <div class="lg:w-2/4 lg:pr-8"> <!-- Half width for large screens with padding -->
-        <h2 class="text-base font-semibold leading-7 text-gradient">Discover gigl</h2>
-        <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Revolutionizing Student Freelancing at Princeton</p>
-        <p class="mt-6 text-lg leading-8 text-gray-600">
-          Have you ever been in urgent need of a service like a last-minute headshot for your graduation, only to be deterred by steep professional fees? Meet Gigl – your go-to freelancing platform, conceived and run by students, for students. Gigl is the bridge that links your need for skilled assistance with the wealth of talent within the Princeton community. A simple sign-in, a few clicks, and you're all set to collaborate, create, and capture those campus moments. Welcome to Gigl, where every corner of the campus is teeming with opportunity!
-        </p>
-        <p class="mt-6 text-lg leading-8 text-gray-600">
-          Gigl isn't just about finding or posting jobs; it's about bringing together the diverse tapestry of talents and needs that thrive on campus. Whether you’re a photographer in the making, a tech enthusiast, or a wordsmith, Gigl is your stage to shine and connect. It's where gigs turn into opportunities, and opportunities into memorable collaborations. Dive into the Gigl experience – where every click opens a new door.
-        </p>
+          <!-- Text Column -->
+          <div class="lg:w-2/4 lg:pr-8"> <!-- Half width for large screens with padding -->
+            <h2 class="text-base font-semibold leading-7 text-gradient">Discover gigl</h2>
+            <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Revolutionizing Student
+              Freelancing at Princeton</p>
+            <p class="mt-6 text-lg leading-8 text-gray-600">
+              Have you ever been in urgent need of a service like a last-minute headshot for your graduation, only to be
+              deterred by steep professional fees? Meet Gigl – your go-to freelancing platform, conceived and run by
+              students, for students. Gigl is the bridge that links your need for skilled assistance with the wealth of
+              talent within the Princeton community. A simple sign-in, a few clicks, and you're all set to collaborate,
+              create, and capture those campus moments. Welcome to Gigl, where every corner of the campus is teeming
+              with opportunity!
+            </p>
+            <p class="mt-6 text-lg leading-8 text-gray-600">
+              Gigl isn't just about finding or posting jobs; it's about bringing together the diverse tapestry of
+              talents and needs that thrive on campus. Whether you’re a photographer in the making, a tech enthusiast,
+              or a wordsmith, Gigl is your stage to shine and connect. It's where gigs turn into opportunities, and
+              opportunities into memorable collaborations. Dive into the Gigl experience – where every click opens a new
+              door.
+            </p>
+          </div>
+
+          <!-- Image Column -->
+          <div class="lg:w-1/3 flex items-center justify-center"> <!-- Half width for large screens -->
+            <img src="static/about.svg" alt="Descriptive Alt Text" class="max-w-full h-auto"> <!-- Responsive image -->
+          </div>
+
+        </div>
       </div>
-
-      <!-- Image Column -->
-      <div class="lg:w-1/3 flex items-center justify-center"> <!-- Half width for large screens -->
-        <img src="static/about.svg" alt="Descriptive Alt Text" class="max-w-full h-auto"> <!-- Responsive image -->
-      </div>
-
     </div>
-  </div>
-</div>
-<!-- END About Section -->
+    <!-- END About Section -->
 
-<!-- HERE IS THE FEATURES SECTION -->
+    <!-- HERE IS THE FEATURES SECTION -->
     <div id="features-section" class="py-18 sm:py-18">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-2xl lg:text-center">
           <h2 class="text-base font-semibold leading-7 text-gradient">Find your next gig!</h2>
-          <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Student-Driven Freelancing Platform for Princeton University</p>
-          <p class="mt-6 text-lg leading-8 text-gray-600">Gigl is an innovative peer-to-peer freelancing platform exclusively for the students of Princeton University. It serves as a bridge, connecting those in need of specific services with those possessing the right skills and expertise. The platform aims to create a vibrant, community-driven marketplace within the campus, accessible through a user-friendly web interface.</p>
+          <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">The Student-Driven Freelancing
+            Platform for Princeton University</p>
+          <p class="mt-6 text-lg leading-8 text-gray-600">Gigl is an innovative peer-to-peer freelancing platform
+            exclusively for the students of Princeton University. It serves as a bridge, connecting those in need of
+            specific services with those possessing the right skills and expertise. The platform aims to create a
+            vibrant, community-driven marketplace within the campus, accessible through a user-friendly web interface.
+          </p>
         </div>
         <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
           <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
             <div class="relative pl-16">
               <dt class="text-base font-semibold leading-7 text-gray-900">
                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-button">
-                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" aria-hidden="true">
                   </svg>
                 </div>
                 Seamless Connection for Campus Needs
               </dt>
-              <dd class="mt-2 text-base leading-7 text-gray-600">Gigl simplifies the process of finding or offering services within the Princeton community. Whether you're in need of a quick graduation headshot or offering tutoring services, Gigl connects you with the right people. Just sign in, detail your requirements, and start engaging with peers who either need your skills or have the skills you require.</dd>
+              <dd class="mt-2 text-base leading-7 text-gray-600">Gigl simplifies the process of finding or offering
+                services within the Princeton community. Whether you're in need of a quick graduation headshot or
+                offering tutoring services, Gigl connects you with the right people. Just sign in, detail your
+                requirements, and start engaging with peers who either need your skills or have the skills you require.
+              </dd>
             </div>
             <div class="relative pl-16">
               <dt class="text-base font-semibold leading-7 text-gray-900">
                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-button">
-                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" aria-hidden="true">
                   </svg>
                 </div>
                 Tailored to the University Community
               </dt>
-              <dd class="mt-2 text-base leading-7 text-gray-600">Designed with the unique dynamics of campus life in mind, Gigl is the perfect solution for students looking for an easy, efficient way to navigate freelancing opportunities. It's a platform where the entire university community can participate, ensuring that every service offered or sought is within a familiar and trusted environment.</dd>
+              <dd class="mt-2 text-base leading-7 text-gray-600">Designed with the unique dynamics of campus life in
+                mind, Gigl is the perfect solution for students looking for an easy, efficient way to navigate
+                freelancing opportunities. It's a platform where the entire university community can participate,
+                ensuring that every service offered or sought is within a familiar and trusted environment.</dd>
             </div>
             <div class="relative pl-16">
               <dt class="text-base font-semibold leading-7 text-gray-900">
                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-button">
-                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" aria-hidden="true">
                   </svg>
                 </div>
                 Creating and Finding Gigs Made Simple
               </dt>
-              <dd class="mt-2 text-base leading-7 text-gray-600">Gigl makes it effortless to post and find gigs. If you need a job done, simply create a gig with all the necessary details like requirements, deadline, and contact info. These gigs are then searchable for freelancers on campus, who can easily scan through them to find jobs that match their skills and interests.</dd>
+              <dd class="mt-2 text-base leading-7 text-gray-600">Gigl makes it effortless to post and find gigs. If you
+                need a job done, simply create a gig with all the necessary details like requirements, deadline, and
+                contact info. These gigs are then searchable for freelancers on campus, who can easily scan through them
+                to find jobs that match their skills and interests.</dd>
             </div>
             <div class="relative pl-16">
               <dt class="text-base font-semibold leading-7 text-gray-900">
                 <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-button">
-                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" aria-hidden="true">
                   </svg>
                 </div>
                 A Marketplace of Skills and Opportunities
               </dt>
-              <dd class="mt-2 text-base leading-7 text-gray-600">The platform is more than just a job board; it's a marketplace brimming with talent and opportunities. Whether you're a budding photographer, a programming whiz, or a skilled writer, Gigl provides the perfect stage to showcase your talents and find engaging work right on campus.</dd>
+              <dd class="mt-2 text-base leading-7 text-gray-600">The platform is more than just a job board; it's a
+                marketplace brimming with talent and opportunities. Whether you're a budding photographer, a programming
+                whiz, or a skilled writer, Gigl provides the perfect stage to showcase your talents and find engaging
+                work right on campus.</dd>
             </div>
           </dl>
         </div>
       </div>
-  </div>
+    </div>
 </body>
+
 </html>
