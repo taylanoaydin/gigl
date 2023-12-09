@@ -216,7 +216,10 @@ def get_bookmarks(netid):
    bookmarks = []
    try:
        with connection.cursor() as cursor:
-           query = "SELECT * FROM bookmarks WHERE netid = %s"
+           query = """SELECT b.* FROM bookmarks b
+INNER JOIN gigs g ON b.gigID = g.gigID
+INNER JOIN users u ON g.netid = u.netid
+WHERE u.banned = FALSE AND b.netid = %s"""
            cursor.execute(query, [netid])
            bookmarked_gigs = cursor.fetchall()
 
