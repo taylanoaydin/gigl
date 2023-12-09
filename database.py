@@ -787,7 +787,7 @@ def get_popular_gigs(limit=6):
    connection = _get_connection()
    try:
        with connection.cursor() as cursor:
-           query = """SELECT * FROM gigs ORDER BY posted DESC LIMIT %s"""
+           query = """SELECT * FROM gigs ORDER BY num_apps DESC LIMIT %s"""
            cursor.execute(query, [limit])
            gigs = cursor.fetchall()
            return [gig.Gig(*row) for row in gigs]
