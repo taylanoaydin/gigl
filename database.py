@@ -784,17 +784,23 @@ def is_bookmarked(netid, gigID):
    finally:
        _put_connection(connection)
 def get_popular_gigs(limit=6):
-   connection = _get_connection()
-   try:
-       with connection.cursor() as cursor:
-           query = """SELECT * FROM gigs ORDER BY num_apps DESC LIMIT %s"""
-           cursor.execute(query, [limit])
-           gigs = cursor.fetchall()
-           return [gig.Gig(*row) for row in gigs]
-   except Exception as ex:
-       raise
-   finally:
-       _put_connection(connection)
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            query = """
+            SELECT g.* FROM gigs g
+            INNER JOIN users u ON g.netid = u.netid
+            WHERE u.banned = FALSE
+            ORDER BY g.num_apps DESC
+            LIMIT %s
+            """
+            cursor.execute(query, [limit])
+            gigs = cursor.fetchall()
+            return [gig.Gig(*row) for row in gigs]
+    except Exception as ex:
+        raise
+    finally:
+        _put_connection(connection)
 def get_featured_gigs(limit=6):
    connection = _get_connection()
    try:
