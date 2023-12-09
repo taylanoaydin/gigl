@@ -107,6 +107,8 @@ class SetStatusForm(FlaskForm):
 
 class PostGigForm(FlaskForm):
     def validate_end_date(self, field):
+        if field.errors:
+            return
         if field.data is None:
             raise ValidationError(
                 'End Date is required'
@@ -115,12 +117,14 @@ class PostGigForm(FlaskForm):
             raise ValidationError(
                 "End date cannot be in the past"
             )
-        if field.data < self.start_date.data:
+        elif self.start_date.data and field.data < self.start_date.data:
             raise ValidationError(
                 'End date must not be earlier than start date.'
                 )
         
     def validate_start_date(self, field):
+        if field.errors:
+            return
         if field.data is None:
             raise ValidationError(
                 'Start Date is required'
@@ -129,7 +133,7 @@ class PostGigForm(FlaskForm):
             raise ValidationError(
                 'Start date cannot be in the past'
             )
-        if field.data > self.end_date.data:
+        elif self.end_date.data and field.data > self.end_date.data:
             raise ValidationError(
                 'Start date cannot be after the end date'
             )
