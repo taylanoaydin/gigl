@@ -367,6 +367,8 @@ def details(id):
        gig = database.get_gig_details(id)
        gigTitle = gig.get_title()
        gigNetID = gig.get_netid()
+       if database.is_banned(gigNetID):
+            return render_template('error_404.html'), 404
        gigAuthor = database.get_user(gigNetID).get_name()
        gigCategory = gig.get_category()
        gigDescription = gig.get_description()
