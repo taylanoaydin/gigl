@@ -73,14 +73,16 @@ def get_gigs(keyword='', categories=None, page=1, per_page=100):
        with connection.cursor() as cursor:
            kw = '%' + keyword + '%'
            all_args = [kw for _ in range(3)]
-           query = """SELECT * FROM gigs
-                      WHERE (title ILIKE %s OR
-                            description ILIKE %s OR
-                            qualf ILIKE %s)"""
+           query = """SELECT g.* FROM gigs g
+INNER JOIN users u ON g.netid = u.netid
+WHERE (u.banned = FALSE) AND 
+      (g.title ILIKE %s OR
+       g.description ILIKE %s OR
+       g.qualf ILIKE %s)"""
            if len(categories) != 0:
-               query += " AND category = ANY(%s)"
+               query += " AND g.category = ANY(%s)"
                all_args.append(categories)
-           query += " ORDER BY posted DESC"
+           query += " ORDER BY g.posted DESC"
 
 
            cursor.execute(query, all_args)
