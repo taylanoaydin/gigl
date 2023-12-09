@@ -95,6 +95,11 @@
     </main>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
+           window.onpageshow = function(event) {
+       if (event.persisted) {
+           window.location.reload();
+       }
+   };
         function disable() {
             $("#gigSubmit").prop("disabled", true);
             $("#gigSubmit").removeClass("bg-indigo-200");

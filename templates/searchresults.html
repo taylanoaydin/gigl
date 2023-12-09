@@ -18,6 +18,11 @@
       }
    </style>
    <script>
+         window.onpageshow = function(event) {
+       if (event.persisted) {
+           window.location.reload();
+       }
+   };
       let sortStates = {};
       // OLD SORT FUNCTION IGNORE THIS 
       function sortTable(th_id) {

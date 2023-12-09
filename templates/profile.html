@@ -162,6 +162,12 @@
 
 
    <script>
+         window.onpageshow = function(event) {
+       if (event.persisted) {
+           window.location.reload();
+       }
+   };
+   
       function openTab(event, tabName) {
          var tabcontent = document.getElementsByClassName("tab-content");
          for (var i = 0; i < tabcontent.length; i++) {
