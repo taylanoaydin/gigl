@@ -18,6 +18,13 @@
       }
    </style>
    <script>
+
+      window.onpageshow = function (event) {
+         if (event.persisted) {
+            window.location.reload();
+         }
+      };
+      let sortStates = {};
       // OLD SORT FUNCTION IGNORE THIS 
       function sortTable(th_id) {
          var table, rows, headers, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -332,6 +339,7 @@
          </table>
          <div id="searchResultsPagination" class="flex justify-center space-x-1 mt-4"></div>
       </div>
+
    </section>
 </body>
 

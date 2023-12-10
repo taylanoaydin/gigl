@@ -58,7 +58,8 @@
                 <div>
                     {{ gig_form.qualifications.label }}
                     {{ gig_form.qualifications(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
-                    rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, placeholder="What qualifications are required?", id="qualifications") }}
+                    rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, placeholder="What
+                    qualifications are required?", id="qualifications") }}
                     {% for error in gig_form.qualifications.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
@@ -70,7 +71,8 @@
                 <div>
                     {{ gig_form.description.label}}
                     {{ gig_form.description(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
-                    rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, placeholder="What is the gig about?", id="description") }}
+                    rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, placeholder="What is
+                    the gig about?", id="description") }}
                     {% for error in gig_form.description.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
@@ -86,7 +88,8 @@
                 </div>
 
                 <br>
-                {{ gig_form.submit(class= "shadow p-2 w-auto rounded-lg bg-indigo-200 border border-indigo-300", id="gigSubmit")}}
+                {{ gig_form.submit(class= "shadow p-2 w-auto rounded-lg bg-indigo-200 border border-indigo-300",
+                id="gigSubmit")}}
             </form>
 
 
@@ -95,11 +98,11 @@
     </main>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-           window.onpageshow = function(event) {
-       if (event.persisted) {
-           window.location.reload();
-       }
-   };
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
         function disable() {
             $("#gigSubmit").prop("disabled", true);
             $("#gigSubmit").removeClass("bg-indigo-200");

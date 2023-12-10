@@ -3,50 +3,50 @@
 
 
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>gigl</title>
-   <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
-   <style>
-       #toggleBanBtn {
-           padding: 10px 20px;
-           border: none;
-           border-radius: 50px;
-           /* Rounded edges */
-           font-size: 16px;
-           font-weight: bold;
-           transition: all 0.3s ease;
-           outline: none;
-           /* Removes the outline */
-           box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
-           /* Adds a subtle shadow */
-       }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gigl</title>
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+    <style>
+        #toggleBanBtn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            /* Rounded edges */
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            outline: none;
+            /* Removes the outline */
+            box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+            /* Adds a subtle shadow */
+        }
 
 
-       .btn-notbanned {
-           background-color: #76c893;
-           /* A nicer shade of green */
-           color: white;
-       }
+        .btn-notbanned {
+            background-color: #76c893;
+            /* A nicer shade of green */
+            color: white;
+        }
 
 
-       .btn-banned {
-           background-color: #ff867c;
-           /* A nicer shade of red */
-           color: white;
-       }
+        .btn-banned {
+            background-color: #ff867c;
+            /* A nicer shade of red */
+            color: white;
+        }
 
 
-       /* Hover effects */
-       .btn-notbanned:hover {
-           background-color: #45a049;
-       }
+        /* Hover effects */
+        .btn-notbanned:hover {
+            background-color: #45a049;
+        }
 
 
-       .btn-banned:hover {
-           background-color: #d32f2f;
-       }
-   </style>
+        .btn-banned:hover {
+            background-color: #d32f2f;
+        }
+    </style>
 </head>
 
 
@@ -84,7 +84,8 @@
             <div class="grid grid-cols-2 gap-4 p-6">
                 {% for link in freelancer.get_links() %}
                 <div class="{{ colors[loop.index0 % 4] }} col-span-1 p-2">
-                    <a href="{{ 'https://' + link if not link.startswith(('http://', 'https://')) else link }}" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-600>{{ link }}">{{ link }}</a>
+                    <a href="{{ 'https://' + link if not link.startswith(('http://', 'https://')) else link }}"
+                        rel="noopener noreferrer" class="text-blue-500 hover:text-blue-600>{{ link }}">{{ link }}</a>
                 </div>
                 {% endfor %}
             </div>
@@ -117,11 +118,11 @@
             });
         });
 
-        window.onpageshow = function(event) {
-        if (event.persisted) {
-            window.location.reload();
-        }
-    };
+        window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
 
     </script>
 </body>

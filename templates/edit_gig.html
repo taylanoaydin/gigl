@@ -27,51 +27,60 @@
                 {{ edit_form.hidden_tag() }}
                 <div>
                     {{ edit_form.title.label }}
-                    {{ edit_form.title(class="bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500", value=gig.title) }}
+                    {{ edit_form.title(class="bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2
+                    rounded-lg focus:outline-none focus:border-teal-500", value=gig.title) }}
                     {% for error in edit_form.title.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
+                    <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                 </div>
                 <br>
                 <div class="flex space-x-10">
                     <div class="w-full">
                         {{ edit_form.start_date.label }}
-                        {{ edit_form.start_date(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500", value=gig.start_date) }}
+                        {{ edit_form.start_date(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                        md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500", value=gig.start_date) }}
                         {% for error in edit_form.start_date.errors %}
-                            <span style="color: red;">[{{ error }}]</span>
+                        <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </div>
                     <div class="w-full">
                         {{ edit_form.end_date.label }}
-                        {{ edit_form.end_date(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500", value=gig.end_date) }}
+                        {{ edit_form.end_date(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                        md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500", value=gig.end_date) }}
                         {% for error in edit_form.end_date.errors %}
-                            <span style="color: red;">[{{ error }}]</span>
+                        <span style="color: red;">[{{ error }}]</span>
                         {% endfor %}
                     </div>
                 </div>
                 <br>
                 <div>
                     {{ edit_form.qualifications.label }}
-                    {{ edit_form.qualifications(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, value=gig.qualifications) }}
+                    {{ edit_form.qualifications(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                    rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1,
+                    value=gig.qualifications) }}
                     {% for error in edit_form.qualifications.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
+                    <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                 </div>
                 <br>
                 <div>
                     {{ edit_form.description.label }}
-                    {{ edit_form.description(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, value=gig.description) }}
+                    {{ edit_form.description(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                    rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1,
+                    value=gig.description) }}
                     {% for error in edit_form.description.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
+                    <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                 </div>
                 <br>
                 <div>
                     {{ edit_form.categories.label }}
-                    {{ edit_form.categories(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500") }}
+                    {{ edit_form.categories(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-full
+                    md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500") }}
                 </div>
                 <br>
-                {{ edit_form.submit(class="shadow p-2 w-auto rounded-lg bg-indigo-200 border border-indigo-300", id="gigSubmit") }}
+                {{ edit_form.submit(class="shadow p-2 w-auto rounded-lg bg-indigo-200 border border-indigo-300",
+                id="gigSubmit") }}
             </form>
         </section>
     </main>

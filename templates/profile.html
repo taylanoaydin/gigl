@@ -20,26 +20,42 @@
       }
 
       .specialty-button {
-         display: inline-flex; /* Align items in a flex row */
-         align-items: center; /* Center items vertically */
-         justify-content: center; /* Center items horizontally */
-         padding: 12px 24px; /* Add more padding */
-         font-size: 1rem; /* Set font size */
-         gap: 8px; /* Space between the icon and text */
-         border-radius: 50px; /* Rounded corners */
-         transition: all 0.3s ease; /* Smooth transition for hover effects */
-         cursor: pointer; /* Change mouse cursor on hover */
-         border: none; /* Remove border */
-         color: white; /* Text color */
-         background-color: #76c893; /* Background color */
-         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-         outline: none; /* Remove focus outline */
+         display: inline-flex;
+         /* Align items in a flex row */
+         align-items: center;
+         /* Center items vertically */
+         justify-content: center;
+         /* Center items horizontally */
+         padding: 12px 24px;
+         /* Add more padding */
+         font-size: 1rem;
+         /* Set font size */
+         gap: 8px;
+         /* Space between the icon and text */
+         border-radius: 50px;
+         /* Rounded corners */
+         transition: all 0.3s ease;
+         /* Smooth transition for hover effects */
+         cursor: pointer;
+         /* Change mouse cursor on hover */
+         border: none;
+         /* Remove border */
+         color: white;
+         /* Text color */
+         background-color: #76c893;
+         /* Background color */
+         box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+         /* Shadow for depth */
+         outline: none;
+         /* Remove focus outline */
       }
 
       /* Adjust the hover state */
       .specialty-button:hover {
-         background-color: #45a049; /* Darker shade on hover */
-         box-shadow: 2px 8px 15px rgba(0, 0, 0, 0.3); /* Larger shadow on hover */
+         background-color: #45a049;
+         /* Darker shade on hover */
+         box-shadow: 2px 8px 15px rgba(0, 0, 0, 0.3);
+         /* Larger shadow on hover */
       }
 
       /* Toggle Visibility Button */
@@ -291,28 +307,30 @@
       <section id="bioSection" class="rounded-lg bg-gray-100 border border-gray-200">
          <div class="flex justify-between items-center p-4">
             <div class="mb-4 flex-grow">
-              <h2 class="text-xl font-bold">Bio:</h2>
-              <p id="bioDisplay" class="mt-2 break-all">
-                {% if bio %}
+               <h2 class="text-xl font-bold">Bio:</h2>
+               <p id="bioDisplay" class="mt-2 break-all">
+                  {% if bio %}
                   {{ bio }}
-                {% else %}
+                  {% else %}
                   <span class="text-black-400">[You haven't written your bio yet.]</span>
-                {% endif %}
-              </p>
-              <form hidden id="bioEditForm" method="post">
-                {{ bioeditform.hidden_tag() }}
-                <div class="flex space-x-10">
-                  {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, placeholder="Who are you and what do you do?", id="bio") }}
-                  {{ bioeditform.submit(class_="submit-btn") }}
-                </div>
-              </form>
+                  {% endif %}
+               </p>
+               <form hidden id="bioEditForm" method="post">
+                  {{ bioeditform.hidden_tag() }}
+                  <div class="flex space-x-10">
+                     {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+                     focus:border-teal-500", maxlength="1500", rows=1, placeholder="Who are you and what do you do?",
+                     id="bio") }}
+                     {{ bioeditform.submit(class_="submit-btn") }}
+                  </div>
+               </form>
             </div>
             <div>
-              <button id="bioEditButton" class="edit-btn">
-                Edit
-              </button>
+               <button id="bioEditButton" class="edit-btn">
+                  Edit
+               </button>
             </div>
-          </div>
+         </div>
       </section>
       <br>
       <section id="linksSection" class="rounded-lg bg-gray-100 border border-gray-200">
@@ -324,9 +342,10 @@
                {% else %}
                <ul id="linksDisplay" class="list-inside list-disc mt-2">
                   {% for link in links %}
-                     <li class="hover:text-orange-500 mt-1">
-                        <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
-                     </li>
+                  <li class="hover:text-orange-500 mt-1">
+                     <a href="{{ 'https://' + link if not link.startswith(('http://', 'https://')) else link }}"
+                        rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
+                  </li>
                   {% endfor %}
                </ul>
                {% endif %}
@@ -334,13 +353,22 @@
                <form hidden id="linkEditForm" method="post">
                   {{ linkeditform.hidden_tag() }}
                   <div class="flex flex-col space-y-4">
-                     {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link1", maxlength="200", placeholder="http://example_link.com", value=links[0] if links|length >= 1 else '') }}
 
-                     {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link2", maxlength="200", placeholder="http://example_link.com", value=links[1] if links|length >= 2 else '') }}
-             
-                     {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link3", maxlength="200", placeholder="http://example_link.com", value=links[2] if links|length >= 3 else '') }}
-             
-                     {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link4", maxlength="200", placeholder="http://example_link.com", value=links[3] if links|length >= 4 else '') }}
+                     {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+                     focus:border-teal-500", id="link1", maxlength="200", placeholder="example_link.com", value=links[0]
+                     if links|length >= 1 else '') }}
+
+                     {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+                     focus:border-teal-500", id="link2", maxlength="200", placeholder="example_link.com", value=links[1]
+                     if links|length >= 2 else '') }}
+
+                     {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+                     focus:border-teal-500", id="link3", maxlength="200", placeholder="example_link.com", value=links[2]
+                     if links|length >= 3 else '') }}
+
+                     {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
+                     focus:border-teal-500", id="link4", maxlength="200", placeholder="example_link.com", value=links[3]
+                     if links|length >= 4 else '') }}
                      {{ linkeditform.submit(class_="submit-btn") }}
                   </div>
                </form>
@@ -475,7 +503,8 @@
                      <tr class="bg-gray-100">
                         <td scope="row" class="p-3 text-sm text-gray-700"><a
                               href="{{ url_for('details', id=app.get_gigID()) }}"
-                              class="font-bold text-blue-500 hover:underline">{{ get_this_gig(app.get_gigID()).get_title() }}</a></td>
+                              class="font-bold text-blue-500 hover:underline">{{
+                              get_this_gig(app.get_gigID()).get_title() }}</a></td>
                         <td scope="row" class="p-3 text-sm text-gray-700 break-all" style="hyphens: auto;">{{
                            app.get_message() }}</td>
                      </tr>
