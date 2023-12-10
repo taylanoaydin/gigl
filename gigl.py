@@ -442,7 +442,14 @@ def details(id):
            setstatusform.gigID.data = app.get_gigID()
            setstatusform.applicantID.data = app.get_applicant_netid()
            setstatusforms[app.get_applicant_netid()] = setstatusform
-  
+   gig_form = PostGigForm()
+   gig_form.qualifications.data = gigQualifications
+   gig_form.title.data = gigTitle
+   gig_form.description.data = gigDescription
+   gig_form.start_date.data = gigStartDate
+   gig_form.end_date.data = gigEndDate
+   gig_form.categories.data = gigCategory
+
    html_code = flask.render_template('details.html',
                                      gigTitle=gigTitle,
                                      gigPoster=gigAuthor,
@@ -461,7 +468,8 @@ def details(id):
                                      show_confirm=show_confirm,
                                      isAdmin=isAdmin,
                                      get_usr = database.get_user,
-                                     setstatusforms=setstatusforms)
+                                     setstatusforms=setstatusforms,
+                                     gig_form=gig_form)
    response = flask.make_response(html_code)
    return response
 # -----------------------------------------------------------------------
@@ -954,6 +962,39 @@ def remove_bookmark(gig_id):
            return flask.jsonify({'status': 'error'})
    except Exception as e:
        return flask.jsonify({'status': 'error'})
+
+@app.route('/update_gig/<int:gig_id>', methods=['POST'])
+def update_gig(gig_id):
+    netid = auth.authenticate()
+    gig_form = PostGigForm(flask.request.form)
+    if database.is_banned(netid):
+        return flask.jsonify({'status': 'error', 'message': 'User is banned'})
+    elif not database.owns_gig(netid, gig_id):
+        return jsonify(status='error', message='Unauthorized'), 403
+    
+    print("validate_on_submit")
+    print(gig_form.validate_on_submit())
+    print(gig_form.title.data)
+    print(gig_form.description.data)
+    print(gig_form.qualifications.data)
+    print(gig_form.start_date.data)
+    print(gig_form.end_date.data)
+    print(gig_form.categories.data)
+    print(gig_form.errors)
+    
+    gig = database.get_gig_details(gig_id)
+    if gig is None:
+        return jsonify(status='error', message='Gig not found')
+    print("update_gig")
+    try:
+        result = database.update_gig_details(gig_id, netid, gig_form.title.data, gig_form.description.data, gig_form.qualifications.data, gig_form.start_date.data, gig_form.end_date.data, gig_form.categories.data)
+        if result:
+            return flask.jsonify({'status': 'success'})
+        else:
+            return flask.jsonify({'status': 'error', 'message': 'Update failed'})
+    except Exception as e:
+        return flask.jsonify({'status': 'error', 'message': str(e)})
+
 
 
 # -----------------------------------------------------------------------

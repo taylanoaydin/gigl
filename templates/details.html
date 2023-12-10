@@ -40,15 +40,26 @@
         <br>
         <section class="w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-200">
             <div class="flex justify-between">
-                <h2 class="text-2xl font-bold break-all">{{gigTitle}}</h2>
-                <p class="text-gray-600">{{gigPostedDate}}</p>
+                <h2 id="gigTitleDisplay" class="text-2xl font-bold break-all">{{gigTitle}}</h2>
+                {{ gig_form.title(value=gigTitle, id="gigTitleEdit", class="text-2xl font-bold border border-blue-600
+                py-1 rounded-lg w-3/4", hidden=True)}}
+                {% for error in gig_form.title.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+                <div>
+                    <p class="text-gray-600">{{gigPostedDate}}</p>
+                    {% if is_owner %}
+                    <button id="editGigButton" class="text-blue-600 w-full">Edit Gig</button>
+                    {% endif %}
+                </div>
             </div>
+
 
             <div>
                 <h3>Posted By: {{gigPoster}}</h3>
             </div>
             <br>
-            <div>
+            <div id="gigCategoryDisplay">
                 {% if gigCategory == 'teaching' %}
                 Gig Category: <span
                     class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
@@ -111,23 +122,53 @@
                 </span>
                 {% endif %}
             </div>
+
+            {{ gig_form.categories(id="gigCategoryEdit", class="block border border-blue-600 p-2 w-full md:w-1/2
+            rounded-lg", hidden=True)}}
+
+            <br>
+
+            <h3 class="font-bold">Gig Start Date:</h3>
+            <h3 id="gigStartDateDisplay">{{gigStartDate}}</h3>
+
+            {{ gig_form.start_date(id="gigStartDateEdit", class="block border border-blue-600 p-2 w-full md:w-1/2 rounded-lg", hidden=True)}}
+            {% for error in gig_form.start_date.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+
+            <br>
             <div>
-                <h3>Gig Start Date: {{gigStartDate}}</h3>
-            </div>
-            <div>
-                <h3>Gig End Date: {{gigEndDate}}</h3>
+                <h3 class="font-bold">Gig End Date:</h3>
+                <h3 id="gigEndDateDisplay">{{gigEndDate}}</h3>
+
+                {{ gig_form.end_date(id="gigEndDateEdit", class="block border border-blue-600 p-2 w-full md:w-1/2 rounded-lg", hidden=True)}}
+                {% for error in gig_form.end_date.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
             </div>
             <br>
             <div>
-                <h3>Description</h3>
-                <p class="break-all">{{gigDescription}}</p>
+                <h3 class="font-bold">Description</h3>
+                <p id="gigDescriptionDisplay" class="break-all">{{gigDescription}}</p>
+                {{ gig_form.description(id="gigDescriptionEdit", class="border border-blue-600
+                py-1 rounded-lg w-full", hidden=True)}}
+                {% for error in gig_form.description.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
             </div>
             <br>
             <hr>
             <br>
             <div>
-                <h3>Qualifications</h3>
-                <p class="break-all">{{gigQualifications}}</p>
+                <h3 class="font-bold">Qualifications</h3>
+                <p id="gigQualificationDisplay" class="break-all">{{gigQualifications}}</p>
+                {{ gig_form.qualifications(id="gigQualificationEdit", class="border border-blue-600 py-1 rounded-lg
+                w-full", hidden=True)}}
+                {% for error in gig_form.qualifications.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
             </div>
         </section>
         <br>
@@ -203,7 +244,9 @@
             <form action="" method="post" id="applyFormID" novalidate>
                 {{ apply_form.hidden_tag() }} <!-- the CSRF token -->
                 <div class="flex space-x-10">
-                    {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your qualifications, availability, and any relevant info. You will be contacted if there is a match. ")}}
+                    {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none
+                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your
+                    qualifications, availability, and any relevant info. You will be contacted if there is a match. ")}}
                     {{ apply_form.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
                 </div>
             </form>
@@ -229,6 +272,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         'use strict';
+        let isEditing = false;
         function updateStatus(e, netid, status) {
             e.preventDefault();
 
@@ -285,6 +329,10 @@
         }
 
         $(document).ready(function () {
+            $('#gigStartDateEdit').hide();
+            $('#gigEndDateEdit').hide();
+            $('#gigCategoryEdit').hide();
+
             console.log('document ready')
             $('#applyFormID').submit(function (e) {
                 console.log('apply form submitted')
@@ -322,6 +370,90 @@
             });
 
         })
+
+        function submitGigEdits(gigId) {
+            // Gather data from input fields
+            var title = $('#gigTitleEdit').val();
+            var description = $('#gigDescriptionEdit').val();
+            var qualifications = $('#gigQualificationEdit').val();
+            var startDate = $('#gigStartDateEdit').val();
+            var endDate = $('#gigEndDateEdit').val();
+            var category = $('#gigCategoryEdit').val();
+
+
+
+            // Create data object to be sent
+            var data = {
+                title: title,
+                description: description,
+                qualifications: qualifications,
+                start_date: startDate,
+                end_date: endDate,
+                categories: category,
+            };
+            console.log(data);
+
+            // AJAX POST request to the server
+            $.ajax({
+                type: 'POST',
+                url: '/update_gig/' + 235, // Replace 'gigId' with the actual gig ID
+                data: data,
+                success: function (response) {
+                    if (response.status === 'success') {
+                        // Update the display fields with new data and toggle back
+                        $('#gigTitleDisplay').text(title).show();
+                        $('#gigDescriptionDisplay').text(description).show();
+                        $('#gigQualificationDisplay').text(qualifications).show();
+                        $('#gigStartDateDisplay').text(startDate).show();
+                        $('#gigEndDateDisplay').text(endDate).show();
+                        $('#gigCategoryDisplay').text(category).show();
+
+                        $('#editGigButton').text('Edit Gig');
+                    } else {
+                        alert('Error updating gig: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error updating gig. Please try again.');
+                }
+            });
+        }
+        function toggleEditGig() {
+            console.log(isEditing);
+            isEditing = !isEditing;
+            document.getElementById('editGigButton').textContent = isEditing ? 'Submit Changes' : 'Edit Gig';
+
+            // Toggle visibility for all editable fields
+            $('#gigTitleDisplay').toggle(!isEditing);
+            $('#gigTitleEdit').toggle(isEditing);
+
+            $('#gigDescriptionDisplay').toggle(!isEditing);
+            $('#gigDescriptionEdit').toggle(isEditing);
+
+            $('#gigQualificationDisplay').toggle(!isEditing);
+            $('#gigQualificationEdit').toggle(isEditing);
+
+
+
+            // Toggling start date, end date, and category
+            $('#gigStartDateDisplay').toggle(!isEditing);
+            $('#gigStartDateEdit').toggle(isEditing);
+
+            $('#gigEndDateDisplay').toggle(!isEditing);
+            $('#gigEndDateEdit').toggle(isEditing);
+
+            $('#gigCategoryDisplay').toggle(!isEditing);
+            $('#gigCategoryEdit').toggle(isEditing);
+            // Add similar toggle for other fields
+
+            if (!isEditing) {
+                submitGigEdits(235);
+                isEditing = false;
+            }
+        }
+
+
+        document.getElementById('editGigButton').addEventListener('click', toggleEditGig);
 
         window.onpageshow = function (event) {
             console.log('6')
