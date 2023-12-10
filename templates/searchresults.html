@@ -18,49 +18,13 @@
       }
    </style>
    <script>
-      // OLD SORT FUNCTION IGNORE THIS 
-      function sortTable(th_id) {
-         var table, rows, headers, i, x, y, shouldSwitch, dir, switchcount = 0;
-         table = document.getElementById("resultsTable");
-         headers = table.querySelectorAll("th");
-         var column = Array.from(headers).findIndex(header => header.id === th_id);
-         var switching = true;
-         dir = "asc";
+      // Global variable to store all rows
+      let sortStates = {};
+      let initialSortColumn = 1; // Assuming 'Posted On' is the second column (index 1)
+      let allRows = [];
+      const rowsPerPage = 5; // Adjust this as per your requirement
 
-         while (switching) {
-            switching = false;
-            rows = table.rows;
 
-            for (i = 1; i < (rows.length - 1); i++) {
-               shouldSwitch = false;
-               x = rows[i].getElementsByTagName("TD")[column].textContent.toLowerCase();
-               y = rows[i + 1].getElementsByTagName("TD")[column].textContent.toLowerCase();
-
-               if (dir == "asc") {
-                  if (x > y) {
-                     shouldSwitch = true;
-                     break;
-                  }
-               } else if (dir == "desc") {
-                  if (x < y) {
-                     shouldSwitch = true;
-                     break;
-                  }
-               }
-            }
-
-            if (shouldSwitch) {
-               rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-               switching = true;
-               switchcount++;
-            } else {
-               if (switchcount == 0 && dir == "asc") {
-                  dir = "desc";
-                  switching = true;
-               }
-            }
-         }
-      }
       function initializeSortStates() {
          let table = document.getElementById("resultsTable");
          let headers = table.tHead.rows[0].cells;
@@ -70,7 +34,7 @@
       }
 
       function sortColumn(th_id, isAscending) {
-    // Sort all rows
+         // Sort all rows
          allRows.sort(function (a, b) {
             let textA = a.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
             let textB = b.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
@@ -80,10 +44,6 @@
          // Reapply pagination to show the first page of sorted results
          paginateToPage(1);
       }
-
-
-
-      const rowsPerPage = 5; // Adjust this as per your requirement
 
       function setupSearchResultsPagination() {
          const table = document.getElementById('resultsTable');
@@ -97,7 +57,7 @@
             const pageButton = document.createElement('button');
             pageButton.innerText = i;
             pageButton.className = 'px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100';
-            pageButton.onclick = function() { paginateToPage(i); };
+            pageButton.onclick = function () { paginateToPage(i); };
             paginationControls.appendChild(pageButton);
          }
          paginateToPage(1);
@@ -112,31 +72,13 @@
          allRows.slice(start, end).forEach(row => tbody.appendChild(row));
       }
 
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
          initializeSortStates();
          setupSearchResultsPagination();
          setupTableSort();
       });
 
-      // Global variable to store all rows
-      let sortStates = {};
-      let initialSortColumn = 1; // Assuming 'Posted On' is the second column (index 1)
-      let allRows = [];
 
-     S
-
-
-      function sortColumn(th_id, isAscending) {
-         // Sort all rows
-         allRows.sort(function (a, b) {
-            let textA = a.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
-            let textB = b.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
-            return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
-         });
-
-         // Reapply pagination to show the first page of sorted results
-         paginateToPage(1);
-      }
       function sortTableByColumn(th_id) {
          let isAscending = sortStates[th_id] !== undefined ? !sortStates[th_id] : true; // Default to ascending on first click
          sortStates[th_id] = isAscending; // Update sort state
@@ -149,7 +91,7 @@
 
          for (let i = 0; i < headers.length; i++) {
             headers[i].addEventListener('click', function () {
-                  sortTableByColumn(i);
+               sortTableByColumn(i);
             });
          }
       }
@@ -181,10 +123,6 @@
             })
             .catch(error => console.error('Error:', error));
       }
-
-      document.addEventListener('DOMContentLoaded', function () {
-         setupTableSort();
-      });
    </script>
 
 

@@ -642,7 +642,7 @@ def profilesearch():
       
        # Retrieve the current page number and set items per page
        page = request.args.get('page', 1, type=int)
-       per_page = 2  # Define the number of items per page
+       per_page = 5  # Define the number of items per page
 
 
        specialty = request.args.get('spec', '')
