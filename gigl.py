@@ -357,6 +357,8 @@ def details(id):
        gig = database.get_gig_details(id)
        gigTitle = gig.get_title()
        gigNetID = gig.get_netid()
+       if database.is_banned(gigNetID):
+           return render_template('error_404.html'), 404
        gigAuthor = database.get_user(gigNetID).get_name()
        gigCategory = gig.get_category()
        gigDescription = gig.get_description()
@@ -419,20 +421,14 @@ def details(id):
    delete_form = DeleteGigForm()
    show_confirm = False
    if delete_form.validate_on_submit():
-       _ = flask.get_flashed_messages()  # clears flashed messages
-       # url = flask.url_for('details', id=id)
-       if delete_form.delete.data:
-           show_confirm = True
-       elif delete_form.confirm.data:
-           if owns or isAdmin:
-               database.delete_gig_from_db(id)
-               flask.flash("Your Gig has been successfully deleted!", "success")
-               return flask.redirect(flask.url_for('gigdeleted'))
-           else:
-               flask.flash("You are not authorized to delete this gig.", "error")
-               return flask.redirect(flask.url_for('gigdeleted'))
-       # elif delete_form.cancel.data:
-       #     return flask.redirect(url)
+        _ = flask.get_flashed_messages()  # clears flashed messages
+        if owns or isAdmin:
+            database.delete_gig_from_db(id)
+            flask.flash("Your Gig has been successfully deleted!", "success")
+            return jsonify({'redirect': flask.url_for('gigdeleted')})
+        else:
+            flask.flash("You are not authorized to delete this gig.", "error")
+            return jsonify({'redirect': flask.url_for('gigdeleted')})
 
 
    setstatusforms = {}
@@ -655,7 +651,7 @@ def profilesearch():
 
 
        if isAdmin:
-           freelancers = database.get_all_users(
+           freelancers, total_freelancers = database.get_all_users(
                keyword=keyword, specialty=specialty, page=page, per_page=per_page)
        else:
            freelancers, total_freelancers = database.get_freelancers(
@@ -838,64 +834,68 @@ def changespecialty():
 #-----------------------------------------------------------------------
 @app.route('/editbio', methods=['POST'])
 def editbio():
-   netid = auth.authenticate()
-   if database.is_banned(netid):
-       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-       response = flask.make_response(html_code)
-       return response
-   bioeditform = BioEditForm(flask.request.form)
-   if bioeditform.validate_on_submit():
-       newbio = bioeditform.bio.data
-       database.update_bio(netid, newbio)
-       html_code = flask.render_template(
-           'bio_in_profile.html', bio=newbio, bioeditform=bioeditform)
-       response = flask.make_response(html_code)
-       return response
-   else:
-       bioeditform = BioEditForm()
-       bio = database.get_user(netid).get_bio()
-       bioeditform.bio.data=bio
-       html_code = flask.render_template(
-           'bio_in_profile_error.html',
-           bio=bio,
-           bioeditform=bioeditform)
-       response = flask.make_response(html_code)
-       return response
+    netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    bioeditform = BioEditForm(flask.request.form)
+    if bioeditform.validate_on_submit():
+        newbio = bioeditform.bio.data
+        database.update_bio(netid, newbio)
+        html_code = flask.render_template(
+            'bio_in_profile.html', bio=newbio, bioeditform=bioeditform)
+        response = flask.make_response(html_code)
+        return response
+    else:
+        errs = bioeditform.errors
+        bioeditform = BioEditForm()
+        bio = database.get_user(netid).get_bio()
+        bioeditform.bio.data=bio
+        html_code = flask.render_template(
+            'bio_in_profile_error.html',
+            bio=bio,
+            bioeditform=bioeditform,
+            errs=errs)
+        response = flask.make_response(html_code)
+        return response
 # ----------------------------------------------------------------------
 @app.route('/editlinks', methods=['POST'])
 def editlinks():
-   netid = auth.authenticate()
-   if database.is_banned(netid):
-       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-       response = flask.make_response(html_code)
-       return response
-   linkeditform = LinkEditForm(flask.request.form)
-   if linkeditform.validate_on_submit():
-       link1 = linkeditform.link1.data
-       link2 = linkeditform.link2.data
-       link3 = linkeditform.link3.data
-       link4 = linkeditform.link4.data
-       links = [link1, link2, link3, link4]
-       links = list(filter(lambda x: x != '', links))
-      
-       database.update_links(netid, links)
-       links = database.get_user(netid).get_links()
-       linkeditform = LinkEditForm()
-       html_code = flask.render_template(
-           'links_in_profile.html',
-           links=links,
-           linkeditform=linkeditform)
-       response = flask.make_response(html_code)
-       return response
-   else:
-       linkeditform = LinkEditForm()
-       links = database.get_user(netid).get_links()
-       html_code = flask.render_template(
-           'links_in_profile_error.html',
-           links=links,
-           linkeditform=linkeditform)
-       response = flask.make_response(html_code)
-       return response
+    netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    linkeditform = LinkEditForm(flask.request.form)
+    if linkeditform.validate_on_submit():
+        link1 = linkeditform.link1.data
+        link2 = linkeditform.link2.data
+        link3 = linkeditform.link3.data
+        link4 = linkeditform.link4.data
+        links = [link1, link2, link3, link4]
+        links = list(filter(lambda x: x != '', links))
+        
+        database.update_links(netid, links)
+        links = database.get_user(netid).get_links()
+        linkeditform = LinkEditForm()
+        html_code = flask.render_template(
+            'links_in_profile.html',
+            links=links,
+            linkeditform=linkeditform)
+        response = flask.make_response(html_code)
+        return response
+    else:
+        err = linkeditform.errors
+        linkeditform = LinkEditForm()
+        links = database.get_user(netid).get_links()
+        html_code = flask.render_template(
+            'links_in_profile_error.html',
+            links=links,
+            linkeditform=linkeditform,
+            errs=err)
+        response = flask.make_response(html_code)
+        return response
 
 
 @app.route('/update_status', methods=['POST'])
