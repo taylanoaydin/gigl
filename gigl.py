@@ -311,107 +311,134 @@ def search_results():
 
 @app.route('/details/<int:id>', methods=['GET', 'POST'])
 def details(id):
-    netid = auth.authenticate()
-    try:
-        database.check_and_add_user(netid)
-        if database.is_banned(netid):
-            html_code = flask.render_template(
-                'banneduser.html', name=database.get_user(netid).get_name())
-            response = flask.make_response(html_code)
-            return response
-        database.update_activity(netid)
+   netid = auth.authenticate()
+   try:
+       database.check_and_add_user(netid)
+       if database.is_banned(netid):
+           html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+           response = flask.make_response(html_code)
+           return response
+       database.update_activity(netid)
 
-        gig = database.get_gig_details(id)
-        gigTitle = gig.get_title()
-        gigNetID = gig.get_netid()
-        if database.is_banned(gigNetID):
-            return render_template('error_404.html'), 404
-        gigAuthor = database.get_user(gigNetID).get_name()
-        gigCategory = gig.get_category()
-        gigDescription = gig.get_description()
-        gigQualifications = gig.get_qualifications()
-        gigStartDate = gig.get_fromdate()
-        gigEndDate = gig.get_til_date()
-        gigPostedDate = gig.get_post_date()
 
-        owns = database.owns_gig(netid, id)  # boolean
-        isAdmin = (netid == 'cos-gigl')
-        if owns:
-            all_apps = database.get_apps_for(id)
-            application = None
-        else:
-            all_apps = None
-            application = database.get_application(netid, id)
+       gig = database.get_gig_details(id)
+       gigTitle = gig.get_title()
+       gigNetID = gig.get_netid()
+       if database.is_banned(gigNetID):
+           return render_template('error_404.html'), 404
+       gigAuthor = database.get_user(gigNetID).get_name()
+       gigCategory = gig.get_category()
+       gigDescription = gig.get_description()
+       gigQualifications = gig.get_qualifications()
+       gigStartDate = gig.get_fromdate()
+       gigEndDate = gig.get_til_date()
+       gigPostedDate = gig.get_post_date()
 
-        apply_form = ApplyForm()
 
-        if apply_form.validate_on_submit():
-            application_message = apply_form.message.data
-            print("apply form submitted")
+       owns = database.owns_gig(netid, id)  # boolean
+       isAdmin = (netid == 'cos-gigl')
+       if owns:
+           all_apps = database.get_apps_for(id)
+           application = None
+       else:
+           all_apps = None
+           application = database.get_application(netid, id)
 
-            if database.owns_gig(netid, id):
-                flask.flash("You can't apply to your own gig...", 'error')
-            elif database.get_application(netid, id):
-                flask.flash("You have already applied...", 'error')
-            elif database.send_application(netid, id, application_message):
-                flask.flash("You have successfully applied!", 'success')
-                send_application(
-                    gigNetID +
-                    "@princeton.edu",
-                    "You have a new application!",
-                    id,
-                    gigAuthor,
-                    database.get_user(netid).get_name(),
-                    gigTitle,
-                    application_message)
-            else:
-                flask.flash(
-                    "Application couldn't be sent due to a database error.",
-                    'error')
 
-            return flask.redirect(flask.url_for('apply_result', gigID=id))
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
-    except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
-    except Exception as e:
-        raise e
+       apply_form = ApplyForm()
 
-    delete_form = DeleteGigForm()
-    show_confirm = False
 
-    setstatusforms = {}
-    if owns:
-        for app in all_apps:
-            setstatusform = SetStatusForm()
-            setstatusform.status.data = app.get_status()
-            setstatusform.gigID.data = app.get_gigID()
-            setstatusform.applicantID.data = app.get_applicant_netid()
-            setstatusforms[app.get_applicant_netid()] = setstatusform
+       if apply_form.validate_on_submit():
+           application_message = apply_form.message.data
 
-    html_code = flask.render_template('details.html',
-                                      gigTitle=gigTitle,
-                                      gigPoster=gigAuthor,
-                                      gigCategory=gigCategory,
-                                      gigDescription=gigDescription,
-                                      gigQualifications=gigQualifications,
-                                      gigStartDate=gigStartDate,
-                                      gigEndDate=gigEndDate,
-                                      gigPostedDate=gigPostedDate,
-                                      is_owner=owns,
-                                      application=application,
-                                      all_apps=all_apps,
-                                      gigID=id,
-                                      apply_form=apply_form,
-                                      delete_form=delete_form,
-                                      show_confirm=show_confirm,
-                                      isAdmin=isAdmin,
-                                      get_usr=database.get_user,
-                                      setstatusforms=setstatusforms)
-    response = flask.make_response(html_code)
-    return response
+
+           if database.owns_gig(netid, id):
+               flask.flash("You can't apply to your own gig...", 'error')
+           elif database.get_application(netid, id):
+               flask.flash("You have already applied...", 'error')
+           elif database.send_application(netid, id, application_message):
+               flask.flash("You have successfully applied!", 'success')
+               send_application(
+                   gigNetID +
+                   "@princeton.edu",
+                   "You have a new application!",
+                   id,
+                   gigAuthor,
+                   database.get_user(netid).get_name(),
+                   gigTitle,
+                   application_message)
+           else:
+               flask.flash(
+                   "Application couldn't be sent due to a database error.",
+                   'error')
+
+
+           return flask.redirect(flask.url_for('apply_result', gigID=id))
+   except AuthenticationError as e:
+       app.logger.error(f"Authentication Error: {e}")
+       flask.abort(401)  # This will trigger the authentication_error_handler
+   except DatabaseError as e:
+       app.logger.error(f"Database Error: {e}")
+       flask.abort(500)  # This will trigger the database_error_handler
+   except Exception as e:
+       raise e
+
+   delete_form = DeleteGigForm()
+   show_confirm = False
+   if delete_form.validate_on_submit():
+       _ = flask.get_flashed_messages()  # clears flashed messages
+       # url = flask.url_for('details', id=id)
+       if delete_form.delete.data:
+           show_confirm = True
+       elif delete_form.confirm.data:
+           if owns or isAdmin:
+               database.delete_gig_from_db(id)
+               flask.flash("Your Gig has been successfully deleted!", "success")
+               return flask.redirect(flask.url_for('gigdeleted'))
+           else:
+               flask.flash("You are not authorized to delete this gig.", "error")
+               return flask.redirect(flask.url_for('gigdeleted'))
+       # elif delete_form.cancel.data:
+       #     return flask.redirect(url)
+
+   setstatusforms = {}
+   if owns:
+       for app in all_apps:
+           setstatusform = SetStatusForm()
+           setstatusform.status.data = app.get_status()
+           setstatusform.gigID.data = app.get_gigID()
+           setstatusform.applicantID.data = app.get_applicant_netid()
+           setstatusforms[app.get_applicant_netid()] = setstatusform
+   gig_form = PostGigForm()
+   gig_form.qualifications.data = gigQualifications
+   gig_form.title.data = gigTitle
+   gig_form.description.data = gigDescription
+   gig_form.start_date.data = gigStartDate
+   gig_form.end_date.data = gigEndDate
+   gig_form.categories.data = gigCategory
+
+   html_code = flask.render_template('details.html',
+                                     gigTitle=gigTitle,
+                                     gigPoster=gigAuthor,
+                                     gigCategory=gigCategory,
+                                     gigDescription=gigDescription,
+                                     gigQualifications=gigQualifications,
+                                     gigStartDate=gigStartDate,
+                                     gigEndDate=gigEndDate,
+                                     gigPostedDate=gigPostedDate,
+                                     is_owner=owns,
+                                     application=application,
+                                     all_apps=all_apps,
+                                     gigID=id,
+                                     apply_form=apply_form,
+                                     delete_form=delete_form,
+                                     show_confirm=show_confirm,
+                                     isAdmin=isAdmin,
+                                     get_usr = database.get_user,
+                                     setstatusforms=setstatusforms,
+                                     gig_form=gig_form)
+   response = flask.make_response(html_code)
+   return response
 # -----------------------------------------------------------------------
 
 
@@ -891,6 +918,39 @@ def remove_bookmark(gig_id):
             return flask.jsonify({'status': 'error'})
     except Exception as e:
         return flask.jsonify({'status': 'error'})
+
+@app.route('/update_gig/<int:gig_id>', methods=['POST'])
+def update_gig(gig_id):
+    netid = auth.authenticate()
+    gig_form = PostGigForm(flask.request.form)
+    if database.is_banned(netid):
+        return flask.jsonify({'status': 'error', 'message': 'User is banned'})
+    elif not database.owns_gig(netid, gig_id):
+        return jsonify(status='error', message='Unauthorized'), 403
+    
+    print("validate_on_submit")
+    print(gig_form.validate_on_submit())
+    print(gig_form.title.data)
+    print(gig_form.description.data)
+    print(gig_form.qualifications.data)
+    print(gig_form.start_date.data)
+    print(gig_form.end_date.data)
+    print(gig_form.categories.data)
+    print(gig_form.errors)
+
+    gig = database.get_gig_details(gig_id)
+    if gig is None:
+        return jsonify(status='error', message='Gig not found')
+    print("update_gig")
+    try:
+        result = database.update_gig_details(gig_id, netid, gig_form.title.data, gig_form.description.data, gig_form.qualifications.data, gig_form.start_date.data, gig_form.end_date.data, gig_form.categories.data)
+        if result:
+            return flask.jsonify({'status': 'success'})
+        else:
+            return flask.jsonify({'status': 'error', 'message': 'Update failed'})
+    except Exception as e:
+        return flask.jsonify({'status': 'error', 'message': str(e)})
+
 
 
 # -----------------------------------------------------------------------

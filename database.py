@@ -449,6 +449,25 @@ def delete_gig_from_db(gigID):
        _put_connection(connection)
    return True
 
+def update_gig_details(gig_id, netid, title, description, qualifications, startfrom, until, category):
+    connection = _get_connection()
+    try:
+        with connection.cursor() as cursor:
+            # Check if the gig belongs to the user
+            if not owns_gig(netid, gig_id):
+                return False
+            
+            cursor.execute('BEGIN')
+            query = "UPDATE gigs SET title = %s, description = %s, qualf = %s, startfrom = %s, until = %s, category = %s WHERE gigID = %s"
+            cursor.execute(query, [title, description, qualifications, startfrom, until, category, gig_id])
+            cursor.execute('COMMIT')
+            return True
+    except Exception as ex:
+        connection.rollback()
+        raise
+    finally:
+        _put_connection(connection)
+
 
 # Creates gig with the given parameters. Unique gigID is automatically
 # created for any gig. Returns gigID normally, -1 if there was any
