@@ -212,7 +212,9 @@
             <form action="" method="post" id="applyFormID" novalidate>
                 {{ apply_form.hidden_tag() }} <!-- the CSRF token -->
                 <div class="flex space-x-10">
-                    {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your qualifications, availability, and any relevant info. You will be contacted if there is a match. ")}}
+                    {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none
+                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your
+                    qualifications, availability, and any relevant info. You will be contacted if there is a match. ")}}
                     {{ apply_form.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
                 </div>
             </form>
@@ -305,30 +307,55 @@
                 console.log('2')
                 if ($('input[type=submit][clicked=true]').val() === 'Delete') {
                     console.log('delete button clicked')
-                    e.preventDefault(); // Prevent form from submitting
+                    e.preventDefault();
                     // because there are two forms, one for owner one for admin
                     let formId = $(this).attr('id')
                     toggleFormButtons(formId, true)
                 }
+                if ($('input[type=submit][clicked=true]').val() === 'No') {
+                    console.log('cancel button clicked')
+                    e.preventDefault();
+                    // because there are two forms, one for owner one for admin
+                    let formId = $(this).attr('id')
+                    toggleFormButtons(formId, false)
+                }
+                if ($('input[type=submit][clicked=true]').val() === 'Yes') {
+                    console.log('delete initiated')
+                    e.preventDefault();
+                    $('#confirmButton').prop('disabled', true)
+                    $('#cancelButton').prop('disabled', true)
+                    // now you can send the AJAX request
+                    let url = "/gigdeleted/"
+                    let gigId = "{{ gigID }}"
+                    url += gigId
+                    let deleteGigForm = $(this).serialize()
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: deleteGigForm,
+                        success: function (response) {
+                            $('body').html(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('whoopsie, something went wrong') // change this later obv
+                        }
+                    
+                })
+            console.log("delete button disabled and delete request sent")
+        }
+
             });
 
-            $(document).on('click', '#cancelButton', function () {
-                console.log('cancel button clicked')
-                let formId = $(this).closest('form').attr('id');
-                toggleFormButtons(formId, false);
-
-            });
-
-            $('.stat_forms').on('change', function (e) {
-                console.log('5')
-                let netid = $(this).attr('id').split('-')[0];
-                let status = $(this).find(':selected').val();
-                updateStatus(e, netid, status);
-            });
-            $(document).on('click', 'input[type=submit]', function () {
-                $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
-                $(this).attr('clicked', 'true');
-            });
+        $('.stat_forms').on('change', function (e) {
+            console.log('5')
+            let netid = $(this).attr('id').split('-')[0];
+            let status = $(this).find(':selected').val();
+            updateStatus(e, netid, status);
+        });
+        $(document).on('click', 'input[type=submit]', function () {
+            $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
+            $(this).attr('clicked', 'true');
+        });
 
         })
 
