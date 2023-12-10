@@ -31,6 +31,15 @@
         .status-UNDECIDED {
             /* This is the default color */
         }
+
+        .conditional-hyphens {
+            overflow-wrap: break-word;
+            word-break: break-word;
+            -webkit-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
+        }
+
     </style>
 </head>
 
@@ -40,7 +49,7 @@
         <br>
         <section class="w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-200">
             <div class="flex justify-between">
-                <h2 class="text-2xl font-bold break-all">{{gigTitle}}</h2>
+                <h2 class="text-2xl font-bold conditional-hyphens" style="hyphens: auto">{{gigTitle}}</h2>
                 <p class="text-gray-600">{{gigPostedDate}}</p>
             </div>
 
@@ -120,14 +129,14 @@
             <br>
             <div>
                 <h3>Description</h3>
-                <p class="break-all">{{gigDescription}}</p>
+                <p class="conditional-hyphens">{{gigDescription}}</p>
             </div>
             <br>
             <hr>
             <br>
             <div>
                 <h3>Qualifications</h3>
-                <p class="break-all">{{gigQualifications}}</p>
+                <p class="conditional-hyphens">{{gigQualifications}}</p>
             </div>
         </section>
         <br>
@@ -156,7 +165,7 @@
                                     {{ nid }}@princeton.edu
                                 </div>
                             </td>
-                            <td scope="row" class="p-3 whitespace-nowrap break-all">{{ app.get_message() }}</td>
+                            <td scope="row" class="p-3 whitespace-nowrap conditional-hyphens">{{ app.get_message() }}</td>
                             <td>
                                 <form class="stat_forms" id="{{ nid }}-StatusForm" method="post">
                                     {{ setstatusforms[nid].hidden_tag() }}
@@ -218,7 +227,7 @@
             </div>
 
             <div>
-                Your response: <div scope="row" class="break-all p3 whitespace-nowrap">{{
+                Your response: <div scope="row" class="conditional-hyphens p3 whitespace-nowrap">{{
                     application.get_message() }}
                 </div>
             </div>

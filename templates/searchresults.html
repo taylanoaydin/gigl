@@ -24,9 +24,17 @@
          padding: 1em;
       }
 
+      .conditional-hyphens {
+         overflow-wrap: break-word;
+         word-break: break-word;
+         -webkit-hyphens: auto;
+         -ms-hyphens: auto;
+         hyphens: auto;
+
       .selectedButton {
          background-color: rgb(73, 121, 241);
          color: white;
+
       }
    </style>
    <script>
@@ -241,7 +249,7 @@
                {% for gig in mygigs %}
                {% if not is_banned(gig.get_netid()): %}
                <tr class="bg-gray-100">
-                  <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap break-all">
+                  <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap conditional-hyphens">
                      <div>
                         <a href="{{ url_for('details', id=gig.get_gigID()) }}"
                            class="font-bold text-blue-500 hover:underline">
