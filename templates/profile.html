@@ -485,10 +485,12 @@
                </table>
                <!-- Pagination Controls for My Gigs -->
                <div id="myGigsTableControls" class="flex justify-center space-x-1 mt-4">
-                  <button onclick="paginate('prev', 'myGigsTable')" id="prevMyGigs" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
+                  <button onclick="paginate('prev', 'myGigsTable')" id="prevMyGigs"
+                     class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
                   <span id="myGigsTablePageNumber" class="px-3 py-1">1</span>
-                  <button onclick="paginate('next', 'myGigsTable')" id="nextMyGigs" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
-              </div>
+                  <button onclick="paginate('next', 'myGigsTable')" id="nextMyGigs"
+                     class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
+               </div>
             </div>
             <div id="Table2" class="tab-content w-full break-all" style="hyphens: auto; display:none">
                <table id="myAppsTable" class="w-full">
@@ -513,10 +515,12 @@
                </table>
                <!-- Pagination Controls for My Apps -->
                <div id="myAppsTableControls" class="flex justify-center space-x-1 mt-4">
-                  <button onclick="paginate('prev', 'myAppsTable')" id="prevMyApps" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
+                  <button onclick="paginate('prev', 'myAppsTable')" id="prevMyApps"
+                     class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
                   <span id="myAppsTablePageNumber" class="px-3 py-1">1</span>
-                  <button onclick="paginate('next', 'myAppsTable')" id="nextMyApps" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
-               </div>   
+                  <button onclick="paginate('next', 'myAppsTable')" id="nextMyApps"
+                     class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
+               </div>
             </div>
             <div id="Table3" class="tab-content w-full" style="display:none">
                <table id="myBookmarksTable" class="w-full">
@@ -610,9 +614,11 @@
                </table>
                <!-- Pagination Controls for My Bookmarks -->
                <div id="myBookmarksTableControls" class="flex justify-center space-x-1 mt-4">
-                  <button onclick="paginate('prev', 'myBookmarksTable')" id="prevMyBookmarks" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
+                  <button onclick="paginate('prev', 'myBookmarksTable')" id="prevMyBookmarks"
+                     class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
                   <span id="myBookmarksTablePageNumber" class="px-3 py-1">1</span>
-                  <button onclick="paginate('next', 'myBookmarksTable')" id="nextMyBookmarks" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
+                  <button onclick="paginate('next', 'myBookmarksTable')" id="nextMyBookmarks"
+                     class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
                </div>
             </div>
          </div>
@@ -771,52 +777,52 @@
 
 
       // Call this function on page load to setup initial view
-      document.addEventListener('DOMContentLoaded', function() {
-            setupPagination('myGigsTable');
-            setupPagination('myAppsTable');
-            setupPagination('myBookmarksTable');
-         });
-      
-         function setupPagination(tableId) {
-            const table = document.getElementById(tableId);
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            const maxPage = Math.ceil(rows.length / rowsPerPage);
-            const paginationControls = document.getElementById(tableId + 'Controls');
+      document.addEventListener('DOMContentLoaded', function () {
+         setupPagination('myGigsTable');
+         setupPagination('myAppsTable');
+         setupPagination('myBookmarksTable');
+      });
 
-            // Clear existing buttons
-            paginationControls.innerHTML = '';
-            
-            if (rows.length > rowsPerPage) {
+      function setupPagination(tableId) {
+         const table = document.getElementById(tableId);
+         const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+         const maxPage = Math.ceil(rows.length / rowsPerPage);
+         const paginationControls = document.getElementById(tableId + 'Controls');
+
+         // Clear existing buttons
+         paginationControls.innerHTML = '';
+
+         if (rows.length > rowsPerPage) {
             // Create and append buttons to paginationControls
-               for (let i = 1; i <= maxPage; i++) {
-                  const pageButton = document.createElement('button');
-                  pageButton.innerText = i;
-                  pageButton.className = 'px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100';
-                  pageButton.onclick = function() { paginateToPage(i, tableId); };
-                  paginationControls.appendChild(pageButton);
-               }
-            }
-            paginateToPage(1, tableId)
-         }
-
-         function paginateToPage(pageNumber, tableId) {
-            const table = document.getElementById(tableId);
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            
-            // Calculate start and end index for the rows to show
-            const start = (pageNumber - 1) * rowsPerPage;
-            const end = pageNumber * rowsPerPage;
-
-            // Hide all rows and show the ones for the current page
-            for (let i = 0; i < rows.length; i++) {
-               rows[i].style.display = i >= start && i < end ? '' : 'none';
+            for (let i = 1; i <= maxPage; i++) {
+               const pageButton = document.createElement('button');
+               pageButton.innerText = i;
+               pageButton.className = 'px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100';
+               pageButton.onclick = function () { paginateToPage(i, tableId); };
+               paginationControls.appendChild(pageButton);
             }
          }
-      
+         paginateToPage(1, tableId)
+      }
+
+      function paginateToPage(pageNumber, tableId) {
+         const table = document.getElementById(tableId);
+         const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+         // Calculate start and end index for the rows to show
+         const start = (pageNumber - 1) * rowsPerPage;
+         const end = pageNumber * rowsPerPage;
+
+         // Hide all rows and show the ones for the current page
+         for (let i = 0; i < rows.length; i++) {
+            rows[i].style.display = i >= start && i < end ? '' : 'none';
+         }
+      }
+
       function setup() {
          console.log('setup complete');
          $('#bioEditForm').find('textarea[name="bio"]').val('{{ bio }}');
-         
+
          $('#bioEditButton').on('click', function () { editProfile('bio'); })
          $('#linksEditButton').on('click', function () { editProfile('links'); })
          $('#specialtyBtn').on('click', function () { editProfile('specialty'); })
