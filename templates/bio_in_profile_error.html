@@ -53,11 +53,19 @@
     background-color: #ce3ed9;
     /* Darker green on hover */
   }
+
+  .conditional-hyphens {
+            overflow-wrap: break-word;
+            word-break: break-word;
+            -webkit-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
+        }
 </style>
 <div class="flex justify-between items-center p-4">
   <div class="mb-4 flex-grow">
     <h2 class="text-xl font-bold">Bio:</h2>
-    <p id="bioDisplay" class="mt-2 break-all">
+    <p id="bioDisplay" class="mt-2 conditional-hyphens">
       {% if bio %}
       {{ bio }}
       {% else %}
