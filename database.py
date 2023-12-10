@@ -159,7 +159,10 @@ def get_apps_for(gigID):
    apps = []
    try:
        with connection.cursor() as cursor:
-           query = "SELECT * FROM apps WHERE gigID = %s"
+           query = """SELECT a.* FROM apps a
+                    INNER JOIN users u ON a.netid = u.netid
+                    WHERE u.banned = FALSE AND a.gigID = %s
+                    """
            cursor.execute(query, [gigID])
            received_apps = cursor.fetchall()
 

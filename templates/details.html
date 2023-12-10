@@ -31,6 +31,15 @@
         .status-UNDECIDED {
             /* This is the default color */
         }
+
+        .conditional-hyphens {
+            overflow-wrap: break-word;
+            word-break: break-word;
+            -webkit-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
+        }
+
     </style>
     <script>
         // Define a JavaScript variable for gigID
@@ -44,7 +53,8 @@
         <br>
         <section class="w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-200">
             <div class="flex justify-between">
-                <h2 id="gigTitleDisplay" class="text-2xl font-bold break-all">{{gigTitle}}</h2>
+
+                <h2 id="gigTitleDisplay" class="text-2xl font-bold comditional-hyphens">{{gigTitle}}</h2>
                 {{ gig_form.title(value=gigTitle, id="gigTitleEdit", class="text-2xl font-bold border border-blue-600
                 py-1 rounded-lg w-3/4", hidden=True)}}
                 {% for error in gig_form.title.errors %}
@@ -56,6 +66,7 @@
                     <button id="editGigButton" class="text-blue-600 w-full">Edit Gig</button>
                     {% endif %}
                 </div>
+
             </div>
 
 
@@ -153,25 +164,28 @@
             </div>
             <br>
             <div>
+
                 <h3 class="font-bold">Description</h3>
-                <p id="gigDescriptionDisplay" class="break-all">{{gigDescription}}</p>
+                <p id="gigDescriptionDisplay" class="conditional-hyphens">{{gigDescription}}</p>
                 {{ gig_form.description(id="gigDescriptionEdit", class="border border-blue-600
                 py-1 rounded-lg w-full", hidden=True)}}
                 {% for error in gig_form.description.errors %}
                 <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
+
             </div>
             <br>
             <hr>
             <br>
             <div>
                 <h3 class="font-bold">Qualifications</h3>
-                <p id="gigQualificationDisplay" class="break-all">{{gigQualifications}}</p>
+                <p id="gigQualificationDisplay" class="conditional-hyphens">{{gigQualifications}}</p>
                 {{ gig_form.qualifications(id="gigQualificationEdit", class="border border-blue-600 py-1 rounded-lg
                 w-full", hidden=True)}}
                 {% for error in gig_form.qualifications.errors %}
                 <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
+
             </div>
         </section>
         <br>
@@ -200,7 +214,7 @@
                                     {{ nid }}@princeton.edu
                                 </div>
                             </td>
-                            <td scope="row" class="p-3 whitespace-nowrap break-all">{{ app.get_message() }}</td>
+                            <td scope="row" class="p-3 whitespace-nowrap conditional-hyphens">{{ app.get_message() }}</td>
                             <td>
                                 <form class="stat_forms" id="{{ nid }}-StatusForm" method="post">
                                     {{ setstatusforms[nid].hidden_tag() }}
@@ -264,7 +278,7 @@
             </div>
 
             <div>
-                Your response: <div scope="row" class="break-all p3 whitespace-nowrap">{{
+                Your response: <div scope="row" class="conditional-hyphens p3 whitespace-nowrap">{{
                     application.get_message() }}
                 </div>
             </div>
@@ -347,30 +361,55 @@
                 console.log('2')
                 if ($('input[type=submit][clicked=true]').val() === 'Delete') {
                     console.log('delete button clicked')
-                    e.preventDefault(); // Prevent form from submitting
+                    e.preventDefault();
                     // because there are two forms, one for owner one for admin
                     let formId = $(this).attr('id')
                     toggleFormButtons(formId, true)
                 }
+                if ($('input[type=submit][clicked=true]').val() === 'No') {
+                    console.log('cancel button clicked')
+                    e.preventDefault();
+                    // because there are two forms, one for owner one for admin
+                    let formId = $(this).attr('id')
+                    toggleFormButtons(formId, false)
+                }
+                if ($('input[type=submit][clicked=true]').val() === 'Yes') {
+                    console.log('delete initiated')
+                    e.preventDefault();
+                    $('#confirmButton').prop('disabled', true)
+                    $('#cancelButton').prop('disabled', true)
+                    // now you can send the AJAX request
+                    let url = "/gigdeleted/"
+                    let gigId = "{{ gigID }}"
+                    url += gigId
+                    let deleteGigForm = $(this).serialize()
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: deleteGigForm,
+                        success: function (response) {
+                            $('body').html(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('whoopsie, something went wrong') // change this later obv
+                        }
+                    
+                })
+            console.log("delete button disabled and delete request sent")
+        }
+
             });
 
-            $(document).on('click', '#cancelButton', function () {
-                console.log('cancel button clicked')
-                let formId = $(this).closest('form').attr('id');
-                toggleFormButtons(formId, false);
-
-            });
-
-            $('.stat_forms').on('change', function (e) {
-                console.log('5')
-                let netid = $(this).attr('id').split('-')[0];
-                let status = $(this).find(':selected').val();
-                updateStatus(e, netid, status);
-            });
-            $(document).on('click', 'input[type=submit]', function () {
-                $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
-                $(this).attr('clicked', 'true');
-            });
+        $('.stat_forms').on('change', function (e) {
+            console.log('5')
+            let netid = $(this).attr('id').split('-')[0];
+            let status = $(this).find(':selected').val();
+            updateStatus(e, netid, status);
+        });
+        $(document).on('click', 'input[type=submit]', function () {
+            $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
+            $(this).attr('clicked', 'true');
+        });
 
         })
 

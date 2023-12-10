@@ -5,48 +5,33 @@
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
     <style>
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(to bottom, #b0d1f9, #ffffff); /* Blue to white gradient */
         }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            margin-right: 10px;
-        }
-
-        .actions {
-            display: flex;
-            align-items: center;
+        .divider {
             border-left: 1px solid #e0e0e0;
-            padding-left: 10px;
         }
 
-        .actions a:not(:last-child) {
-            margin-right: 10px;
-            border-right: 1px solid #e0e0e0;
-            padding-right: 10px;
+        .actions a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
 
 <body>
     <header>
-        <div class="logo-section">
-            <div class="logo">🎓</div> <!-- Placeholder logo -->
-            <a href="/home" class="btn">gigl</a>
-        </div>
-        <div class="actions">
-            <a href="/profilesearch?spec=&kw=" class="btn">Freelancers</a>
-            <a href="/postgig" class="btn">Post Gig</a>
-            <a href="/profile" class="btn">Profile</a>
-            <a href="/logout" class="btn">Logout</a>
+        <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+            <div class="flex items-center space-x-2">
+                <div class="text-xl font-semibold text-black">🎓</div>
+                <a href="/home" class="text-black hover:text-blue-700 font-medium">gigl</a>
+            </div>
+            <div class="actions flex">
+                <a href="/profilesearch?spec=&kw=" class="text-black hover:text-blue-700 divider px-4">freelancers</a>
+                <a href="/postgig" class="text-black hover:text-blue-700 divider px-4">post gig</a>
+                <a href="/profile" class="text-black hover:text-blue-700 divider px-4">profile</a>
+                <a href="/logout" class="text-black hover:text-blue-700 divider px-4">logout</a>
+            </div>
         </div>
     </header>
 </body>

@@ -15,6 +15,14 @@
          width: 95%;
          padding: 1em;
       }
+
+      .conditional-hyphens {
+         overflow-wrap: break-word;
+         word-break: break-word;
+         -webkit-hyphens: auto;
+         -ms-hyphens: auto;
+         hyphens: auto;
+      }
    </style>
 
    <script>
@@ -24,7 +32,6 @@
          }
       };
       let sortStates = {};
-      // OLD SORT FUNCTION IGNORE THIS
 
       function toggleBookmark(gigID, element) {
          const isBookmarked = element.classList.contains('fas');
@@ -79,11 +86,11 @@
       </form>
    </section>
    <section>
-      <div>
+      <div class="text-sm">
          ...or, build your freelancer profile now! Go to your <a class="text-blue-500" href="/profile">Profile</a> to edit your information.
       </div>
       <br>
-      <div>
+      <div class="text-sm">
          If you are looking to hire someone, you can <a class="text-blue-500" href="/postgig">post a gig</a> immediately with no registration required!
       </div>
    </section>
@@ -163,7 +170,7 @@
                </span>
                {% endif %}
             </div>
-            <p class="text-sm my-2 break-all">{{ gig.get_description() | truncate(200) }}</p>
+            <p class="text-sm my-2 conditional-hyphens">{{ gig.get_description() | truncate(200) }}</p>
             <div class="flex justify-between">
                <div> <!-- First column -->
                   <div class="text-xs text-gray-600">Start Date: {{ gig.get_fromdate() }}</div>
@@ -259,7 +266,7 @@
                </span>
                {% endif %}
             </div>
-            <p class="text-sm my-2 break-all">{{ gig.get_description() | truncate(200) }}</p>
+            <p class="text-sm my-2 conditional-hyphens">{{ gig.get_description() | truncate(200) }}</p>
             <div class="flex justify-between">
                <div> <!-- First column -->
                   <div class="text-xs text-gray-600">Start Date: {{ gig.get_fromdate() }}</div>

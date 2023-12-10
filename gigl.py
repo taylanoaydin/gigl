@@ -22,8 +22,6 @@ from util import profileIDChecker
 from urllib.parse import urlparse
 
 
-
-
 # -----------------------------------------------------------------------
 app = Flask(__name__, template_folder='templates/')
 dotenv.load_dotenv()
@@ -49,222 +47,198 @@ mail = Mail(app)
 # -----------------------------------------------------------------------
 
 
-
-
 class DatabaseError(Exception):
-   """Exception raised for errors related to the database operations."""
-   pass
-
-
+    """Exception raised for errors related to the database operations."""
+    pass
 
 
 class AuthenticationError(Exception):
-   """Exception raised for errors during authentication."""
-   pass
-
-
+    """Exception raised for errors during authentication."""
+    pass
 
 
 class EmailSendingError(Exception):
-   """Exception raised for errors during email sending."""
-   pass
+    """Exception raised for errors during email sending."""
+    pass
 
 
 # Define error handlers
 
 
-
-
 @app.errorhandler(DatabaseError)
 def database_error_handler(error):
-   app.logger.error(f"Database Error: {error}")
-   return render_template('error_database.html'), 500
-
-
+    app.logger.error(f"Database Error: {error}")
+    return render_template('error_database.html'), 500
 
 
 @app.errorhandler(AuthenticationError)
 def authentication_error_handler(error):
-   app.logger.error(f"Authentication Error: {error}")
-   return render_template('error_auth.html'), 401
-
-
+    app.logger.error(f"Authentication Error: {error}")
+    return render_template('error_auth.html'), 401
 
 
 @app.errorhandler(404)
 def not_found_error_handler(error):
-   return render_template('error_404.html'), 404
-
-
+    return render_template('error_404.html'), 404
 
 
 @app.errorhandler(500)
 def internal_error_handler(error):
-   app.logger.error(f"Internal Server Error: {error}")
-   return render_template('error_500.html'), 500
+    app.logger.error(f"Internal Server Error: {error}")
+    return render_template('error_500.html'), 500
 # -----------------------------------------------------------------------
 
 
 # This makes 'app' importable from other modules
 def get_app():
-   return app
+    return app
 
 
 def is_valid_url(url):
-   try:
-       result = urlparse(url)
-       return all([result.scheme, result.netloc])
-   except:
-       return False
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except:
+        return False
 
 
 def send_email(to_email, subject, body):
-   msg = Message(subject,
-                 sender=current_app.config['MAIL_USERNAME'],
-                 recipients=[to_email],
-                 body=body)
-   try:
-       with current_app.app_context():
-           mail.send(msg)
-       return True
-   except Exception as e:
-       app.logger.error(f"Email Sending Error: {e}")
-       raise EmailSendingError(f"Failed to send email to {to_email}")
-
-
+    msg = Message(subject,
+                  sender=current_app.config['MAIL_USERNAME'],
+                  recipients=[to_email],
+                  body=body)
+    try:
+        with current_app.app_context():
+            mail.send(msg)
+        return True
+    except Exception as e:
+        app.logger.error(f"Email Sending Error: {e}")
+        raise EmailSendingError(f"Failed to send email to {to_email}")
 
 
 def send_application(
-       to_email,
-       subject,
-       gigID,
-       userName,
-       candidateName,
-       gigTitle,
-       applicationMessage):
-   msg = Message(subject,
-                 sender=current_app.config['MAIL_USERNAME'],
-                 recipients=[to_email])
-   msg.html = flask.render_template(
-       'applicationEmail.html',
-       gigID=gigID,
-       userName=userName,
-       candidateName=candidateName,
-       gigTitle=gigTitle,
-       applicationMessage=applicationMessage)
+        to_email,
+        subject,
+        gigID,
+        userName,
+        candidateName,
+        gigTitle,
+        applicationMessage):
+    msg = Message(subject,
+                  sender=current_app.config['MAIL_USERNAME'],
+                  recipients=[to_email])
+    msg.html = flask.render_template(
+        'applicationEmail.html',
+        gigID=gigID,
+        userName=userName,
+        candidateName=candidateName,
+        gigTitle=gigTitle,
+        applicationMessage=applicationMessage)
 
-
-   try:
-       with current_app.app_context():
-           mail.send(msg)
-       return True
-   except Exception as e:
-       app.logger.error(f"Email Sending Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
-
-
+    try:
+        with current_app.app_context():
+            mail.send(msg)
+        return True
+    except Exception as e:
+        app.logger.error(f"Email Sending Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 def send_email_welcome(to_email, subject, userName):
-   msg = Message(subject,
-                 sender=current_app.config['MAIL_USERNAME'],
-                 recipients=[to_email])
-   msg.html = flask.render_template('welcomeEmail.html', userName=userName)
+    msg = Message(subject,
+                  sender=current_app.config['MAIL_USERNAME'],
+                  recipients=[to_email])
+    msg.html = flask.render_template('welcomeEmail.html', userName=userName)
 
-
-   try:
-       with current_app.app_context():
-           mail.send(msg)
-       return True
-   except Exception as e:
-       app.logger.error(f"Email Sending Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+    try:
+        with current_app.app_context():
+            mail.send(msg)
+        return True
+    except Exception as e:
+        app.logger.error(f"Email Sending Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 # -----------------------------------------------------------------------
-
-
 
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
-   try:
-       html_code = flask.render_template('index.html')
-       response = flask.make_response(html_code)
-       return response
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+    try:
+        html_code = flask.render_template('index.html')
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 # -----------------------------------------------------------------------
-
-
 
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
-   netid = auth.authenticate()
-   try:
-       status = database.check_and_add_user(netid)
-       if status == "user_created":
-           username = cas_details(netid)[0]
-           email = netid + "@princeton.edu"
-           send_email_welcome(email, "Welcome to Gigl!", username)
-       else:
-           if database.is_banned(netid):
-               html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-               response = flask.make_response(html_code)
-               return response
-           database.update_activity(netid)
+    netid = auth.authenticate()
+    try:
+        status = database.check_and_add_user(netid)
+        if status == "user_created":
+            username = cas_details(netid)[0]
+            email = netid + "@princeton.edu"
+            send_email_welcome(email, "Welcome to Gigl!", username)
+        else:
+            if database.is_banned(netid):
+                html_code = flask.render_template(
+                    'banneduser.html', name=database.get_user(netid).get_name())
+                response = flask.make_response(html_code)
+                return response
+            database.update_activity(netid)
 
+        # Initialize the form with the query parameters from the request
+        search_form = SearchForm()
+        if search_form.validate_on_submit():
+            keyword = search_form.keyword.data
+            category = search_form.category.data
+            categories = [category] if category else []
+            return flask.redirect(
+                flask.url_for(
+                    'search_results',
+                    kw=keyword,
+                    cat=category))
+        # If form fails to validate (in case something goes wrong with the form
+        # submission)
+        else:
+            keyword = None
+            category = None
+            categories = []  # This will fetch gigs filtered by the selected category
 
-       # Initialize the form with the query parameters from the request
-       search_form = SearchForm()
-       if search_form.validate_on_submit():
-           keyword = search_form.keyword.data
-           category = search_form.category.data
-           categories = [category] if category else []
-           return flask.redirect(
-               flask.url_for(
-                   'search_results',
-                   kw=keyword,
-                   cat=category))
-       # If form fails to validate (in case something goes wrong with the form
-       # submission)
-       else:
-           keyword = None
-           category = None
-           categories = []  # This will fetch gigs filtered by the selected category
-
-
-       username = database.get_user(netid).get_name()
-       popular_gigs = database.get_popular_gigs()  # Function to be implemented
-       featured_gigs = database.get_featured_gigs()  # Adjust to fetch based on user preferences
-       new_gigs = database.get_new_gigs()  # Function to be implemented
-       html_code = flask.render_template('home.html', usrname=username,
-                                     search_form=search_form,
-                                     popular_gigs=popular_gigs,
-                                     featured_gigs=featured_gigs,
-                                     author = database.get_user,
-                                     profileIDChecker = profileIDChecker,
-                                     is_bookmarked = database.is_bookmarked,
-                                     netid = netid,
-                                     new_gigs=new_gigs)
-       response = flask.make_response(html_code)
-       return response
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+        username = database.get_user(netid).get_name()
+        popular_gigs = database.get_popular_gigs()  # Function to be implemented
+        # Adjust to fetch based on user preferences
+        featured_gigs = database.get_featured_gigs()
+        new_gigs = database.get_new_gigs()  # Function to be implemented
+        html_code = flask.render_template('home.html', usrname=username,
+                                          search_form=search_form,
+                                          popular_gigs=popular_gigs,
+                                          featured_gigs=featured_gigs,
+                                          author=database.get_user,
+                                          profileIDChecker=profileIDChecker,
+                                          is_bookmarked=database.is_bookmarked,
+                                          netid=netid,
+                                          new_gigs=new_gigs)
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 # -----------------------------------------------------------------------
@@ -272,74 +246,67 @@ def home():
 
 @app.route('/searchresults', methods=['GET', 'POST'])
 def search_results():
-   netid = auth.authenticate()
-   try:
-       database.check_and_add_user(netid)
-       if database.is_banned(netid):
-           html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-           response = flask.make_response(html_code)
-           return response
-       database.update_activity(netid)
+    netid = auth.authenticate()
+    try:
+        database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        database.update_activity(netid)
 
+        # Initialize the form with the query parameters from the request
+        search_form = SearchForm()
 
-       # Initialize the form with the query parameters from the request
-       search_form = SearchForm()
+        if search_form.validate_on_submit():
+            keyword = search_form.keyword.data
+            category = search_form.category.data
+            return flask.redirect(
+                flask.url_for(
+                    'search_results',
+                    cat=category,
+                    kw=keyword))
 
+        category = flask.request.args.get('cat')
+        keyword = flask.request.args.get('kw')
+        search_form.category.data = category
 
-       if search_form.validate_on_submit():
-           keyword = search_form.keyword.data
-           category = search_form.category.data
-           return flask.redirect(
-               flask.url_for(
-                   'search_results',
-                   cat=category,
-                   kw=keyword))
+        gigs = database.get_gigs(keyword=keyword, categories=[
+                                 category] if category else [])
 
+        for gig in gigs:
+            gig.is_bookmarked = database.is_bookmarked(netid, gig.get_gigID())
+        # Check if gigs is not an empty list
+        if not gigs:
+            gigs = []  # Ensure gigs is always a list
 
-       category = flask.request.args.get('cat')
-       keyword = flask.request.args.get('kw')
-       search_form.category.data = category
+        # Render the template with the search results and the form
+        html_code = render_template(
+            'searchresults.html',
+            search_form=search_form,
+            mygigs=gigs,
+            cat=category,
+            kw=keyword,
+            author=database.get_user,
+            profileIDChecker=profileIDChecker,
+            is_bookmarked=database.is_bookmarked,
+            netid=netid,
+            is_banned=database.is_banned)
 
+        response = make_response(html_code)
 
-       gigs = database.get_gigs(keyword=keyword, categories=[
-                                category] if category else [])
-      
-       for gig in gigs:
-           gig.is_bookmarked = database.is_bookmarked(netid, gig.get_gigID())
-       # Check if gigs is not an empty list
-       if not gigs:
-           gigs = []  # Ensure gigs is always a list
-
-       # Render the template with the search results and the form
-       html_code = render_template(
-           'searchresults.html',
-           search_form=search_form,
-           mygigs=gigs,
-           cat=category,
-           kw=keyword,
-           author = database.get_user,
-           profileIDChecker = profileIDChecker,
-           is_bookmarked = database.is_bookmarked,
-           netid = netid,
-           is_banned=database.is_banned)
-
-
-       response = make_response(html_code)
-
-
-       return response
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 # -----------------------------------------------------------------------
-
-
 
 
 @app.route('/details/<int:id>', methods=['GET', 'POST'])
@@ -475,379 +442,361 @@ def details(id):
 # -----------------------------------------------------------------------
 
 
-
-
 @app.route('/apply_result', methods=['GET'])
 def apply_result():
-   netid = auth.authenticate()
-   try:
-       database.check_and_add_user(netid)
-       if database.is_banned(netid):
-           html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-           response = flask.make_response(html_code)
-           return response
-       database.update_activity(netid)
+    netid = auth.authenticate()
+    try:
+        database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        database.update_activity(netid)
 
-
-       gigID = flask.request.args.get('gigID')
-       html_code = flask.render_template('apply_err.html', gigID=gigID)
-       response = flask.make_response(html_code)
-       return response
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+        gigID = flask.request.args.get('gigID')
+        html_code = flask.render_template('apply_err.html', gigID=gigID)
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 # -----------------------------------------------------------------------
 @app.route('/postgig', methods=['GET', 'POST'])
 def postgig():
-   netid = auth.authenticate()
-   try:
-       database.check_and_add_user(netid)
-       if database.is_banned(netid):
-           html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-           response = flask.make_response(html_code)
-           return response
-       database.update_activity(netid)
+    netid = auth.authenticate()
+    try:
+        database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        database.update_activity(netid)
 
+        user = database.get_user(netid)
+        gig_form = PostGigForm()
+        if gig_form.validate_on_submit():
+            gig_id = database.create_gig(
+                netid,
+                gig_form.title.data,
+                gig_form.categories.data,
+                gig_form.description.data,
+                gig_form.qualifications.data,
+                gig_form.start_date.data,
+                gig_form.end_date.data,
+                datetime.now().date())
+            return flask.redirect(
+                flask.url_for(
+                    'gigposted_success',
+                    gigID=gig_id))
+        else:
+            print(gig_form.start_date.errors)
+            print(gig_form.end_date.errors)
+            # TODO: Error handling
+            pass
 
-       user = database.get_user(netid)
-       gig_form = PostGigForm()
-       if gig_form.validate_on_submit():
-           gig_id = database.create_gig(
-               netid,
-               gig_form.title.data,
-               gig_form.categories.data,
-               gig_form.description.data,
-               gig_form.qualifications.data,
-               gig_form.start_date.data,
-               gig_form.end_date.data,
-               datetime.now().date())
-           return flask.redirect(
-               flask.url_for(
-                   'gigposted_success',
-                   gigID=gig_id))
-       else:
-           print(gig_form.start_date.errors)
-           print(gig_form.end_date.errors)
-           # TODO: Error handling
-           pass
-
-
-       username = user.get_name()
-       user_email = f"{netid}@princeton.edu"
-       html_code = flask.render_template('postgig.html', username=username,
-                                         user_email=user_email,
-                                         gig_form=gig_form)
-       response = flask.make_response(html_code)
-       return response
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+        username = user.get_name()
+        user_email = f"{netid}@princeton.edu"
+        html_code = flask.render_template('postgig.html', username=username,
+                                          user_email=user_email,
+                                          gig_form=gig_form)
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 # -----------------------------------------------------------------------
-
-
 
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-   netid = auth.authenticate()
-   database.check_and_add_user(netid)
-   if database.is_banned(netid):
-       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-       response = flask.make_response(html_code)
-       return response
-   database.update_activity(netid)
+    netid = auth.authenticate()
+    database.check_and_add_user(netid)
+    if database.is_banned(netid):
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    database.update_activity(netid)
 
+    user = database.get_user(netid)
+    bio = user.get_bio()
+    links = user.get_links()
+    spec = user.get_specialty()
+    username = user.get_name()
+    user_email = f"{netid}@princeton.edu"
 
-   user = database.get_user(netid)
-   bio = user.get_bio()
-   links = user.get_links()
-   spec = user.get_specialty()
-   username = user.get_name()
-   user_email = f"{netid}@princeton.edu"
+    bioeditform = BioEditForm()
+    bioeditform.bio.data = bio
+    linkeditform = LinkEditForm()
+    specialtyform = SpecialtySelectForm()
+    specialtyform.specialty.data = spec
 
+    if request.method == 'POST':
+        if 'toggle_visibility' in request.form:
+            # Call the function to toggle visibility
+            database.set_visibility(netid, not user.is_visible())
 
-   bioeditform = BioEditForm()
-   bioeditform.bio.data=bio
-   linkeditform = LinkEditForm()
-   specialtyform = SpecialtySelectForm()
-   specialtyform.specialty.data = spec
+            return flask.redirect(flask.url_for('profile'))
 
+    mygigs = database.get_gigs_posted_by(netid)
+    myapps = database.get_apps_by(netid)
 
-   if request.method == 'POST':
-       if 'toggle_visibility' in request.form:
-           # Call the function to toggle visibility
-           database.set_visibility(netid, not user.is_visible())
-
-
-           return flask.redirect(flask.url_for('profile'))
-
-
-   mygigs = database.get_gigs_posted_by(netid)
-   myapps = database.get_apps_by(netid)
-
-
-   html_code = flask.render_template(
-       'profile.html',
-       username=username,
-       user_email=user_email,
-       mygigs=mygigs,
-       mybookmarks=database.get_bookmarks(netid),
-       myapps=myapps,
-       user=user,
-       specialty=spec,
-       is_visible=user.is_visible(),
-       bio=bio,
-       links=links,
-       bioeditform=bioeditform,
-       linkeditform=linkeditform,
-       specialtyform=specialtyform,
-       get_this_gig = database.get_gig_details)  # Pass the visibility status to the template
-   response = flask.make_response(html_code)
-   return response
+    html_code = flask.render_template(
+        'profile.html',
+        username=username,
+        user_email=user_email,
+        mygigs=mygigs,
+        mybookmarks=database.get_bookmarks(netid),
+        myapps=myapps,
+        user=user,
+        specialty=spec,
+        is_visible=user.is_visible(),
+        bio=bio,
+        links=links,
+        bioeditform=bioeditform,
+        linkeditform=linkeditform,
+        specialtyform=specialtyform,
+        get_this_gig=database.get_gig_details)  # Pass the visibility status to the template
+    response = flask.make_response(html_code)
+    return response
 # -----------------------------------------------------------------------
-
-
 
 
 @app.route('/profilesearch', methods=['GET', 'POST'])
 def profilesearch():
-   netid = auth.authenticate()
-   isAdmin = (netid == 'cos-gigl')
-   try:
-       database.check_and_add_user(netid)
-       if database.is_banned(netid):
-           html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-           response = flask.make_response(html_code)
-           return response
-       database.update_activity(netid)
+    netid = auth.authenticate()
+    isAdmin = (netid == 'cos-gigl')
+    try:
+        database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        database.update_activity(netid)
 
+        # Initialize the form with the query parameters from the request
+        psearch_form = ProfileSearchForm()
 
-       # Initialize the form with the query parameters from the request
-       psearch_form = ProfileSearchForm()
+        if psearch_form.validate_on_submit():
+            keyword = psearch_form.keyword.data
+            specialty = psearch_form.specialty.data
+            return flask.redirect(
+                flask.url_for(
+                    'profilesearch',
+                    spec=specialty,
+                    kw=keyword))
+        # If form fails to validate (in case something goes wrong with the form
+        # submission)
 
+        # Retrieve the current page number and set items per page
+        page = request.args.get('page', 1, type=int)
+        per_page = 5  # Define the number of items per page
 
-       if psearch_form.validate_on_submit():
-           keyword = psearch_form.keyword.data
-           specialty = psearch_form.specialty.data
-           return flask.redirect(
-               flask.url_for(
-                   'profilesearch',
-                   spec=specialty,
-                   kw=keyword))
-       # If form fails to validate (in case something goes wrong with the form
-       # submission)
-      
-       # Retrieve the current page number and set items per page
-       page = request.args.get('page', 1, type=int)
-       per_page = 5  # Define the number of items per page
+        specialty = request.args.get('spec', '')
+        keyword = request.args.get('kw', '')
+        psearch_form.specialty.data = specialty
 
+        if isAdmin:
+            freelancers, total_freelancers = database.get_all_users(
+                keyword=keyword, specialty=specialty, page=page, per_page=per_page)
+        else:
+            freelancers, total_freelancers = database.get_freelancers(
+                keyword=keyword, specialty=specialty, page=page, per_page=per_page)
 
-       specialty = request.args.get('spec', '')
-       keyword = request.args.get('kw', '')
-       psearch_form.specialty.data = specialty
+        total_pages = (total_freelancers + per_page - 1) // per_page
 
+        # Render the template with the search results and the form
+        html_code = render_template(
+            'profilesearch.html',
+            psearch_form=psearch_form,
+            freelancers=freelancers,
+            spec=specialty,
+            total_pages=total_pages,
+            current_page=page,
+            kw=keyword,
+            isAdmin=isAdmin)
 
-       if isAdmin:
-           freelancers, total_freelancers = database.get_all_users(
-               keyword=keyword, specialty=specialty, page=page, per_page=per_page)
-       else:
-           freelancers, total_freelancers = database.get_freelancers(
-               keyword=keyword, specialty=specialty, page=page, per_page=per_page)
-      
-       total_pages = (total_freelancers + per_page - 1) // per_page
+        response = make_response(html_code)
 
-
-
-
-       # Render the template with the search results and the form
-       html_code = render_template(
-           'profilesearch.html',
-           psearch_form=psearch_form,
-           freelancers=freelancers,
-           spec=specialty,
-           total_pages=total_pages,
-           current_page=page,
-           kw=keyword,
-           isAdmin=isAdmin)
-
-
-       response = make_response(html_code)
-
-
-       return response
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 # -----------------------------------------------------------------------
 
 
+@app.route('/gigdeleted/<int:id>', methods=['POST'])
+def gigdeleted(id):
+    netid = auth.authenticate()
+    try:
+        database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        database.update_activity(netid)
+        owns = database.owns_gig(netid, id)
+        isAdmin = (netid == 'cos-gigl')
+        delete_form = DeleteGigForm(request.form)
+        if delete_form.validate_on_submit():
+            print('delete submitted')
+            if owns or isAdmin:
+                database.delete_gig_from_db(id)
+                flask.flash("Your Gig has been successfully deleted!", "success")
+            else:
+                flask.flash("You are not authorized to delete this gig.", "error")
 
-
-@app.route('/gigdeleted', methods=['GET'])
-def gigdeleted():
-   netid = auth.authenticate()
-   try:
-       database.check_and_add_user(netid)
-       if database.is_banned(netid):
-           html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-           response = flask.make_response(html_code)
-           return response
-       database.update_activity(netid)
-
-
-       html_code = flask.render_template('gigdeleted.html')
-       response = flask.make_response(html_code)
-       return response
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+        html_code = flask.render_template('gigdeleted.html')
+        response = flask.make_response(html_code)
+        return response
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 # -----------------------------------------------------------------------
-
-
 
 
 @app.route('/gigposted_success/<int:gigID>', methods=['GET'])
 def gigposted_success(gigID):
-   netid = auth.authenticate()
-   try:
-       database.check_and_add_user(netid)
-       if database.is_banned(netid):
-           html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-           response = flask.make_response(html_code)
-           return response
-       database.update_activity(netid)
+    netid = auth.authenticate()
+    try:
+        database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        database.update_activity(netid)
 
-
-       return flask.render_template('gigposted.html', gigID=gigID)
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+        return flask.render_template('gigposted.html', gigID=gigID)
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 # -----------------------------------------------------------------------
-
-
 
 
 @app.route('/logout', methods=['GET'])
 def logout():
-   # Log out of the CAS session, and then the application.
-   return auth.logoutcas()
+    # Log out of the CAS session, and then the application.
+    return auth.logoutcas()
 # -----------------------------------------------------------------------
-
-
 
 
 @app.route('/freelancer/<netid>', methods=['GET', 'POST'])
 def freelancer_profile(netid):
-   id = auth.authenticate()
-   isAdmin = (id == 'cos-gigl')
-   try:
-       # Fetch freelancer details from the database using netid
-       database.check_and_add_user(id)
-       if database.is_banned(id):
-           html_code = flask.render_template('banneduser.html', name=database.get_user(id).get_name())
-           response = flask.make_response(html_code)
-           return response
-       database.update_activity(id)
+    id = auth.authenticate()
+    isAdmin = (id == 'cos-gigl')
+    try:
+        # Fetch freelancer details from the database using netid
+        database.check_and_add_user(id)
+        if database.is_banned(id):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(id).get_name())
+            response = flask.make_response(html_code)
+            return response
+        database.update_activity(id)
 
+        if request.method == 'POST':
+            if 'toggle_ban' in request.form:
+                # Call the function to toggle visibility
+                if database.is_banned(netid):
+                    database.unban_user(netid)
+                else:
+                    database.ban_user(netid)
 
-       if request.method == 'POST':
-           if 'toggle_ban' in request.form:
-               # Call the function to toggle visibility
-               if database.is_banned(netid):
-                   database.unban_user(netid)
-               else:
-                   database.ban_user(netid)
+                return flask.redirect(flask.url_for('freelancer_profile', netid=netid))
 
-
-               return flask.redirect(flask.url_for('freelancer_profile', netid=netid))
-          
-  
-
-
-       freelancer = database.get_user(netid)
-       if freelancer and ((freelancer.is_visible() and not freelancer.is_banned()) or isAdmin):
-           return render_template('freelancer.html', freelancer=freelancer, isAdmin = isAdmin)
-       else:
-           # Handle the case where the freelancer does not exist or is not
-           # visible
-           return render_template('error_404.html'), 404
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
-   except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
-   except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
+        freelancer = database.get_user(netid)
+        if freelancer and ((freelancer.is_visible() and not freelancer.is_banned()) or isAdmin):
+            return render_template('freelancer.html', freelancer=freelancer, isAdmin=isAdmin)
+        else:
+            # Handle the case where the freelancer does not exist or is not
+            # visible
+            return render_template('error_404.html'), 404
+    except AuthenticationError as e:
+        app.logger.error(f"Authentication Error: {e}")
+        flask.abort(401)  # This will trigger the authentication_error_handler
+    except DatabaseError as e:
+        app.logger.error(f"Database Error: {e}")
+        flask.abort(500)  # This will trigger the database_error_handler
+    except Exception as e:
+        app.logger.error(f"Unexpected Error: {e}")
+        flask.abort(500)  # This will trigger the internal_error_handler
 
 
 # ----------------------------------------------------------------------
 @app.route('/changespecialty', methods=['POST'])
 def changespecialty():
-   netid = auth.authenticate()
-   if database.is_banned(netid):
-       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-       response = flask.make_response(html_code)
-       return response
-   specialtyform = SpecialtySelectForm(flask.request.form)
-   if specialtyform.validate_on_submit():
-       newspec = specialtyform.specialty.data
-       database.update_specialty(netid, newspec)
-       html_code = flask.render_template(
-           'newspecialty.html', specialty=newspec)
-       response = flask.make_response(html_code)
-       return response
-   else:
-       spec = database.get_user(netid).get_specialty()
-       html_code = flask.render_template(
-           'newspecialty.html', specialty=spec)
-       response = flask.make_response(html_code)
-       return response
-#-----------------------------------------------------------------------
+    netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    specialtyform = SpecialtySelectForm(flask.request.form)
+    if specialtyform.validate_on_submit():
+        newspec = specialtyform.specialty.data
+        database.update_specialty(netid, newspec)
+        html_code = flask.render_template(
+            'newspecialty.html', specialty=newspec)
+        response = flask.make_response(html_code)
+        return response
+    else:
+        spec = database.get_user(netid).get_specialty()
+        html_code = flask.render_template(
+            'newspecialty.html', specialty=spec)
+        response = flask.make_response(html_code)
+        return response
+# -----------------------------------------------------------------------
+
+
 @app.route('/editbio', methods=['POST'])
 def editbio():
     netid = auth.authenticate()
     if database.is_banned(netid):
-        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
         response = flask.make_response(html_code)
         return response
     bioeditform = BioEditForm(flask.request.form)
@@ -862,7 +811,7 @@ def editbio():
         errs = bioeditform.errors
         bioeditform = BioEditForm()
         bio = database.get_user(netid).get_bio()
-        bioeditform.bio.data=bio
+        bioeditform.bio.data = bio
         html_code = flask.render_template(
             'bio_in_profile_error.html',
             bio=bio,
@@ -871,11 +820,14 @@ def editbio():
         response = flask.make_response(html_code)
         return response
 # ----------------------------------------------------------------------
+
+
 @app.route('/editlinks', methods=['POST'])
 def editlinks():
     netid = auth.authenticate()
     if database.is_banned(netid):
-        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
         response = flask.make_response(html_code)
         return response
     linkeditform = LinkEditForm(flask.request.form)
@@ -886,7 +838,7 @@ def editlinks():
         link4 = linkeditform.link4.data
         links = [link1, link2, link3, link4]
         links = list(filter(lambda x: x != '', links))
-        
+
         database.update_links(netid, links)
         links = database.get_user(netid).get_links()
         linkeditform = LinkEditForm()
@@ -911,57 +863,61 @@ def editlinks():
 
 @app.route('/update_status', methods=['POST'])
 def update_status():
-   netid = auth.authenticate()
-   if database.is_banned(netid):
-       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-       response = flask.make_response(html_code)
-       return response
-   try:
-       status_form = SetStatusForm(flask.request.form)
-       if status_form.validate():
-           if not database.owns_gig(netid, status_form.gigID.data):
-               return flask.jsonify({'status': False})
-           database.update_status(status_form.gigID.data, status_form.applicantID.data, status_form.status.data)
-           return flask.jsonify({'status': True})
-       else:
-           return flask.jsonify({'status': False})
-   except Exception as e:
-       return flask.jsonify({'status': False})
+    netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    try:
+        status_form = SetStatusForm(flask.request.form)
+        if status_form.validate():
+            if not database.owns_gig(netid, status_form.gigID.data):
+                return flask.jsonify({'status': False})
+            database.update_status(
+                status_form.gigID.data, status_form.applicantID.data, status_form.status.data)
+            return flask.jsonify({'status': True})
+        else:
+            return flask.jsonify({'status': False})
+    except Exception as e:
+        return flask.jsonify({'status': False})
 
 
 @app.route('/add_bookmark/<int:gig_id>', methods=['POST'])
 def add_bookmark_route(gig_id):
-   netid = auth.authenticate()
-   if database.is_banned(netid):
-       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-       response = flask.make_response(html_code)
-       return response
-   result = database.add_bookmark(netid, gig_id)
-   if result == True:
-       return flask.jsonify({'status': 'success', 'action': 'added'})
-   elif result == "already_exists":
-       return flask.jsonify({'status': 'success', 'action': 'exists'})
-   else:
-       return flask.jsonify({'status': 'error'})
+    netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    result = database.add_bookmark(netid, gig_id)
+    if result == True:
+        return flask.jsonify({'status': 'success', 'action': 'added'})
+    elif result == "already_exists":
+        return flask.jsonify({'status': 'success', 'action': 'exists'})
+    else:
+        return flask.jsonify({'status': 'error'})
 
 
 @app.route('/remove_bookmark/<int:gig_id>', methods=['POST'])
 def remove_bookmark(gig_id):
-   netid = auth.authenticate()
-   if database.is_banned(netid):
-       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-       response = flask.make_response(html_code)
-       return response
-   try:
-       result = database.remove_bookmark(netid, gig_id)
-       if result == "already_exists":
-           return flask.jsonify({'status': 'success', 'action': 'removed'})
-       if result == True:
-           return flask.jsonify({'status': 'success', 'action': 'removed'})
-       else:
-           return flask.jsonify({'status': 'error'})
-   except Exception as e:
-       return flask.jsonify({'status': 'error'})
+    netid = auth.authenticate()
+    if database.is_banned(netid):
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    try:
+        result = database.remove_bookmark(netid, gig_id)
+        if result == "already_exists":
+            return flask.jsonify({'status': 'success', 'action': 'removed'})
+        if result == True:
+            return flask.jsonify({'status': 'success', 'action': 'removed'})
+        else:
+            return flask.jsonify({'status': 'error'})
+    except Exception as e:
+        return flask.jsonify({'status': 'error'})
 
 @app.route('/update_gig/<int:gig_id>', methods=['POST'])
 def update_gig(gig_id):
