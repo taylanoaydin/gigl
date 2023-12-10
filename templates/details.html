@@ -285,12 +285,15 @@
         }
 
         $(document).ready(function () {
+            console.log('document ready')
             $('#applyFormID').submit(function (e) {
+                console.log('apply form submitted')
                 $('#applyFormID').find(':submit').prop('disabled', true);
             });
 
             // Honestly, not sure if neccessary, but afraid to delete
             $('.deleteGigForm').submit(function (e) {
+                console.log('2')
                 if ($('input[type=submit][clicked=true]').val() === 'Delete') {
                     console.log('delete button clicked')
                     e.preventDefault(); // Prevent form from submitting
@@ -308,6 +311,7 @@
             });
 
             $(document).on('click', '#deleteButton', function () {
+                console.log('3')
                 $(this).prop('disabled', true)
                 let formId = $(this).closest('form').attr('id')
                 toggleFormButtons(formId, true)
@@ -315,6 +319,7 @@
             })
 
             $(document).on('click', '#confirmButton', function () {
+                console.log('4')
                 $(this).prop('disabled', true)
                 console.log('delete disabled')
                 let url = "/details/"
@@ -337,6 +342,7 @@
             })
 
             $('.stat_forms').on('change', function (e) {
+                console.log('5')
                 let netid = $(this).attr('id').split('-')[0];
                 let status = $(this).find(':selected').val();
                 updateStatus(e, netid, status);
@@ -345,6 +351,7 @@
         })
 
         window.onpageshow = function (event) {
+            console.log('6')
             if (event.persisted) {
                 window.location.reload();
             }

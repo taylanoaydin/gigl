@@ -414,21 +414,24 @@ def details(id):
        app.logger.error(f"Database Error: {e}")
        flask.abort(500)  # This will trigger the database_error_handler
    except Exception as e:
-       app.logger.error(f"Unexpected Error: {e}")
-       flask.abort(500)  # This will trigger the internal_error_handler
-
+       raise e
 
    delete_form = DeleteGigForm()
    show_confirm = False
    if delete_form.validate_on_submit():
+        print("delete form validated")
         _ = flask.get_flashed_messages()  # clears flashed messages
-        if owns or isAdmin:
-            database.delete_gig_from_db(id)
-            flask.flash("Your Gig has been successfully deleted!", "success")
-            return jsonify({'redirect': flask.url_for('gigdeleted')})
-        else:
-            flask.flash("You are not authorized to delete this gig.", "error")
-            return jsonify({'redirect': flask.url_for('gigdeleted')})
+        # url = flask.url_for('details', id=id)
+        if delete_form.delete.data:
+            show_confirm = True
+        elif delete_form.confirm.data:
+            if owns or isAdmin:
+                database.delete_gig_from_db(id)
+                flask.flash("Your Gig has been successfully deleted!", "success")
+                return flask.redirect(flask.url_for('gigdeleted'))
+            else:
+                flask.flash("You are not authorized to delete this gig.", "error")
+                return flask.redirect(flask.url_for('gigdeleted'))
 
 
    setstatusforms = {}
