@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
     <style>
         header {
-            background: linear-gradient(to bottom, #b0d1f9, #ffffff); /* Blue to white gradient */
+            background: linear-gradient(to bottom, #abd0fd, #ffffff); /* Blue to white gradient */
         }
         .divider {
             border-left: 1px solid #e0e0e0;
@@ -16,6 +16,11 @@
             align-items: center;
             justify-content: center;
         }
+
+        .logo-img {
+            height: 50px; /* Adjust the size as needed */
+            width: auto;
+        }
     </style>
 </head>
 
@@ -23,14 +28,14 @@
     <header>
         <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
             <div class="flex items-center space-x-2">
-                <div class="text-xl font-semibold text-black">🎓</div>
+                <img src="{{ url_for('static', filename='newicon.png') }}" alt="Logo" class="logo-img">
                 <a href="/home" class="text-black hover:text-blue-700 font-medium">gigl</a>
             </div>
             <div class="actions flex">
-                <a href="/profilesearch?spec=&kw=" class="text-black hover:text-blue-700 divider px-4">freelancers</a>
-                <a href="/postgig" class="text-black hover:text-blue-700 divider px-4">post gig</a>
-                <a href="/profile" class="text-black hover:text-blue-700 divider px-4">profile</a>
-                <a href="/logout" class="text-black hover:text-blue-700 divider px-4">logout</a>
+                <a href="/profilesearch?spec=&kw=" class="text-black hover:text-blue-700 divider px-4">Freelancers</a>
+                <a href="/postgig" class="text-black hover:text-blue-700 divider px-4">Post Gig</a>
+                <a href="/profile" class="text-black hover:text-blue-700 divider px-4">Profile</a>
+                <a href="/logout" class="text-black hover:text-blue-700 divider px-4">Logout</a>
             </div>
         </div>
     </header>

@@ -353,10 +353,13 @@ def details(id):
            return response
        database.update_activity(netid)
 
+       try:
+            gig = database.get_gig_details(id)
+            gigTitle = gig.get_title()
+            gigNetID = gig.get_netid()
+       except:
+           return render_template('error_404.html'), 404
 
-       gig = database.get_gig_details(id)
-       gigTitle = gig.get_title()
-       gigNetID = gig.get_netid()
        if database.is_banned(gigNetID):
            return render_template('error_404.html'), 404
        gigAuthor = database.get_user(gigNetID).get_name()
@@ -414,7 +417,7 @@ def details(id):
        app.logger.error(f"Database Error: {e}")
        flask.abort(500)  # This will trigger the database_error_handler
    except Exception as e:
-       raise e
+       flask.abort(500)  # This will trigger the internal_error_handler
 
    delete_form = DeleteGigForm()
    show_confirm = False
