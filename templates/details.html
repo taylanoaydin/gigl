@@ -284,6 +284,13 @@
             }
         }
 
+        $(document).on('click', '#confirmButton', function () {
+            console.log('confirm button clicked');
+            let form = $(this).closest('form');
+            $(this).data('submitting', true);  // Set a flag indicating submission
+            form.submit(); // Trigger form submission
+        });
+
         $(document).ready(function () {
             console.log('document ready')
             $('#applyFormID').submit(function (e) {
@@ -291,17 +298,26 @@
                 $('#applyFormID').find(':submit').prop('disabled', true);
             });
 
-            // Honestly, not sure if neccessary, but afraid to delete
             $('.deleteGigForm').submit(function (e) {
                 console.log('2')
-                if ($('input[type=submit][clicked=true]').val() === 'Delete') {
-                    console.log('delete button clicked')
-                    e.preventDefault(); // Prevent form from submitting
-                    // because there are two forms, one for owner one for admin
-                    let formId = $(this).attr('id')
-                    toggleFormButtons(formId, true)
+                let confirmButton = $(this).find('input[type=submit][clicked=true]');
+
+                if (confirmButton.val() === 'Delete') {
+                    console.log('delete button clicked');
+                    e.preventDefault(); // Prevent form from submitting immediately
+
+                    // Check if confirmation process has started
+                    if (!confirmButton.data('confirming')) {
+                        let formId = $(this).attr('id');
+                        toggleFormButtons(formId, true);
+                        confirmButton.data('confirming', true); // Set a flag indicating confirmation process has started
+                    } else if (confirmButton.data('submitting')) {
+                        // If already confirming and submitting, allow the form to submit
+                        return true; // Allows the form to be submitted
+                    }
                 }
             });
+
 
             $(document).on('click', '#cancelButton', function () {
                 console.log('cancel button clicked')
