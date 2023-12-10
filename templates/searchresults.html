@@ -30,12 +30,19 @@
          -webkit-hyphens: auto;
          -ms-hyphens: auto;
          hyphens: auto;
+   
+      }
 
       .selectedButton {
          background-color: rgb(73, 121, 241);
          color: white;
-
       }
+
+      .activePageButton {
+        background-color: #4a5568; /* Darker color for active button */
+        color: blue;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Optional shadow for emphasis */
+    }
    </style>
    <script>
       // Global variable to store all rows
@@ -185,11 +192,21 @@
                // // Apply Tailwind flexbox classes to the pagination container
                // $('.dataTables_wrapper .dataTables_paginate').addClass('flex justify-center space-x-1 mt-4');
 
+                 // Remove the activePageButton class from all pagination buttons
+                 $('.dataTables_wrapper .paginate_button').removeClass('text-red-600 hover:bg-red-100');
+
                $('.dataTables_wrapper .paginate_button').each(function () {
                   $(this).addClass("px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100");
                });
 
                $('.dataTables_wrapper .dataTables_paginate .paginate_button.current').addClass('selectedButton')
+
+               // Add the new classes to the current page button
+               $('.dataTables_wrapper .paginate_button.current').removeClass('text-indigo-600 hover:bg-indigo-100');
+
+               // Add the new classes to the current page button
+               $('.dataTables_wrapper .paginate_button.current').addClass('text-red-600 hover:bg-red-100');
+
 
 
             }
