@@ -18,12 +18,6 @@
       }
    </style>
    <script>
-         window.onpageshow = function(event) {
-       if (event.persisted) {
-           window.location.reload();
-       }
-   };
-      let sortStates = {};
       // OLD SORT FUNCTION IGNORE THIS 
       function sortTable(th_id) {
          var table, rows, headers, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -67,62 +61,100 @@
             }
          }
       }
-      // END OF OLD SORT FUNCTION, actual sorting happens below
-      function sortColumn(th_id, isAscending) {
+      function initializeSortStates() {
          let table = document.getElementById("resultsTable");
-         let headers = table.querySelectorAll("th");
-         const column = Array.from(headers).findIndex(header => header.id === th_id);
-         let tbody = table.tBodies[0];
-         let rows = Array.from(tbody.rows)
+         let headers = table.tHead.rows[0].cells;
+         for (let i = 0; i < headers.length; i++) {
+            sortStates[i] = undefined; // Initialize all sort states as undefined
+         }
+      }
 
-         // sort dat
-         rows.sort(function (a, b) {
-            let textA = a.getElementsByTagName("TD")[column].textContent.toLowerCase();
-            let textB = b.getElementsByTagName("TD")[column].textContent.toLowerCase();
+      function sortColumn(th_id, isAscending) {
+    // Sort all rows
+         allRows.sort(function (a, b) {
+            let textA = a.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
+            let textB = b.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
             return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
          });
 
-         rows.forEach(function (row) {
-            tbody.appendChild(row); // recreate rows
-         });
+         // Reapply pagination to show the first page of sorted results
+         paginateToPage(1);
       }
 
+
+
+      const rowsPerPage = 5; // Adjust this as per your requirement
+
+      function setupSearchResultsPagination() {
+         const table = document.getElementById('resultsTable');
+         allRows = Array.from(table.getElementsByTagName('tbody')[0].getElementsByTagName('tr'));
+         sortColumn(initialSortColumn, true); // Sort initially by 'Posted On'
+         const maxPage = Math.ceil(allRows.length / rowsPerPage);
+         const paginationControls = document.getElementById('searchResultsPagination');
+         paginationControls.innerHTML = '';
+
+         for (let i = 1; i <= maxPage; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.innerText = i;
+            pageButton.className = 'px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100';
+            pageButton.onclick = function() { paginateToPage(i); };
+            paginationControls.appendChild(pageButton);
+         }
+         paginateToPage(1);
+      }
+
+      function paginateToPage(pageNumber) {
+         const table = document.getElementById('resultsTable');
+         const tbody = table.getElementsByTagName('tbody')[0];
+         const start = (pageNumber - 1) * rowsPerPage;
+         const end = start + rowsPerPage;
+         tbody.innerHTML = '';
+         allRows.slice(start, end).forEach(row => tbody.appendChild(row));
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+         initializeSortStates();
+         setupSearchResultsPagination();
+         setupTableSort();
+      });
+
+      // Global variable to store all rows
+      let sortStates = {};
+      let initialSortColumn = 1; // Assuming 'Posted On' is the second column (index 1)
+      let allRows = [];
+
+     S
+
+
+      function sortColumn(th_id, isAscending) {
+         // Sort all rows
+         allRows.sort(function (a, b) {
+            let textA = a.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
+            let textB = b.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
+            return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
+         });
+
+         // Reapply pagination to show the first page of sorted results
+         paginateToPage(1);
+      }
       function sortTableByColumn(th_id) {
-         let table = document.getElementById("resultsTable");
-         let headers = table.querySelectorAll("th");
-         const column = Array.from(headers).findIndex(header => header.id === th_id)
-         let isAscending = sortStates[column] = !sortStates[column]; // cool toggl trick
-         sessionStorage.setItem('search_sortState', JSON.stringify(sortStates));
+         let isAscending = sortStates[th_id] !== undefined ? !sortStates[th_id] : true; // Default to ascending on first click
+         sortStates[th_id] = isAscending; // Update sort state
          sortColumn(th_id, isAscending);
       }
 
       function setupTableSort() {
          let table = document.getElementById("resultsTable");
          let headers = table.tHead.rows[0].cells;
-         // load saved sort state
-         let savedSortStates = JSON.parse(sessionStorage.getItem('search_sortState'));
-         if (savedSortStates) {
-            sortStates = savedSortStates;
-            console.log('sort states found')
-            console.log(savedSortStates)
-         } else {
-            console.log('no current sort state')
-         }
 
          for (let i = 0; i < headers.length; i++) {
             headers[i].addEventListener('click', function () {
-               sortTableByColumn(headers[i].id);
+                  sortTableByColumn(i);
             });
-
-            // if there's a saved sort state for this column, sort it on page load
-            if (savedSortStates && savedSortStates[i] !== undefined) {
-               console.log('resorting table (old sort state found)')
-               sortColumn(headers[i].id, savedSortStates[i]);
-            }
          }
-
-         console.log('table sorting setup completed')
       }
+
+
       function toggleBookmark(gigID, element) {
          const isBookmarked = element.classList.contains('fas');
 
@@ -186,15 +218,15 @@
          <table id="resultsTable" class="w-full">
             <thead class="bg-gray-200 border-b-2 border-gray-200">
                <tr>
-                  <th id="gigTitle" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Gig Title
+                  <th id="0" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Gig Title
                   </th>
-                  <th id="postedOn" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Posted On
+                  <th id="1" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Posted On
                   </th>
-                  <th id="startDate" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Start Date
+                  <th id="2" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Start Date
                   </th>
-                  <th id="endDate" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">End Date
+                  <th id="3" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">End Date
                   </th>
-                  <th id="category" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Category
+                  <th id="4" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Category
                   </th>
                   <th></th>
                </tr>
@@ -298,41 +330,8 @@
                {% endfor %}
             </tbody>
          </table>
+         <div id="searchResultsPagination" class="flex justify-center space-x-1 mt-4"></div>
       </div>
-      {% if total_pages > 1 %}
-      <div class="flex justify-center space-x-1 mt-4">
-         <!-- Always show the first page link and use conditional styling for the current page -->
-         <a href="{{ url_for('search_results', page=1, kw=kw, cat=cat) }}"
-            class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == 1 else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">1</a>
-     
-         <!-- Show ellipsis if there are pages between the first and the current range start -->
-         {% if current_page > 4 %}
-             <span class="px-3 py-1">...</span>
-         {% endif %}
-     
-         <!-- Determine the range of page numbers to display -->
-         {% set start_page = current_page - 2 if current_page > 3 else 2 %}
-         {% set end_page = current_page + 2 if current_page < total_pages - 2 else total_pages - 1 %}
-     
-         <!-- Display the range of page numbers -->
-         {% for page_num in range(start_page, end_page + 1) %}
-             <a href="{{ url_for('search_results', page=page_num, kw=kw, cat=cat) }}"
-                class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if page_num == current_page else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{ page_num }}</a>
-         {% endfor %}
-     
-         <!-- Show ellipsis if there are pages between the current range end and the last page -->
-         {% if current_page < total_pages - 3 %}
-             <span class="px-3 py-1">...</span>
-         {% endif %}
-     
-         <!-- Always show the last page link and use conditional styling for the current page -->
-         <a href="{{ url_for('search_results', page=total_pages, kw=kw, cat=cat) }}"
-            class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == total_pages else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{ total_pages }}</a>
-     </div>
-     {% endif %}
-     
-     
-     
    </section>
 </body>
 

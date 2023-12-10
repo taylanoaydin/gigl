@@ -294,10 +294,6 @@ def search_results():
                    'search_results',
                    cat=category,
                    kw=keyword))
-      
-       # Retrieve the current page number and set items per page
-       page = request.args.get('page', 1, type=int)
-       per_page = 6
 
 
        category = flask.request.args.get('cat')
@@ -306,11 +302,7 @@ def search_results():
 
 
        gigs = database.get_gigs(keyword=keyword, categories=[
-                                category] if category else [], page=page, per_page=per_page)
-      
-       # Calculate total pages for pagination
-       total_gigs = len(database.get_gigs(keyword=keyword, categories=[category] if category else []))
-       total_pages = (total_gigs + per_page - 1) // per_page
+                                category] if category else [])
       
        for gig in gigs:
            gig.is_bookmarked = database.is_bookmarked(netid, gig.get_gigID())
@@ -325,8 +317,6 @@ def search_results():
            mygigs=gigs,
            cat=category,
            kw=keyword,
-           total_pages = total_pages,
-           current_page = page,
            author = database.get_user,
            profileIDChecker = profileIDChecker,
            is_bookmarked = database.is_bookmarked,
@@ -367,8 +357,6 @@ def details(id):
        gig = database.get_gig_details(id)
        gigTitle = gig.get_title()
        gigNetID = gig.get_netid()
-       if database.is_banned(gigNetID):
-            return render_template('error_404.html'), 404
        gigAuthor = database.get_user(gigNetID).get_name()
        gigCategory = gig.get_category()
        gigDescription = gig.get_description()
@@ -426,19 +414,25 @@ def details(id):
    except Exception as e:
        app.logger.error(f"Unexpected Error: {e}")
        flask.abort(500)  # This will trigger the internal_error_handler
-    
+
 
    delete_form = DeleteGigForm()
    show_confirm = False
    if delete_form.validate_on_submit():
-        _ = flask.get_flashed_messages()  # clears flashed messages
-        if owns or isAdmin:
-            database.delete_gig_from_db(id)
-            flask.flash("Your Gig has been successfully deleted!", "success")
-            return jsonify({'redirect': flask.url_for('gigdeleted')})
-        else:
-            flask.flash("You are not authorized to delete this gig.", "error")
-            return jsonify({'redirect': flask.url_for('gigdeleted')})
+       _ = flask.get_flashed_messages()  # clears flashed messages
+       # url = flask.url_for('details', id=id)
+       if delete_form.delete.data:
+           show_confirm = True
+       elif delete_form.confirm.data:
+           if owns or isAdmin:
+               database.delete_gig_from_db(id)
+               flask.flash("Your Gig has been successfully deleted!", "success")
+               return flask.redirect(flask.url_for('gigdeleted'))
+           else:
+               flask.flash("You are not authorized to delete this gig.", "error")
+               return flask.redirect(flask.url_for('gigdeleted'))
+       # elif delete_form.cancel.data:
+       #     return flask.redirect(url)
 
 
    setstatusforms = {}
@@ -652,7 +646,7 @@ def profilesearch():
       
        # Retrieve the current page number and set items per page
        page = request.args.get('page', 1, type=int)
-       per_page = 7  # Define the number of items per page
+       per_page = 2  # Define the number of items per page
 
 
        specialty = request.args.get('spec', '')
@@ -661,7 +655,7 @@ def profilesearch():
 
 
        if isAdmin:
-           freelancers, total_freelancers = database.get_all_users(
+           freelancers = database.get_all_users(
                keyword=keyword, specialty=specialty, page=page, per_page=per_page)
        else:
            freelancers, total_freelancers = database.get_freelancers(
@@ -688,8 +682,15 @@ def profilesearch():
 
 
        return response
+   except AuthenticationError as e:
+       app.logger.error(f"Authentication Error: {e}")
+       flask.abort(401)  # This will trigger the authentication_error_handler
+   except DatabaseError as e:
+       app.logger.error(f"Database Error: {e}")
+       flask.abort(500)  # This will trigger the database_error_handler
    except Exception as e:
-       raise e
+       app.logger.error(f"Unexpected Error: {e}")
+       flask.abort(500)  # This will trigger the internal_error_handler
 
 
 # -----------------------------------------------------------------------
@@ -837,68 +838,65 @@ def changespecialty():
 #-----------------------------------------------------------------------
 @app.route('/editbio', methods=['POST'])
 def editbio():
-    netid = auth.authenticate()
-    if database.is_banned(netid):
-        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-        response = flask.make_response(html_code)
-        return response
-    bioeditform = BioEditForm(flask.request.form)
-    if bioeditform.validate_on_submit():
-        newbio = bioeditform.bio.data
-        database.update_bio(netid, newbio)
-        html_code = flask.render_template(
-            'bio_in_profile.html', bio=newbio, bioeditform=bioeditform)
-        response = flask.make_response(html_code)
-        return response
-    else:
-        errs = bioeditform.errors
-        bioeditform = BioEditForm()
-        bio = database.get_user(netid).get_bio()
-        bioeditform.bio.data=bio
-        html_code = flask.render_template(
-            'bio_in_profile_error.html',
-            bio=bio,
-            bioeditform=bioeditform,
-            errs=errs)
-        response = flask.make_response(html_code)
-        return response
+   netid = auth.authenticate()
+   if database.is_banned(netid):
+       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+       response = flask.make_response(html_code)
+       return response
+   bioeditform = BioEditForm(flask.request.form)
+   if bioeditform.validate_on_submit():
+       newbio = bioeditform.bio.data
+       database.update_bio(netid, newbio)
+       html_code = flask.render_template(
+           'bio_in_profile.html', bio=newbio, bioeditform=bioeditform)
+       response = flask.make_response(html_code)
+       return response
+   else:
+       bioeditform = BioEditForm()
+       bio = database.get_user(netid).get_bio()
+       bioeditform.bio.data=bio
+       html_code = flask.render_template(
+           'bio_in_profile_error.html',
+           bio=bio,
+           bioeditform=bioeditform)
+       response = flask.make_response(html_code)
+       return response
 # ----------------------------------------------------------------------
 @app.route('/editlinks', methods=['POST'])
 def editlinks():
-    netid = auth.authenticate()
-    if database.is_banned(netid):
-        html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
-        response = flask.make_response(html_code)
-        return response
-    linkeditform = LinkEditForm(flask.request.form)
-    if linkeditform.validate_on_submit():
-        link1 = linkeditform.link1.data
-        link2 = linkeditform.link2.data
-        link3 = linkeditform.link3.data
-        link4 = linkeditform.link4.data
-        links = [link1, link2, link3, link4]
-        links = list(filter(lambda x: x != '', links))
-        
-        database.update_links(netid, links)
-        links = database.get_user(netid).get_links()
-        linkeditform = LinkEditForm()
-        html_code = flask.render_template(
-            'links_in_profile.html',
-            links=links,
-            linkeditform=linkeditform)
-        response = flask.make_response(html_code)
-        return response
-    else:
-        err = linkeditform.errors
-        linkeditform = LinkEditForm()
-        links = database.get_user(netid).get_links()
-        html_code = flask.render_template(
-            'links_in_profile_error.html',
-            links=links,
-            linkeditform=linkeditform,
-            errs=err)
-        response = flask.make_response(html_code)
-        return response
+   netid = auth.authenticate()
+   if database.is_banned(netid):
+       html_code = flask.render_template('banneduser.html', name=database.get_user(netid).get_name())
+       response = flask.make_response(html_code)
+       return response
+   linkeditform = LinkEditForm(flask.request.form)
+   if linkeditform.validate_on_submit():
+       link1 = linkeditform.link1.data
+       link2 = linkeditform.link2.data
+       link3 = linkeditform.link3.data
+       link4 = linkeditform.link4.data
+       links = [link1, link2, link3, link4]
+       links = list(filter(lambda x: x != '', links))
+      
+       database.update_links(netid, links)
+       links = database.get_user(netid).get_links()
+       linkeditform = LinkEditForm()
+       html_code = flask.render_template(
+           'links_in_profile.html',
+           links=links,
+           linkeditform=linkeditform)
+       response = flask.make_response(html_code)
+       return response
+   else:
+       linkeditform = LinkEditForm()
+       links = database.get_user(netid).get_links()
+       html_code = flask.render_template(
+           'links_in_profile_error.html',
+           links=links,
+           linkeditform=linkeditform)
+       response = flask.make_response(html_code)
+       return response
+
 
 @app.route('/update_status', methods=['POST'])
 def update_status():
@@ -956,35 +954,5 @@ def remove_bookmark(gig_id):
 
 
 # -----------------------------------------------------------------------
-
-
-def pagination_pages(current_page, total_pages, window=3):
-   # Ensure window size is reasonable
-   window = max(2, window)
-   pages = [1, total_pages]
-   # Add the current page and the 'window' pages on either side of it
-   pages.extend([
-       current_page,
-       *range(max(1, current_page - window), min(total_pages + 1, current_page + window + 1))
-   ])
-   # Ensure the start and end ranges are within bounds
-   pages.extend([
-       *range(2, min(window + 2, total_pages)),
-       *range(max(1, total_pages - window), total_pages)
-   ])
-   # Remove duplicates and sort
-   pages = sorted(set(pages))
-
-
-   # Insert ellipses where there are gaps
-   final_pages = []
-   for i, page in enumerate(pages):
-       if i > 0 and page - pages[i - 1] > 1:
-           final_pages.append('...')
-       final_pages.append(page)
-   return final_pages
-# -----------------------------------------------------------------------
-
-
 if __name__ == '__main__':
-   app.run(host='localhost', debug=True, port=8000)
+    app.run(host='localhost', debug=True, port=8888)

@@ -325,7 +325,7 @@
                <ul id="linksDisplay" class="list-inside list-disc mt-2">
                   {% for link in links %}
                      <li class="hover:text-orange-500 mt-1">
-                        <a href="{{ 'https://' + link if not link.startswith(('http://', 'https://')) else link }}" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
+                        <a href="{{ link }}" target="_blank" rel="noopener noreferrer" class="transition-colors duration-200">{{ link }}</a>
                      </li>
                   {% endfor %}
                </ul>
@@ -334,13 +334,13 @@
                <form hidden id="linkEditForm" method="post">
                   {{ linkeditform.hidden_tag() }}
                   <div class="flex flex-col space-y-4">
-                     {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link1", maxlength="200", placeholder="example_link.com", value=links[0] if links|length >= 1 else '') }}
+                     {{ linkeditform.link1(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link1", maxlength="200", placeholder="http://example_link.com", value=links[0] if links|length >= 1 else '') }}
 
-                     {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link2", maxlength="200", placeholder="example_link.com", value=links[1] if links|length >= 2 else '') }}
+                     {{ linkeditform.link2(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link2", maxlength="200", placeholder="http://example_link.com", value=links[1] if links|length >= 2 else '') }}
              
-                     {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link3", maxlength="200", placeholder="example_link.com", value=links[2] if links|length >= 3 else '') }}
+                     {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link3", maxlength="200", placeholder="http://example_link.com", value=links[2] if links|length >= 3 else '') }}
              
-                     {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link4", maxlength="200", placeholder="example_link.com", value=links[3] if links|length >= 4 else '') }}
+                     {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link4", maxlength="200", placeholder="http://example_link.com", value=links[3] if links|length >= 4 else '') }}
                      {{ linkeditform.submit(class_="submit-btn") }}
                   </div>
                </form>
@@ -366,7 +366,7 @@
 
             <!-- Content -->
             <div id="Table1" class="tab-content w-full" style="display:block">
-               <table class="w-full">
+               <table id="myGigsTable" class="w-full">
                   <thead class="bg-gray-200 border-b-2 border-gray-200">
                      <tr>
                         <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
@@ -455,9 +455,15 @@
                      {% endfor %}
                   </tbody>
                </table>
+               <!-- Pagination Controls for My Gigs -->
+               <div id="myGigsTableControls" class="flex justify-center space-x-1 mt-4">
+                  <button onclick="paginate('prev', 'myGigsTable')" id="prevMyGigs" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
+                  <span id="myGigsTablePageNumber" class="px-3 py-1">1</span>
+                  <button onclick="paginate('next', 'myGigsTable')" id="nextMyGigs" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
+              </div>
             </div>
             <div id="Table2" class="tab-content w-full break-all" style="hyphens: auto; display:none">
-               <table class="w-full">
+               <table id="myAppsTable" class="w-full">
                   <thead class="bg-gray-200 border-b-2 border-gray-200">
                      <tr>
                         <th class="w-20 p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
@@ -476,9 +482,15 @@
                      {% endfor %}
                   </tbody>
                </table>
+               <!-- Pagination Controls for My Apps -->
+               <div id="myAppsTableControls" class="flex justify-center space-x-1 mt-4">
+                  <button onclick="paginate('prev', 'myAppsTable')" id="prevMyApps" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
+                  <span id="myAppsTablePageNumber" class="px-3 py-1">1</span>
+                  <button onclick="paginate('next', 'myAppsTable')" id="nextMyApps" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
+               </div>   
             </div>
             <div id="Table3" class="tab-content w-full" style="display:none">
-               <table class="w-full">
+               <table id="myBookmarksTable" class="w-full">
                   <thead class="bg-gray-200 border-b-2 border-gray-200">
                      <tr>
                         <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
@@ -567,6 +579,12 @@
                      {% endfor %}
                   </tbody>
                </table>
+               <!-- Pagination Controls for My Bookmarks -->
+               <div id="myBookmarksTableControls" class="flex justify-center space-x-1 mt-4">
+                  <button onclick="paginate('prev', 'myBookmarksTable')" id="prevMyBookmarks" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Previous</button>
+                  <span id="myBookmarksTablePageNumber" class="px-3 py-1">1</span>
+                  <button onclick="paginate('next', 'myBookmarksTable')" id="nextMyBookmarks" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">Next</button>
+               </div>
             </div>
          </div>
       </section>
@@ -683,10 +701,91 @@
          $.ajax(requestData)
       }
 
+      const rowsPerPage = 5; // Number of rows to display per page
+
+      function paginate(direction, tableId) {
+         const table = document.getElementById(tableId);
+         const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+         const maxPage = Math.ceil(rows.length / rowsPerPage);
+         let pageNumberId = tableId + 'PageNumber';
+         let currentPage = parseInt(document.getElementById(pageNumberId).innerText);
+
+         if (direction === 'next' && currentPage < maxPage) {
+            currentPage++;
+         } else if (direction === 'prev' && currentPage > 1) {
+            currentPage--;
+         }
+
+         // Calculate start and end index for the rows to show
+         const start = (currentPage - 1) * rowsPerPage;
+         const end = currentPage * rowsPerPage;
+
+         // Hide all rows
+         for (let i = 0; i < rows.length; i++) {
+            rows[i].style.display = 'none';
+         }
+
+         // Show only the rows for the current page
+         for (let i = start; i < end && i < rows.length; i++) {
+            rows[i].style.display = '';
+         }
+
+         // Update the current page number
+         document.getElementById(pageNumberId).innerText = currentPage;
+
+         // Update the visibility of Previous and Next buttons
+         let prevButtonId = 'prev' + tableId.charAt(0).toUpperCase() + tableId.slice(1);
+         let nextButtonId = 'next' + tableId.charAt(0).toUpperCase() + tableId.slice(1);
+         document.getElementById(prevButtonId).style.display = (currentPage === 1) ? 'none' : '';
+         document.getElementById(nextButtonId).style.display = (currentPage >= maxPage) ? 'none' : '';
+      }
+
+
+      // Call this function on page load to setup initial view
+      document.addEventListener('DOMContentLoaded', function() {
+            setupPagination('myGigsTable');
+            setupPagination('myAppsTable');
+            setupPagination('myBookmarksTable');
+         });
+      
+         function setupPagination(tableId) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            const maxPage = Math.ceil(rows.length / rowsPerPage);
+            const paginationControls = document.getElementById(tableId + 'Controls');
+
+            // Clear existing buttons
+            paginationControls.innerHTML = '';
+            
+            if (rows.length > rowsPerPage) {
+            // Create and append buttons to paginationControls
+               for (let i = 1; i <= maxPage; i++) {
+                  const pageButton = document.createElement('button');
+                  pageButton.innerText = i;
+                  pageButton.className = 'px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100';
+                  pageButton.onclick = function() { paginateToPage(i, tableId); };
+                  paginationControls.appendChild(pageButton);
+               }
+            }
+            paginateToPage(1, tableId)
+         }
+
+         function paginateToPage(pageNumber, tableId) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            
+            // Calculate start and end index for the rows to show
+            const start = (pageNumber - 1) * rowsPerPage;
+            const end = pageNumber * rowsPerPage;
+
+            // Hide all rows and show the ones for the current page
+            for (let i = 0; i < rows.length; i++) {
+               rows[i].style.display = i >= start && i < end ? '' : 'none';
+            }
+         }
+      
       function setup() {
          console.log('setup complete');
-         $('#bioEditForm').find('textarea[name="bio"]').val('{{ bio }}');
-
          $('#bioEditButton').on('click', function () { editProfile('bio'); })
          $('#linksEditButton').on('click', function () { editProfile('links'); })
          $('#specialtyBtn').on('click', function () { editProfile('specialty'); })
