@@ -419,19 +419,20 @@ def details(id):
    delete_form = DeleteGigForm()
    show_confirm = False
    if delete_form.validate_on_submit():
-        print("delete form validated")
-        _ = flask.get_flashed_messages()  # clears flashed messages
-        # url = flask.url_for('details', id=id)
-        if delete_form.delete.data:
-            show_confirm = True
-        elif delete_form.confirm.data:
-            if owns or isAdmin:
-                database.delete_gig_from_db(id)
-                flask.flash("Your Gig has been successfully deleted!", "success")
-                return jsonify({'redirect': flask.url_for('gigdeleted')})
-            else:
-                flask.flash("You are not authorized to delete this gig.", "error")
-                return jsonify({'redirect': flask.url_for('gigdeleted')})
+       _ = flask.get_flashed_messages()  # clears flashed messages
+       # url = flask.url_for('details', id=id)
+       if delete_form.delete.data:
+           show_confirm = True
+       elif delete_form.confirm.data:
+           if owns or isAdmin:
+               database.delete_gig_from_db(id)
+               flask.flash("Your Gig has been successfully deleted!", "success")
+               return flask.redirect(flask.url_for('gigdeleted'))
+           else:
+               flask.flash("You are not authorized to delete this gig.", "error")
+               return flask.redirect(flask.url_for('gigdeleted'))
+       # elif delete_form.cancel.data:
+       #     return flask.redirect(url)
 
    setstatusforms = {}
    if owns:

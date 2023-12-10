@@ -34,7 +34,7 @@ class LinkEditForm(FlaskForm):
 
 
 class DeleteGigForm(FlaskForm):
-    delete = SubmitField('Delete', render_kw={'id': 'deleteButton'})
+    delete = SubmitField('Delete')
     confirm = SubmitField('Yes', render_kw={'id': 'confirmButton'})
     cancel = SubmitField('No', render_kw={'id': 'cancelButton'})
 

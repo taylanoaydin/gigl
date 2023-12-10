@@ -310,42 +310,15 @@
 
             });
 
-            $(document).on('click', '#deleteButton', function () {
-                console.log('3')
-                $(this).prop('disabled', true)
-                let formId = $(this).closest('form').attr('id')
-                toggleFormButtons(formId, true)
-                console.log('delete button clicked')
-            })
-
-            $(document).on('click', '#confirmButton', function () {
-                console.log('4')
-                $(this).prop('disabled', true)
-                console.log('delete disabled')
-                let url = "/details/"
-                let gigId = "{{ gigID }}"
-                url += gigId
-                let deleteGigForm = $(this).closest('form').serialize()
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: deleteGigForm,
-                    success: function (response) {
-                        if (response.redirect) {
-                            window.location.href = response.redirect;
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.log('whoopsie, something went wrong') // change this later obv
-                    }
-                })
-            })
-
             $('.stat_forms').on('change', function (e) {
                 console.log('5')
                 let netid = $(this).attr('id').split('-')[0];
                 let status = $(this).find(':selected').val();
                 updateStatus(e, netid, status);
+            });
+            $(document).on('click', 'input[type=submit]', function () {
+                $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
+                $(this).attr('clicked', 'true');
             });
 
         })
