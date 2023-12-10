@@ -138,12 +138,10 @@
          {{ search_form.hidden_tag() }}
          <div class="flex space-x-10">
             <!-- Render the keyword field using WTForms -->
-            {{ search_form.keyword(class_="border border-gray-400 p-2 w-full rounded-lg focus:outline-none
-            focus:border-teal-500", placeholder="Search for any gig now!", value=kw) }}
+            {{ search_form.keyword(class_="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", placeholder="Search for any gig now!", value=kw) }}
 
             <!-- Render the category select field using WTForms -->
-            {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none
-            focus:border-teal-500", value=cat) }}
+            {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500", value=cat) }}
 
             <!-- Render the submit button using WTForms -->
             {{ search_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}

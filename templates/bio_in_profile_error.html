@@ -67,8 +67,7 @@
     <form hidden id="bioEditForm" method="post">
       {{ bioeditform.hidden_tag() }}
       <div class="flex space-x-10">
-        {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none
-        focus:border-teal-500", maxlength="1500", rows=1, placeholder="Who are you and what do you do?", id="bio") }}
+        {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, placeholder="Who are you and what do you do?", id="bio") }}
         {{ bioeditform.submit(class_="submit-btn") }}
       </div>
     </form>
