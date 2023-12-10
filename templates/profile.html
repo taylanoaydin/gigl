@@ -815,6 +815,8 @@
       
       function setup() {
          console.log('setup complete');
+         $('#bioEditForm').find('textarea[name="bio"]').val('{{ bio }}');
+         
          $('#bioEditButton').on('click', function () { editProfile('bio'); })
          $('#linksEditButton').on('click', function () { editProfile('links'); })
          $('#specialtyBtn').on('click', function () { editProfile('specialty'); })
