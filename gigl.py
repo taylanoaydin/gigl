@@ -428,11 +428,10 @@ def details(id):
             if owns or isAdmin:
                 database.delete_gig_from_db(id)
                 flask.flash("Your Gig has been successfully deleted!", "success")
-                return flask.redirect(flask.url_for('gigdeleted'))
+                return jsonify({'redirect': flask.url_for('gigdeleted')})
             else:
                 flask.flash("You are not authorized to delete this gig.", "error")
-                return flask.redirect(flask.url_for('gigdeleted'))
-
+                return jsonify({'redirect': flask.url_for('gigdeleted')})
 
    setstatusforms = {}
    if owns:
