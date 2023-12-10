@@ -28,24 +28,23 @@
 
       function toggleBookmark(gigID, element) {
          const isBookmarked = element.classList.contains('fas');
-
          const url = isBookmarked ? '/remove_bookmark/' + gigID : '/add_bookmark/' + gigID;
          fetch(url, { method: 'POST' })
             .then(response => response.json())
             .then(data => {
                if (data.status === 'success') {
-                  // Toggle the icon class based on the action
-                  if (data.action === 'added') {
-                     element.classList.remove('far');
-                     element.classList.add('fas');
-                  } else if (data.action === 'removed') {
-                     element.classList.remove('fas');
-                     element.classList.add('far');
-                  }
-                  else if (data.action === 'login') {
-                     element.classList.remove('fas');
-                     element.classList.add('far');
-                  }
+                  // Find all bookmark icons for this gigID
+                  let bookmarks = document.querySelectorAll(`.bookmark-icon[data-gig-id='${gigID}']`);
+                  bookmarks.forEach(bookmark => {
+                     // Toggle the icon class for each bookmark
+                     if (data.action === 'added') {
+                        bookmark.classList.remove('far');
+                        bookmark.classList.add('fas');
+                     } else if (data.action === 'removed') {
+                        bookmark.classList.remove('fas');
+                        bookmark.classList.add('far');
+                     }
+                  });
                } else {
                   console.error('Error in bookmark action:', data);
                }
@@ -103,8 +102,9 @@
                <a href="/details/{{ gig.get_gigID() }}" class="text-blue-500 hover:text-blue-700 font-bold flex-grow">
                   {{ gig.get_title() | truncate(30) }}
                </a>
-               <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark text-xl cursor-pointer"
-                  onclick="toggleBookmark('{{ gig.get_gigID() }}', this)"></i>
+               <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark text-xl cursor-pointer bookmark-icon"
+                  data-gig-id="{{ gig.get_gigID() }}" onclick="toggleBookmark('{{ gig.get_gigID() }}', this)">
+               </i>
             </div>
             <div class="text-xs font-medium uppercase tracking-wider rounded-lg bg-opacity-50 mt-3 mb-3">
                {% if gig.get_category() == 'teaching' %}
@@ -198,8 +198,9 @@
                      {{ gig.get_title() | truncate(30) }}
                   </a>
                </div>
-               <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark text-xl cursor-pointer"
-                  onclick="toggleBookmark('{{ gig.get_gigID() }}', this)"></i>
+               <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark text-xl cursor-pointer bookmark-icon"
+                  data-gig-id="{{ gig.get_gigID() }}" onclick="toggleBookmark('{{ gig.get_gigID() }}', this)">
+               </i>
             </div>
             <div class="text-xs font-medium uppercase tracking-wider rounded-lg bg-opacity-50 mt-3 mb-3">
                {% if gig.get_category() == 'teaching' %}
