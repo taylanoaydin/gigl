@@ -183,7 +183,11 @@ def get_apps_by(netid):
    apps = []
    try:
        with connection.cursor() as cursor:
-           query = "SELECT * FROM apps WHERE netid = %s"
+           query = """SELECT a.* FROM apps a
+INNER JOIN gigs g ON a.gigID = g.gigID
+INNER JOIN users u ON g.netid = u.netid
+WHERE u.banned = FALSE AND a.netid = %s
+"""
            cursor.execute(query, [netid])
            sent_apps = cursor.fetchall()
 
@@ -206,7 +210,10 @@ def get_bookmarks(netid):
    bookmarks = []
    try:
        with connection.cursor() as cursor:
-           query = "SELECT * FROM bookmarks WHERE netid = %s"
+           query = """SELECT b.* FROM bookmarks b
+INNER JOIN gigs g ON b.gigID = g.gigID
+INNER JOIN users u ON g.netid = u.netid
+WHERE u.banned = FALSE AND b.netid = %s"""
            cursor.execute(query, [netid])
            bookmarked_gigs = cursor.fetchall()
 
@@ -328,7 +335,7 @@ def get_freelancers(keyword='', specialty='', page=1, per_page=100):
        _put_connection(connection)
 
 
-def get_all_users(keyword='', specialty=''):
+def get_all_users(keyword='', specialty='', page=1, per_page=100):
    users = []
    connection = _get_connection()
    try:
@@ -345,7 +352,14 @@ def get_all_users(keyword='', specialty=''):
 
            cursor.execute(query, all_args)
            table = cursor.fetchall()
-           for row in table:
+           total_freelancers = len(table)  # Get total count before slicing
+
+
+           # Pagination logic
+           start = (page - 1) * per_page
+           end = min(start + per_page, len(table))
+
+           for row in table[start:end]:
                thisuser = user.User(
                    netid=row[0],
                    name=row[1],
@@ -354,7 +368,7 @@ def get_all_users(keyword='', specialty=''):
                    last_active=row[3],
                    banned=row[5])
                users.append(thisuser)
-           return users
+           return users, total_freelancers
    except Exception as ex:
       
        raise
@@ -614,24 +628,7 @@ def update_specialty(netid, newspec):
    except Exception as ex:
        return False
    finally:
-       _put_connection(connection)   
-
-
-def update_specialty(netid, newspec):
-    connection = _get_connection()
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute('BEGIN')
-            query = "UPDATE users SET specialty = %s"
-            query += " WHERE netid = %s"
-
-            cursor.execute(query, [newspec, netid])
-            cursor.execute('COMMIT')
-            return True
-    except Exception as ex:
-        return False
-    finally:
-        _put_connection(connection)    
+       _put_connection(connection)      
 
 def ban_user(netid):
    connection = _get_connection()
