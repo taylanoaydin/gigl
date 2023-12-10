@@ -123,7 +123,12 @@
       //    }
       // }
 
-
+      window.onpageshow = function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+        
       function toggleBookmark(gigID, element) {
          const isBookmarked = element.classList.contains('fas');
 
