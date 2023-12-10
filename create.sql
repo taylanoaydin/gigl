@@ -63,8 +63,3 @@ CREATE TABLE bookmarks
   gigID INTEGER,
   PRIMARY KEY (netid, gigID)
 );
-
-CREATE TABLE banned_users
-(
-  netid VARCHAR(10) PRIMARY KEY
-);
