@@ -294,10 +294,6 @@ def search_results():
                    'search_results',
                    cat=category,
                    kw=keyword))
-      
-       # Retrieve the current page number and set items per page
-       page = request.args.get('page', 1, type=int)
-       per_page = 6
 
 
        category = flask.request.args.get('cat')
@@ -306,11 +302,7 @@ def search_results():
 
 
        gigs = database.get_gigs(keyword=keyword, categories=[
-                                category] if category else [], page=page, per_page=per_page)
-      
-       # Calculate total pages for pagination
-       total_gigs = len(database.get_gigs(keyword=keyword, categories=[category] if category else []))
-       total_pages = (total_gigs + per_page - 1) // per_page
+                                category] if category else [])
       
        for gig in gigs:
            gig.is_bookmarked = database.is_bookmarked(netid, gig.get_gigID())
@@ -325,8 +317,6 @@ def search_results():
            mygigs=gigs,
            cat=category,
            kw=keyword,
-           total_pages = total_pages,
-           current_page = page,
            author = database.get_user,
            profileIDChecker = profileIDChecker,
            is_bookmarked = database.is_bookmarked,
@@ -368,7 +358,7 @@ def details(id):
        gigTitle = gig.get_title()
        gigNetID = gig.get_netid()
        if database.is_banned(gigNetID):
-            return render_template('error_404.html'), 404
+           return render_template('error_404.html'), 404
        gigAuthor = database.get_user(gigNetID).get_name()
        gigCategory = gig.get_category()
        gigDescription = gig.get_description()
@@ -426,7 +416,7 @@ def details(id):
    except Exception as e:
        app.logger.error(f"Unexpected Error: {e}")
        flask.abort(500)  # This will trigger the internal_error_handler
-    
+
 
    delete_form = DeleteGigForm()
    show_confirm = False
@@ -652,7 +642,7 @@ def profilesearch():
       
        # Retrieve the current page number and set items per page
        page = request.args.get('page', 1, type=int)
-       per_page = 7  # Define the number of items per page
+       per_page = 2  # Define the number of items per page
 
 
        specialty = request.args.get('spec', '')
@@ -688,8 +678,15 @@ def profilesearch():
 
 
        return response
+   except AuthenticationError as e:
+       app.logger.error(f"Authentication Error: {e}")
+       flask.abort(401)  # This will trigger the authentication_error_handler
+   except DatabaseError as e:
+       app.logger.error(f"Database Error: {e}")
+       flask.abort(500)  # This will trigger the database_error_handler
    except Exception as e:
-       raise e
+       app.logger.error(f"Unexpected Error: {e}")
+       flask.abort(500)  # This will trigger the internal_error_handler
 
 
 # -----------------------------------------------------------------------
@@ -900,6 +897,7 @@ def editlinks():
         response = flask.make_response(html_code)
         return response
 
+
 @app.route('/update_status', methods=['POST'])
 def update_status():
    netid = auth.authenticate()
@@ -956,35 +954,5 @@ def remove_bookmark(gig_id):
 
 
 # -----------------------------------------------------------------------
-
-
-def pagination_pages(current_page, total_pages, window=3):
-   # Ensure window size is reasonable
-   window = max(2, window)
-   pages = [1, total_pages]
-   # Add the current page and the 'window' pages on either side of it
-   pages.extend([
-       current_page,
-       *range(max(1, current_page - window), min(total_pages + 1, current_page + window + 1))
-   ])
-   # Ensure the start and end ranges are within bounds
-   pages.extend([
-       *range(2, min(window + 2, total_pages)),
-       *range(max(1, total_pages - window), total_pages)
-   ])
-   # Remove duplicates and sort
-   pages = sorted(set(pages))
-
-
-   # Insert ellipses where there are gaps
-   final_pages = []
-   for i, page in enumerate(pages):
-       if i > 0 and page - pages[i - 1] > 1:
-           final_pages.append('...')
-       final_pages.append(page)
-   return final_pages
-# -----------------------------------------------------------------------
-
-
 if __name__ == '__main__':
-   app.run(host='localhost', debug=True, port=8000)
+    app.run(host='localhost', debug=True, port=8888)

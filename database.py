@@ -61,10 +61,7 @@ def _close_all_connections():
 # default returns Gig objects sorted rev-chron by submission date
 # Returns exception if there was an error in database handling
 
-
-#per_page=1000 makes sure that there aren't more than 5000 gigs shown ever
-# this per_page variable identified how many gigs to pull from DB, so it can be toggled for performance later on
-def get_gigs(keyword='', categories=None, page=1, per_page=100):
+def get_gigs(keyword='', categories=None):
    if categories is None:
        categories = []
    gigs = []
@@ -74,16 +71,15 @@ def get_gigs(keyword='', categories=None, page=1, per_page=100):
            kw = '%' + keyword + '%'
            all_args = [kw for _ in range(3)]
            query = """SELECT g.* FROM gigs g
-INNER JOIN users u ON g.netid = u.netid
-WHERE (u.banned = FALSE) AND 
-      (g.title ILIKE %s OR
-       g.description ILIKE %s OR
-       g.qualf ILIKE %s)"""
+                INNER JOIN users u ON g.netid = u.netid
+                WHERE (u.banned = FALSE) AND 
+                    (g.title ILIKE %s OR
+                    g.description ILIKE %s OR
+                    g.qualf ILIKE %s)"""
            if len(categories) != 0:
                query += " AND g.category = ANY(%s)"
                all_args.append(categories)
            query += " ORDER BY g.posted DESC"
-
 
            cursor.execute(query, all_args)
            table = cursor.fetchall()
@@ -96,9 +92,7 @@ WHERE (u.banned = FALSE) AND
    finally:
        _put_connection(connection)
        # Pagination logic
-   start = (page - 1) * per_page
-   end = start + per_page
-   return gigs[start:end]
+   return gigs
 
 
 # returns Gig object for the gig with gigID
@@ -320,9 +314,6 @@ def get_freelancers(keyword='', specialty='', page=1, per_page=100):
            # Pagination logic
            start = (page - 1) * per_page
            end = min(start + per_page, len(table))
-
-
-
 
            for row in table[start:end]:
                thisuser = user.User(
@@ -637,8 +628,7 @@ def update_specialty(netid, newspec):
    except Exception as ex:
        return False
    finally:
-       _put_connection(connection)   
-
+       _put_connection(connection)      
 
 def ban_user(netid):
    connection = _get_connection()
