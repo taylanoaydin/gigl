@@ -32,6 +32,10 @@
             /* This is the default color */
         }
     </style>
+    <script>
+        // Define a JavaScript variable for gigID
+        var gigID = {{ gigID }};
+    </script>
 </head>
 
 <body>
@@ -395,7 +399,7 @@
             // AJAX POST request to the server
             $.ajax({
                 type: 'POST',
-                url: '/update_gig/' + 235, // Replace 'gigId' with the actual gig ID
+                url: '/update_gig/' + gigID, // Replace 'gigId' with the actual gig ID
                 data: data,
                 success: function (response) {
                     if (response.status === 'success') {
@@ -446,7 +450,8 @@
             // Add similar toggle for other fields
 
             if (!isEditing) {
-                submitGigEdits(235);
+                console.log(gigID)
+                submitGigEdits(gigID);
                 isEditing = false;
             }
         }
