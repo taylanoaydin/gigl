@@ -981,7 +981,7 @@ def update_gig(gig_id):
     print(gig_form.end_date.data)
     print(gig_form.categories.data)
     print(gig_form.errors)
-    
+
     gig = database.get_gig_details(gig_id)
     if gig is None:
         return jsonify(status='error', message='Gig not found')
