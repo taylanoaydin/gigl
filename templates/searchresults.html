@@ -18,11 +18,11 @@
       }
    </style>
    <script>
-         window.onpageshow = function(event) {
-       if (event.persisted) {
-           window.location.reload();
-       }
-   };
+      window.onpageshow = function (event) {
+         if (event.persisted) {
+            window.location.reload();
+         }
+      };
       let sortStates = {};
       // OLD SORT FUNCTION IGNORE THIS 
       function sortTable(th_id) {
@@ -304,35 +304,35 @@
          <!-- Always show the first page link and use conditional styling for the current page -->
          <a href="{{ url_for('search_results', page=1, kw=kw, cat=cat) }}"
             class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == 1 else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">1</a>
-     
+
          <!-- Show ellipsis if there are pages between the first and the current range start -->
          {% if current_page > 4 %}
-             <span class="px-3 py-1">...</span>
+         <span class="px-3 py-1">...</span>
          {% endif %}
-     
+
          <!-- Determine the range of page numbers to display -->
          {% set start_page = current_page - 2 if current_page > 3 else 2 %}
-         {% set end_page = current_page + 2 if current_page < total_pages - 2 else total_pages - 1 %}
-     
-         <!-- Display the range of page numbers -->
-         {% for page_num in range(start_page, end_page + 1) %}
-             <a href="{{ url_for('search_results', page=page_num, kw=kw, cat=cat) }}"
-                class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if page_num == current_page else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{ page_num }}</a>
-         {% endfor %}
-     
-         <!-- Show ellipsis if there are pages between the current range end and the last page -->
-         {% if current_page < total_pages - 3 %}
-             <span class="px-3 py-1">...</span>
-         {% endif %}
-     
-         <!-- Always show the last page link and use conditional styling for the current page -->
-         <a href="{{ url_for('search_results', page=total_pages, kw=kw, cat=cat) }}"
-            class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == total_pages else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{ total_pages }}</a>
-     </div>
-     {% endif %}
-     
-     
-     
+         {% set end_page = current_page + 2 if current_page < total_pages - 2 else total_pages - 1 %} <!-- Display the
+            range of page numbers -->
+            {% for page_num in range(start_page, end_page + 1) %}
+            <a href="{{ url_for('search_results', page=page_num, kw=kw, cat=cat) }}"
+               class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if page_num == current_page else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{
+               page_num }}</a>
+            {% endfor %}
+
+            <!-- Show ellipsis if there are pages between the current range end and the last page -->
+            {% if current_page < total_pages - 3 %} <span class="px-3 py-1">...</span>
+               {% endif %}
+
+               <!-- Always show the last page link and use conditional styling for the current page -->
+               <a href="{{ url_for('search_results', page=total_pages, kw=kw, cat=cat) }}"
+                  class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == total_pages else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{
+                  total_pages }}</a>
+      </div>
+      {% endif %}
+
+
+
    </section>
 </body>
 
