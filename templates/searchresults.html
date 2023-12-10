@@ -10,6 +10,13 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+   
+   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+   <link href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.css" rel="stylesheet"/>
+   <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.js"></script>
+   <script type="text/javascript" charset="utf8"
+      src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
    <style>
       section {
          margin: 0 auto;
@@ -23,86 +30,91 @@
          -webkit-hyphens: auto;
          -ms-hyphens: auto;
          hyphens: auto;
+
+      .selectedButton {
+         background-color: rgb(73, 121, 241);
+         color: white;
+
       }
    </style>
    <script>
       // Global variable to store all rows
-      let sortStates = {};
-      let initialSortColumn = 1; // Assuming 'Posted On' is the second column (index 1)
-      let allRows = [];
-      const rowsPerPage = 5; // Adjust this as per your requirement
+      // let sortStates = {};
+      // let initialSortColumn = 1; // Assuming 'Posted On' is the second column (index 1)
+      // let allRows = [];
+      // const rowsPerPage = 5; // Adjust this as per your requirement
 
 
-      function initializeSortStates() {
-         let table = document.getElementById("resultsTable");
-         let headers = table.tHead.rows[0].cells;
-         for (let i = 0; i < headers.length; i++) {
-            sortStates[i] = undefined; // Initialize all sort states as undefined
-         }
-      }
+      // function initializeSortStates() {
+      //    let table = document.getElementById("resultsTable");
+      //    let headers = table.tHead.rows[0].cells;
+      //    for (let i = 0; i < headers.length; i++) {
+      //       sortStates[i] = undefined; // Initialize all sort states as undefined
+      //    }
+      // }
 
-      function sortColumn(th_id, isAscending) {
-         // Sort all rows
-         allRows.sort(function (a, b) {
-            let textA = a.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
-            let textB = b.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
-            return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
-         });
+      // function sortColumn(th_id, isAscending) {
+      //    // Sort all rows
+      //    allRows.sort(function (a, b) {
+      //       let textA = a.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
+      //       let textB = b.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
+      //       return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
+      //    });
 
-         // Reapply pagination to show the first page of sorted results
-         paginateToPage(1);
-      }
+      //    // Reapply pagination to show the first page of sorted results
+      //    paginateToPage(1);
+      // }
 
-      function setupSearchResultsPagination() {
-         const table = document.getElementById('resultsTable');
-         allRows = Array.from(table.getElementsByTagName('tbody')[0].getElementsByTagName('tr'));
-         sortColumn(initialSortColumn, true); // Sort initially by 'Posted On'
-         const maxPage = Math.ceil(allRows.length / rowsPerPage);
-         const paginationControls = document.getElementById('searchResultsPagination');
-         paginationControls.innerHTML = '';
+      // function setupSearchResultsPagination() {
+      //    const table = document.getElementById('resultsTable');
+      //    allRows = Array.from(table.getElementsByTagName('tbody')[0].getElementsByTagName('tr'));
+      //    sortColumn(initialSortColumn, true); // Sort initially by 'Posted On'
+      //    const maxPage = Math.ceil(allRows.length / rowsPerPage);
+      //    const paginationControls = document.getElementById('searchResultsPagination');
+      //    paginationControls.innerHTML = '';
 
-         for (let i = 1; i <= maxPage; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.innerText = i;
-            pageButton.className = 'px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100';
-            pageButton.onclick = function () { paginateToPage(i); };
-            paginationControls.appendChild(pageButton);
-         }
-         paginateToPage(1);
-      }
+      //    for (let i = 1; i <= maxPage; i++) {
+      //       const pageButton = document.createElement('button');
+      //       pageButton.innerText = i;
+      //       pageButton.className = 'px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100';
+      //       pageButton.onclick = function () { paginateToPage(i); };
+      //       paginationControls.appendChild(pageButton);
+      //    }
+      //    paginateToPage(1);
+      // }
 
-      function paginateToPage(pageNumber) {
-         const table = document.getElementById('resultsTable');
-         const tbody = table.getElementsByTagName('tbody')[0];
-         const start = (pageNumber - 1) * rowsPerPage;
-         const end = start + rowsPerPage;
-         tbody.innerHTML = '';
-         allRows.slice(start, end).forEach(row => tbody.appendChild(row));
-      }
+      // function paginateToPage(pageNumber) {
+      //    const table = document.getElementById('resultsTable');
+      //    const tbody = table.getElementsByTagName('tbody')[0];
+      //    const start = (pageNumber - 1) * rowsPerPage;
+      //    const end = start + rowsPerPage;
+      //    tbody.innerHTML = '';
+      //    allRows.slice(start, end).forEach(row => tbody.appendChild(row));
+      // }
 
-      document.addEventListener('DOMContentLoaded', function () {
-         initializeSortStates();
-         setupSearchResultsPagination();
-         setupTableSort();
-      });
+      // document.addEventListener('DOMContentLoaded', function () {
+      //    initializeSortStates();
+      //    setupSearchResultsPagination();
+      //    setupTableSort();
+      // });
 
 
-      function sortTableByColumn(th_id) {
-         let isAscending = sortStates[th_id] !== undefined ? !sortStates[th_id] : true; // Default to ascending on first click
-         sortStates[th_id] = isAscending; // Update sort state
-         sortColumn(th_id, isAscending);
-      }
+      // function sortTableByColumn(th_id) {
+      //    let isAscending = sortStates[th_id] !== undefined ? !sortStates[th_id] : true; // Default to ascending on first click
+      //    sortStates[th_id] = isAscending; // Update sort state
+      //    sortColumn(th_id, isAscending);
+      // }
 
-      function setupTableSort() {
-         let table = document.getElementById("resultsTable");
-         let headers = table.tHead.rows[0].cells;
+      // function setupTableSort() {
+      //    let table = document.getElementById("resultsTable");
+      //    let headers = table.tHead.rows[0].cells;
 
-         for (let i = 0; i < headers.length; i++) {
-            headers[i].addEventListener('click', function () {
-               sortTableByColumn(i);
-            });
-         }
-      }
+      //    for (let i = 0; i < headers.length; i++) {
+      //       headers[i].addEventListener('click', function () {
+      //          sortTableByColumn(i);
+      //       });
+      //    }
+      // }
 
 
       function toggleBookmark(gigID, element) {
@@ -131,6 +143,59 @@
             })
             .catch(error => console.error('Error:', error));
       }
+
+      $(document).ready(function () {
+         $('#resultsTable').DataTable({
+            "ordering": true,
+            "columnDefs": [
+               {
+                  "orderable": false,
+                  "targets": -1
+               },
+               {
+                  "width": "36px", "targets": -1
+               },
+               {
+                  "width": "130px", "targets": -2
+               },
+               { "width": "90px", "targets": 1},
+               { "width": "90px", "targets": 2},
+               { "width": "90px", "targets": 3}
+            ],
+            "stateSave": true,
+            "pageLength": 5,
+            "searching": false,
+            "lengthChange": false,
+            "info": false,
+            "pagingType": "numbers",
+            "scrollX": false,
+            "scrollY": false,
+            "createdRow": function (row, data, dataIndex) {
+               $(row).addClass('bg-gray-100')
+               $(row).find('td').addClass('p-3 text-sm text-gray-700 whitespace-nowrap break-all');
+            },
+            "drawCallback": function (settings) {
+               $('#resultsTable_paginate').css({
+                  'display': 'flex',
+                  'justify-content': 'center',
+                  'margin-top': '1em'
+               })
+               $('.dataTables_wrapper .dataTables_paginate').removeClass('dataTables_paginate');
+
+               // // Apply Tailwind flexbox classes to the pagination container
+               // $('.dataTables_wrapper .dataTables_paginate').addClass('flex justify-center space-x-1 mt-4');
+
+               $('.dataTables_wrapper .paginate_button').each(function () {
+                  $(this).addClass("px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100");
+               });
+
+               $('.dataTables_wrapper .dataTables_paginate .paginate_button.current').addClass('selectedButton')
+
+
+            }
+         });
+         console.log("html turned to datatable in js")
+      });
    </script>
 
 
@@ -146,10 +211,12 @@
          {{ search_form.hidden_tag() }}
          <div class="flex space-x-10">
             <!-- Render the keyword field using WTForms -->
-            {{ search_form.keyword(class_="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", placeholder="Search for any gig now!", value=kw) }}
+            {{ search_form.keyword(class_="border border-gray-400 p-2 w-full rounded-lg focus:outline-none
+            focus:border-teal-500", placeholder="Search for any gig now!", value=kw) }}
 
             <!-- Render the category select field using WTForms -->
-            {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500", value=cat) }}
+            {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none
+            focus:border-teal-500", value=cat) }}
 
             <!-- Render the submit button using WTForms -->
             {{ search_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
@@ -157,7 +224,10 @@
       </form>
    </section>
    <section>
-      <h2>Search Results</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+         <h2>Search Results</h2>
+         <span>To sort by mutiple columns, hold shift and click!</span>
+      </div>
       <div class="overflow-auto rounded-lg">
          <table id="resultsTable" class="w-full">
             <thead class="bg-gray-200 border-b-2 border-gray-200">
