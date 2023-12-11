@@ -133,7 +133,7 @@ def get_gigs_posted_by(netid):
    gigs = []
    try:
        with connection.cursor() as cursor:
-           query = "SELECT * FROM gigs WHERE netid = %s"
+           query = "SELECT * FROM gigs WHERE netid = %s ORDER BY posted DESC, startfrom DESC, title ASC"
            cursor.execute(query, [netid])
            postedgigs = cursor.fetchall()
 
