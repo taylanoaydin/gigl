@@ -39,7 +39,6 @@
             -ms-hyphens: auto;
             hyphens: auto;
         }
-
     </style>
     <script>
         // Define a JavaScript variable for gigID
@@ -51,142 +50,153 @@
     {% include 'header.html' %} <!--JINJA2 template for the header-->
     <main>
         <br>
-        <section class="w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-200">
-            <div class="flex justify-between">
-
-                <h2 id="gigTitleDisplay" class="text-2xl font-bold comditional-hyphens">{{gigTitle}}</h2>
-                {{ gig_form.title(value=gigTitle, id="gigTitleEdit", class="text-2xl font-bold border border-blue-600
-                py-1 rounded-lg w-3/4", hidden=True)}}
-                {% for error in gig_form.title.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-                <div>
-                    <p class="text-gray-600">{{gigPostedDate}}</p>
-                    {% if is_owner %}
-                    <button id="editGigButton" class="text-blue-600 w-full">Edit Gig</button>
-                    {% endif %}
+        <section id="gigEditSection" class="w-full md:w-1/2 rounded-lg bg-gray-100 border border-gray-200">
+            <div>
+                <div class="flex justify-between">
+                    <h2 id="gigTitleDisplay" class="text-2xl font-bold conditional-hyphens">{{gigTitle}}</h2>
+                    <div>
+                        <p id="dateDisplay" class="text-gray-600">{{gigPostedDate}}</p>
+                        {% if is_owner %}
+                        <button id="gigEditButton" class="text-blue-600 bg-transparent w-full">
+                            Edit Gig
+                        </button>
+                        {% endif %}
+                    </div>
                 </div>
 
+                <div>
+                    <h3 id="authorDisplay">Posted By: {{gigPoster}}</h3>
+                </div>
+                <div class="mb-4" id="gigCategoryDisplay">
+                    {% if gigCategory == 'teaching' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                        Teaching
+                    </span>
+                    {% elif gigCategory == 'research' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                        Research
+                    </span>
+                    {% elif gigCategory == 'technical' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                        Technical
+                    </span>
+                    {% elif gigCategory == 'writing' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                        Writing
+                    </span>
+                    {% elif gigCategory == 'graphic_design' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
+                        Graphic Design
+                    </span>
+                    {% elif gigCategory == 'photography_film' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
+                        Photography/Film
+                    </span>
+                    {% elif gigCategory == 'events' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
+                        Events
+                    </span>
+                    {% elif gigCategory == 'marketing' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
+                        Marketing
+                    </span>
+                    {% elif gigCategory == 'administrative' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+                        Administrative
+                    </span>
+                    {% elif gigCategory == 'volunteer' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
+                        Volunteer
+                    </span>
+                    {% elif gigCategory == 'fitness' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
+                        Fitness
+                    </span>
+                    {% elif gigCategory == 'other' %}
+                    Gig Category: <span id="gigCategoryDisplay"
+                        class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+                        Other
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="mb-4">
+                    <h3 id="startDateTitleDisplay" class="font-bold">Gig Start Date:</h3>
+                    <h3 id="startDateDisplay">{{gigStartDate}}</h3>
+                </div>
+                <div class="mb-4">
+                    <h3 id="endDateTitleDisplay" class="font-bold">Gig End Date:</h3>
+                    <h3 id="endDateDisplay">{{gigEndDate}}</h3>
+                </div>
+                <div class="mb-4">
+                    <h3 id="gigDescriptionTitleDisplay" class="font-bold">Description</h3>
+                    <p id="gigDescriptionDisplay" class="conditional-hyphens">{{gigDescription}}</p>
+                </div>
+                <div class="mb-4">
+                    <h3 id="gigQualificationTitleDisplay" class="font-bold">Qualifications</h3>
+                    <p id="gigQualificationDisplay" class="conditional-hyphens">{{gigQualifications}}</p>
+                </div>
             </div>
-
-
-            <div>
-                <h3>Posted By: {{gigPoster}}</h3>
-            </div>
-            <br>
-                {% if gigCategory == 'teaching' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
-                    Teaching
-                </span>
-                {% elif gigCategory == 'research' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                    Research
-                </span>
-                {% elif gigCategory == 'technical' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
-                    Technical
-                </span>
-                {% elif gigCategory == 'writing' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
-                    Writing
-                </span>
-                {% elif gigCategory == 'graphic_design' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-purple-800 bg-purple-200 rounded-lg bg-opacity-50">
-                    Graphic Design
-                </span>
-                {% elif gigCategory == 'photography_film' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-pink-800 bg-pink-200 rounded-lg bg-opacity-50">
-                    Photography/Film
-                </span>
-                {% elif gigCategory == 'events' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-indigo-800 bg-indigo-200 rounded-lg bg-opacity-50">
-                    Events
-                </span>
-                {% elif gigCategory == 'marketing' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-gray-800 bg-gray-200 rounded-lg bg-opacity-50">
-                    Marketing
-                </span>
-                {% elif gigCategory == 'administrative' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
-                    Administrative
-                </span>
-                {% elif gigCategory == 'volunteer' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-green-800 bg-green-200 rounded-lg bg-opacity-50">
-                    Volunteer
-                </span>
-                {% elif gigCategory == 'fitness' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
-                    Fitness
-                </span>
-                {% elif gigCategory == 'other' %}
-                Gig Category: <span id="gigCategoryDisplay"
-                    class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
-                    Other
-                </span>
-                {% endif %}
-            
-
-            {{ gig_form.categories(id="gigCategoryEdit", class="block border border-blue-600 p-2 w-full md:w-1/2
-            rounded-lg", hidden=True)}}
-
-            <br>
-
-            <h3 class="font-bold">Gig Start Date:</h3>
-            <h3 id="gigStartDateDisplay">{{gigStartDate}}</h3>
-
-            {{ gig_form.start_date(id="gigStartDateEdit", class="block border border-blue-600 p-2 w-full md:w-1/2 rounded-lg", hidden=True)}}
-            {% for error in gig_form.start_date.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-
-
-            <br>
-            <div>
-                <h3 class="font-bold">Gig End Date:</h3>
-                <h3 id="gigEndDateDisplay">{{gigEndDate}}</h3>
-
-                {{ gig_form.end_date(id="gigEndDateEdit", class="block border border-blue-600 p-2 w-full md:w-1/2 rounded-lg", hidden=True)}}
-                {% for error in gig_form.end_date.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-
-            </div>
-            <br>
-            <div>
-
-                <h3 class="font-bold">Description</h3>
-                <p id="gigDescriptionDisplay" class="conditional-hyphens">{{gigDescription}}</p>
-                {{ gig_form.description(id="gigDescriptionEdit", class="border border-blue-600
-                py-1 rounded-lg w-full", hidden=True)}}
-                {% for error in gig_form.description.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-
-            </div>
-            <br>
-            <hr>
-            <br>
-            <div>
-                <h3 class="font-bold">Qualifications</h3>
-                <p id="gigQualificationDisplay" class="conditional-hyphens">{{gigQualifications}}</p>
-                {{ gig_form.qualifications(id="gigQualificationEdit", class="border border-blue-600 py-1 rounded-lg
-                w-full", hidden=True)}}
-                {% for error in gig_form.qualifications.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-
-            </div>
+            <form hidden id="gigEditForm" method="post">
+                {{ gig_form.hidden_tag() }}
+                <div class="flex justify-between">
+                    {{ gig_form.title(id="gigTitleEdit", class="text-2xl font-bold border
+                    border-blue-600
+                    py-1 rounded-lg w-3/4")}}
+                    {% for error in gig_form.title.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                    <div>
+                        <p class="text-gray-600">{{gigPostedDate}}</p>
+                        {% if is_owner %}
+                        {{ gig_form.submit(class= "text-blue-600 bg-transparent
+                        w-full")}}
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <h3>Posted By: {{gigPoster}}</h3>
+                </div>
+                <div class="mb-4">
+                    Gig Category:{{ gig_form.categories(id="gigCategoryEdit", class="border border-blue-600 p-2 w-full
+                    md:w-1/2
+                    rounded-lg")}}
+                </div>
+                <div class="mb-4">
+                    <h3 class="font-bold">Gig Start Date:</h3>
+                    <h3>{{gigStartDate}}</h3>
+                </div>
+                <div class="mb-4">
+                    <h3 class="font-bold">Gig End Date:</h3>
+                    <h3>{{gigEndDate}}</h3>
+                </div>
+                <div class="mb-4">
+                    <h3 class="font-bold">Description</h3>
+                    {{ gig_form.description(id="gigDescriptionEdit", class="border border-blue-600
+                    py-1 rounded-lg w-full")}}
+                    {% for error in gig_form.description.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </div>
+                <div class="mb-4">
+                    <h3 class="font-bold">Qualifications</h3>
+                    {{ gig_form.qualifications(id="gigQualificationEdit", class="border border-blue-600 py-1 rounded-lg
+                    w-full")}}
+                    {% for error in gig_form.qualifications.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </div>
+            </form>
         </section>
         <br>
         {% if is_owner: %}
@@ -214,7 +224,8 @@
                                     {{ nid }}@princeton.edu
                                 </div>
                             </td>
-                            <td scope="row" class="p-3 whitespace-nowrap conditional-hyphens">{{ app.get_message() }}</td>
+                            <td scope="row" class="p-3 whitespace-nowrap conditional-hyphens">{{ app.get_message() }}
+                            </td>
                             <td>
                                 <form class="stat_forms" id="{{ nid }}-StatusForm" method="post">
                                     {{ setstatusforms[nid].hidden_tag() }}
@@ -262,7 +273,8 @@
                 {{ apply_form.hidden_tag() }} <!-- the CSRF token -->
                 <div class="flex space-x-10">
                     {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none
-                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your qualifications, availability, and any relevant info. You will be contacted if there is a match. ")}}
+                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your
+                    qualifications, availability, and any relevant info. You will be contacted if there is a match. ")}}
                     {{ apply_form.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
                 </div>
             </form>
@@ -288,7 +300,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         'use strict';
-        let isEditing = false;
         function updateStatus(e, netid, status) {
             e.preventDefault();
 
@@ -345,9 +356,6 @@
         }
 
         $(document).ready(function () {
-            $('#gigStartDateEdit').hide();
-            $('#gigEndDateEdit').hide();
-            $('#gigCategoryEdit').hide();
 
             console.log('document ready')
             $('#applyFormID').submit(function (e) {
@@ -392,110 +400,81 @@
                         error: function (xhr, status, error) {
                             console.log('whoopsie, something went wrong') // change this later obv
                         }
-                    
-                })
-            console.log("delete button disabled and delete request sent")
-        }
+
+                    })
+                    console.log("delete button disabled and delete request sent")
+                }
 
             });
 
-        $('.stat_forms').on('change', function (e) {
-            console.log('5')
-            let netid = $(this).attr('id').split('-')[0];
-            let status = $(this).find(':selected').val();
-            updateStatus(e, netid, status);
-        });
-        $(document).on('click', 'input[type=submit]', function () {
-            $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
-            $(this).attr('clicked', 'true');
-        });
+            $('.stat_forms').on('change', function (e) {
+                console.log('5')
+                let netid = $(this).attr('id').split('-')[0];
+                let status = $(this).find(':selected').val();
+                updateStatus(e, netid, status);
+            });
+            $(document).on('click', 'input[type=submit]', function () {
+                $('input[type=submit]', $(this).parents('form')).removeAttr('clicked');
+                $(this).attr('clicked', 'true');
+            });
 
         })
 
-        function submitGigEdits(gigId) {
-            // Gather data from input fields
-            var title = $('#gigTitleEdit').val();
-            var description = $('#gigDescriptionEdit').val();
-            var qualifications = $('#gigQualificationEdit').val();
-            var startDate = $('#gigStartDateEdit').val();
-            var endDate = $('#gigEndDateEdit').val();
-            var category = $('#gigCategoryEdit').val();
+        function handleEditGigResponse(data) {
+            console.log('handleEditGigResponse')
+            console.log(data)
+            $('#gigEditSection').html(data)
+            $('#gigEditButton').on('click', function () { editGigVisiblity(); })
+            // I might switch the logic here later (instead of readding event listeners, sth else)
+            $('#gigEditForm').on('submit', function (e) { changeGig(e); });
+        }
 
+        function handleEditGigError() {
+            alert('Error: Failed to update data on server');
+            $('#gigEditForm').find(':submit').prop('disabled', false);
+        }
 
-
-            // Create data object to be sent
-            var data = {
-                title: title,
-                description: description,
-                qualifications: qualifications,
-                start_date: startDate,
-                end_date: endDate,
-                categories: category,
-            };
-            console.log(data);
+        function changeGig(e) {
+            e.preventDefault()
+            $('#gigEditForm').find(':submit').prop('disabled', true);
 
             // AJAX POST request to the server
             $.ajax({
                 type: 'POST',
                 url: '/update_gig/' + gigID, // Replace 'gigId' with the actual gig ID
-                data: data,
-                success: function (response) {
-                    if (response.status === 'success') {
-                        // Update the display fields with new data and toggle back
-                        $('#gigTitleDisplay').text(title).show();
-                        $('#gigDescriptionDisplay').text(description).show();
-                        $('#gigQualificationDisplay').text(qualifications).show();
-                        $('#gigStartDateDisplay').text(startDate).show();
-                        $('#gigEndDateDisplay').text(endDate).show();
-                        $('#gigCategoryDisplay').text(category).show();
-
-                        $('#editGigButton').text('Edit Gig');
-                    } else {
-                        alert('Error updating gig: ' + response.message);
-                    }
-                },
-                error: function () {
-                    alert('Error updating gig. Please try again.');
-                }
+                data: $('#gigEditForm').serialize(),
+                success: handleEditGigResponse,
+                error: handleEditGigError,
             });
         }
-        function toggleEditGig() {
-            console.log(isEditing);
-            isEditing = !isEditing;
-            document.getElementById('editGigButton').textContent = isEditing ? 'Submit Changes' : 'Edit Gig';
 
-            // Toggle visibility for all editable fields
-            $('#gigTitleDisplay').toggle(!isEditing);
-            $('#gigTitleEdit').toggle(isEditing);
-
-            $('#gigDescriptionDisplay').toggle(!isEditing);
-            $('#gigDescriptionEdit').toggle(isEditing);
-
-            $('#gigQualificationDisplay').toggle(!isEditing);
-            $('#gigQualificationEdit').toggle(isEditing);
-
-
-
-            // Toggling start date, end date, and category
-            $('#gigStartDateDisplay').toggle(!isEditing);
-            $('#gigStartDateEdit').toggle(isEditing);
-
-            $('#gigEndDateDisplay').toggle(!isEditing);
-            $('#gigEndDateEdit').toggle(isEditing);
-
-            $('#gigCategoryDisplay').toggle(!isEditing);
-            $('#gigCategoryEdit').toggle(isEditing);
-            // Add similar toggle for other fields
-
-            if (!isEditing) {
-                console.log(gigID)
-                submitGigEdits(gigID);
-                isEditing = false;
-            }
+        function editGigVisiblity() {
+            $('#gigTitleDisplay').attr('hidden', '')
+            $('#dateDisplay').attr('hidden', '')
+            $('#authorDisplay').attr('hidden', '')
+            $('#startDateTitleDisplay').attr('hidden', '')
+            $('#startDateDisplay').attr('hidden', '')
+            $('#endDateTitleDisplay').attr('hidden', '')
+            $('#endDateDisplay').attr('hidden', '')
+            $('#gigCategoryTitleDisplay').attr('hidden', '')
+            $('#gigCategoryDisplay').attr('hidden', '')
+            $('#gigDescriptionTitleDisplay').attr('hidden', '')
+            $('#gigDescriptionDisplay').attr('hidden', '')
+            $('#gigQualificationTitleDisplay').attr('hidden', '')
+            $('#gigQualificationDisplay').attr('hidden', '')
+            $('#gigEditButton').attr('hidden', '')
+            $('#gigEditForm').removeAttr('hidden')
         }
 
+        function setup() {
+            console.log('setup complete');
 
-        document.getElementById('editGigButton').addEventListener('click', toggleEditGig);
+            $('#gigEditButton').on('click', function () { editGigVisiblity(); })
+
+            $('#gigEditForm').on('submit', function (e) { changeGig(e); });
+        }
+
+        document.addEventListener('DOMContentLoaded', setup)
 
         window.onpageshow = function (event) {
             console.log('6')

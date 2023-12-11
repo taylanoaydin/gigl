@@ -656,7 +656,10 @@
       }
 
       function handleBioResponse(data) {
+         console.log('success')
+         console.log(data)
          $('#bioSection').html(data)
+
          $('#bioEditButton').on('click', function () { editProfile('bio'); })
          // I might switch the logic here later (instead of readding event listeners, sth else)
          $('#bioEditForm').on('submit', function (e) { changeBio(e); });

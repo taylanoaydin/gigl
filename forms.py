@@ -193,3 +193,50 @@ class PostGigForm(FlaskForm):
             ('other',
              'Other')])
     submit = SubmitField('Submit')
+
+
+
+class EditGigForm(FlaskForm):
+    title = StringField('Title', validators=[InputRequired(), Length(max=100)])
+    qualifications = TextAreaField(
+        'Qualifications', validators=[
+            InputRequired(), Length(
+                max=500)])
+    description = TextAreaField(
+        'Description', validators=[
+            InputRequired(), Length(
+                max=1000)])
+    categories = SelectField(
+        'Categories',
+        validators=[
+            DataRequired(
+                message='Select A Category'),
+            InputRequired()],
+        choices=[
+            ('',
+             'Select A Category'),
+            ('teaching',
+             'Teaching'),
+            ('research',
+             'Research'),
+            ('technical',
+             'Technical'),
+            ('writing',
+             'Writing'),
+            ('graphic_design',
+             'Graphic Design'),
+            ('photography_film',
+             'Photography/Film'),
+            ('events',
+             'Events'),
+            ('marketing',
+             "Marketing"),
+            ('administrative',
+             "Administrative"),
+            ('volunteer',
+             "Volunteer"),
+            ('fitness',
+             'Fitness'),
+            ('other',
+             'Other')])
+    submit = SubmitField('Finish Editing')

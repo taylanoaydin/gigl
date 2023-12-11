@@ -449,7 +449,7 @@ def delete_gig_from_db(gigID):
        _put_connection(connection)
    return True
 
-def update_gig_details(gig_id, netid, title, description, qualifications, startfrom, until, category):
+def update_gig_details(gig_id, netid, title, description, qualifications, category):
     connection = _get_connection()
     try:
         with connection.cursor() as cursor:
@@ -458,8 +458,8 @@ def update_gig_details(gig_id, netid, title, description, qualifications, startf
                 return False
             
             cursor.execute('BEGIN')
-            query = "UPDATE gigs SET title = %s, description = %s, qualf = %s, startfrom = %s, until = %s, category = %s WHERE gigID = %s"
-            cursor.execute(query, [title, description, qualifications, startfrom, until, category, gig_id])
+            query = "UPDATE gigs SET title = %s, description = %s, qualf = %s, category = %s WHERE gigID = %s"
+            cursor.execute(query, [title, description, qualifications, category, gig_id])
             cursor.execute('COMMIT')
             return True
     except Exception as ex:

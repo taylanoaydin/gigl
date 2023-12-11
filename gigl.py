@@ -15,7 +15,7 @@ import dotenv
 import database
 from datetime import datetime
 from cas_details import cas_details
-from forms import ApplyForm, DeleteGigForm, PostGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm, SpecialtySelectForm, SetStatusForm
+from forms import ApplyForm, DeleteGigForm, PostGigForm, EditGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm, SpecialtySelectForm, SetStatusForm
 from flask import current_app
 from flask import render_template, request, make_response
 from util import profileIDChecker
@@ -412,12 +412,10 @@ def details(id):
            setstatusform.gigID.data = app.get_gigID()
            setstatusform.applicantID.data = app.get_applicant_netid()
            setstatusforms[app.get_applicant_netid()] = setstatusform
-   gig_form = PostGigForm()
+   gig_form = EditGigForm()
    gig_form.qualifications.data = gigQualifications
    gig_form.title.data = gigTitle
    gig_form.description.data = gigDescription
-   gig_form.start_date.data = gigStartDate
-   gig_form.end_date.data = gigEndDate
    gig_form.categories.data = gigCategory
 
    html_code = flask.render_template('details.html',
@@ -925,36 +923,97 @@ def remove_bookmark(gig_id):
 @app.route('/update_gig/<int:gig_id>', methods=['POST'])
 def update_gig(gig_id):
     netid = auth.authenticate()
-    gig_form = PostGigForm(flask.request.form)
     if database.is_banned(netid):
-        return flask.jsonify({'status': 'error', 'message': 'User is banned'})
-    elif not database.owns_gig(netid, gig_id):
-        return jsonify(status='error', message='Unauthorized'), 403
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    gig_form = EditGigForm(flask.request.form)
+
+    if not database.owns_gig(netid, gig_id):
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
     
     print("validate_on_submit")
     print(gig_form.validate_on_submit())
     print(gig_form.title.data)
     print(gig_form.description.data)
     print(gig_form.qualifications.data)
-    print(gig_form.start_date.data)
-    print(gig_form.end_date.data)
     print(gig_form.categories.data)
     print(gig_form.errors)
 
     gig = database.get_gig_details(gig_id)
+
     if gig is None:
-        return jsonify(status='error', message='Gig not found')
+        html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+        response = flask.make_response(html_code)
+        return response
+    
     print("update_gig")
-    try:
-        result = database.update_gig_details(gig_id, netid, gig_form.title.data, gig_form.description.data, gig_form.qualifications.data, gig_form.start_date.data, gig_form.end_date.data, gig_form.categories.data)
-        if result:
-            return flask.jsonify({'status': 'success'})
-        else:
-            return flask.jsonify({'status': 'error', 'message': 'Update failed'})
-    except Exception as e:
-        return flask.jsonify({'status': 'error', 'message': str(e)})
+    if gig_form.validate_on_submit():
+        print("validate_on_submit")
+        newTitle = gig_form.title.data
+        newDescription = gig_form.description.data
+        newQualifications = gig_form.qualifications.data
+        newCategories = gig_form.categories.data
 
+        gigAuthor = database.get_user(netid).get_name()
+        gigStartDate = gig.get_fromdate()
+        gigEndDate = gig.get_til_date()
+        gigPostedDate = gig.get_post_date()
 
+        owns = True
+
+        database.update_gig_details(gig_id, netid, gig_form.title.data, gig_form.description.data, gig_form.qualifications.data, gig_form.categories.data)
+        html_code = flask.render_template('gig_in_edit.html',
+                                     gigTitle=newTitle,
+                                     gigPoster=gigAuthor,
+                                     gigCategory=newCategories,
+                                     gigDescription=newDescription,
+                                     gigQualifications=newQualifications,
+                                     gigStartDate=gigStartDate,
+                                     gigEndDate=gigEndDate,
+                                     gigPostedDate=gigPostedDate,
+                                     is_owner=owns,
+                                     gigID=id,
+                                     get_usr = database.get_user,
+                                     gig_form=gig_form)
+        response = flask.make_response(html_code)
+        return response
+    else:
+        errs = gig_form.errors
+        print(errs)
+        gig_form = EditGigForm()
+
+        gigAuthor = database.get_user(netid).get_name()
+        gigStartDate = gig.get_fromdate()
+        gigEndDate = gig.get_til_date()
+        gigPostedDate = gig.get_post_date()
+        gigTitle = gig.get_title()
+        gigDescription = gig.get_description()
+        gigQualifications = gig.get_qualifications()
+        gigCategory = gig.get_category()
+
+        owns = True
+        html_code = flask.render_template('gig_in_edit_error.html',
+                                     gigTitle=gigTitle,
+                                     gigPoster=gigAuthor,
+                                     gigCategory=gigCategory,
+                                     gigDescription=gigDescription,
+                                     gigQualifications=gigQualifications,
+                                     gigStartDate=gigStartDate,
+                                     gigEndDate=gigEndDate,
+                                     gigPostedDate=gigPostedDate,
+                                     is_owner=owns,
+                                     gigID=id,
+                                     get_usr = database.get_user,
+                                     gig_form=gig_form,
+                                     errs=errs)
+        response = flask.make_response(html_code)
+        return response
 
 # -----------------------------------------------------------------------
 if __name__ == '__main__':
