@@ -829,6 +829,12 @@
          console.log('setup complete');
          $('#bioEditForm').find('textarea[name="bio"]').val('{{ bio }}');
 
+          // Set link edit form fields to server-rendered values
+         $('#linkEditForm').find('input[name="link1"]').val('{{ links[0]|default('') }}');
+         $('#linkEditForm').find('input[name="link2"]').val('{{ links[1]|default('') }}');
+         $('#linkEditForm').find('input[name="link3"]').val('{{ links[2]|default('') }}');
+         $('#linkEditForm').find('input[name="link4"]').val('{{ links[3]|default('') }}');
+
          $('#bioEditButton').on('click', function () { editProfile('bio'); })
          $('#linksEditButton').on('click', function () { editProfile('links'); })
          $('#specialtyBtn').on('click', function () { editProfile('specialty'); })
