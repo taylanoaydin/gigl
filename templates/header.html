@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
     <style>
         header {
-            background: linear-gradient(rgba(10, 45, 133, 0.2)0%,
+            background: linear-gradient(rgba(10, 45, 133, 0.1)0%,
           rgba(244, 245, 249, 1) 100%);
         }
         .divider {
@@ -36,13 +36,13 @@
         <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
             <div class="flex items-center space-x-2">
                 <img src="{{ url_for('static', filename='newicon.png') }}" alt="Logo" class="logo-img">
-                <a href="/home" class="text-custom1 font-semibold hover:text-blue-600">gigl</a>
+                <a href="/home" class="text-custom1 font-medium hover:text-blue-600">gigl</a>
             </div>
             <div class="actions flex">
-                <a href="/profilesearch?spec=&kw=" class="text-custom1 font-bold hover:text-blue-600 divider px-4">freelancers</a>
-                <a href="/postgig" class="text-custom1 font-semibold hover:text-blue-600 divider px-4">post gig</a>
-                <a href="/profile" class="text-custom1 font-semibold hover:text-blue-600 divider px-4">profile</a>
-                <a href="/logout" class="text-custom1 font-semibold hover:text-blue-600 divider px-4">logout</a>
+                <a href="/profilesearch?spec=&kw=" class="text-custom1 font-medium hover:text-blue-600 divider px-4">Freelancers</a>
+                <a href="/postgig" class="text-custom1 font-medium hover:text-blue-600 divider px-4">Post gig</a>
+                <a href="/profile" class="text-custom1 font-medium hover:text-blue-600 divider px-4">Profile</a>
+                <a href="/logout" class="text-custom1 font-medium hover:text-blue-600 divider px-4">Logout</a>
             </div>
         </div>
     </header>
