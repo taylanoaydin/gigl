@@ -437,7 +437,8 @@ def details(id):
                                      isAdmin=isAdmin,
                                      get_usr = database.get_user,
                                      setstatusforms=setstatusforms,
-                                     gig_form=gig_form)
+                                     gig_form=gig_form,
+                                     profileIDChecker=profileIDChecker)
    response = flask.make_response(html_code)
    return response
 # -----------------------------------------------------------------------

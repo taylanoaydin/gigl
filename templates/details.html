@@ -218,8 +218,16 @@
                         {% set status = app.get_status() %}
                         <tr class="{{ 'status-YES' if status == 'YES' else 'status-NO' if status == 'NO' else 'status-UNDECIDED' }}"
                             id="{{ nid }}-row">
+                            {% set profileID = profileIDChecker(nid) %}
                             <td scope="row" class="p-3 whitespace-nowrap">
+                                {% if profileID %}
+                                <a href="{{ url_for('freelancer_profile', netid=nid) }}"
+                                class="text-blue-500 hover:underline">
                                 {{ get_usr(nid).get_name() }}
+                                </a>
+                                {% else %}
+                                {{ get_usr(nid).get_name() }}
+                                {% endif %}
                                 <div class="text-gray-500">
                                     {{ nid }}@princeton.edu
                                 </div>
