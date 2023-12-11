@@ -186,6 +186,13 @@
 
 
    <script>
+        window.onpageshow = function (event) {
+            console.log('6')
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+
       function openTab(event, tabName) {
          var tabcontent = document.getElementsByClassName("tab-content");
          for (var i = 0; i < tabcontent.length; i++) {
@@ -381,11 +388,11 @@
             <!-- Tabs -->
             <div class="mb-4 space-x-10">
                <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300"
-                  onclick="openTab(event, 'Table1')">My Gigs</button>
+                  onclick="openTab(event, 'Table1')">Posted Gigs</button>
                <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300"
-                  onclick="openTab(event, 'Table2')">My Apps</button>
+                  onclick="openTab(event, 'Table2')">Sent Applications</button>
                <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300"
-                  onclick="openTab(event, 'Table3')">My Bookmarks</button>
+                  onclick="openTab(event, 'Table3')">Bookmarked Gigs</button>
             </div>
 
             <!-- Content -->
