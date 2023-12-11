@@ -36,6 +36,9 @@
     .text-custom {
       color: #0A2D85
     }
+    .bg-button-hover:hover {
+      background-color: #4676EE;
+      }
     .bg-button {
       background-color: #0A2D85;
     }
@@ -204,7 +207,7 @@
                // $('.dataTables_wrapper .dataTables_paginate').addClass('flex justify-center space-x-1 mt-4');
 
                  // Remove the activePageButton class from all pagination buttons
-                 $('.dataTables_wrapper .paginate_button').removeClass('text-red-600 hover:bg-red-100');
+                 $('.dataTables_wrapper .paginate_button').removeClass('font-semibold text-custom hover:bg-blue-900');
 
                $('.dataTables_wrapper .paginate_button').each(function () {
                   $(this).addClass("px-3 py-1 rounded-md bg-custom text-indigo-600 hover:bg-indigo-200");
@@ -216,7 +219,7 @@
                $('.dataTables_wrapper .paginate_button.current').removeClass('text-indigo-600 hover:bg-indigo-100');
 
                // Add the new classes to the current page button
-               $('.dataTables_wrapper .paginate_button.current').addClass('text-red-600 hover:bg-red-100');
+               $('.dataTables_wrapper .paginate_button.current').addClass('font-semibold text-custom hover:bg-blue-900');
 
 
 
@@ -247,7 +250,7 @@
             focus:border-blue-600", value=cat) }}
 
             <!-- Render the submit button using WTForms -->
-            {{ search_form.submit(class_="p-2 w-auto rounded-lg  font-semibold  bg-button text-white") }}
+            {{ search_form.submit(class_="p-2 w-auto rounded-lg  font-semibold  bg-button text-white bg-button-hover") }}
          </div>
       </form>
    </section>
@@ -280,7 +283,7 @@
                   <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap conditional-hyphens">
                      <div>
                         <a href="{{ url_for('details', id=gig.get_gigID()) }}"
-                           class="font-bold text-blue-500 conditional-hyphens hover:underline">
+                           class="font-bold text-custom conditional-hyphens hover:underline">
                            {{ gig.get_title() }}
                         </a>
                      </div>
@@ -289,7 +292,7 @@
                         {% set profileID = profileIDChecker(gig.get_netid()) %}
                         {% if profileID %}
                         <a href="{{ url_for('freelancer_profile', netid=gig.get_netid()) }}"
-                           class="text-gray-500 hover:underline">
+                           class="text-blue-800 hover:underline">
                            by {{ name }}
                         </a>
                         {% else %}

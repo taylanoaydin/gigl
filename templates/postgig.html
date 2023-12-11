@@ -13,6 +13,12 @@
             width: 80%;
             padding: 1em;
         }
+        .bg-button {
+      background-color: #0A2D85;
+    }
+    .bg-button-hover:hover {
+      background-color: #4676EE;
+      }
     </style>
 </head>
 
@@ -80,7 +86,7 @@
                 </div>
 
                 <br>
-                {{ gig_form.submit(class= "shadow p-2 w-auto rounded-lg bg-indigo-200 border border-indigo-300", id="gigSubmit")}}
+                {{ gig_form.submit(class= "text-white font-semibold p-2 w-auto rounded-lg bg-button bg-button-hover", id="gigSubmit")}}
             </form>
 
 

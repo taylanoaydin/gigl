@@ -16,6 +16,12 @@
       width: 80%;
       padding: 1em;
     }
+    .bg-button {
+      background-color: #0A2D85;
+    }
+    .bg-button-hover:hover {
+      background-color: #4676EE;
+      }
   </style>
 </head>
 
@@ -37,7 +43,7 @@
 
 
         <!-- Render the submit button using WTForms -->
-        {{ psearch_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
+        {{ psearch_form.submit(class_="text-white font-semibold p-2 w-auto rounded-lg bg-button bg-button-hover") }}
       </div>
     </form>
   </section>

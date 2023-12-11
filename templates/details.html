@@ -17,6 +17,12 @@
         #cancelButton {
             margin-left: 10px;
         }
+        .bg-button {
+      background-color: #0A2D85;
+    }
+    .bg-button-hover:hover {
+      background-color: #4676EE;
+      }
 
         .status-YES {
             background-color: rgba(212, 237, 218, 0.5);
@@ -279,11 +285,12 @@
         <section class="w-full md:w-1/2">
             <form action="" method="post" id="applyFormID" novalidate>
                 {{ apply_form.hidden_tag() }} <!-- the CSRF token -->
-                <div class="flex space-x-10">
+                <div class="flex space-x-10 items-center">
                     {{ apply_form.message(class_="border border-gray-600 p-2 w-full rounded-lg focus:outline-none
-                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your
-                    qualifications, availability, and any relevant info. You will be contacted if there is a match. ")}}
-                    {{ apply_form.submit(class_="p-2 w-auto rounded-lg bg-purple-200") }}
+                    focus:border-teal-500", rows=2, id="message", maxlength="1500", placeholder="Describe your qualifications, availability, and any relevant info. You will be contacted if there is a match. ")}}
+                    <div>
+                        {{ apply_form.submit(class_="p-2 text-white font-semibold w-auto rounded-lg bg-button bg-button-hover") }}
+                    </div>
                 </div>
             </form>
             {% for error in apply_form.message.errors %}
