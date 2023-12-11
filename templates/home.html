@@ -15,6 +15,16 @@
          width: 95%;
          padding: 1em;
       }
+      .bg-custom {
+      background-color: #F4F5F9;
+      /* New background color */
+    }
+    .text-custom {
+      color: #0A2D85
+    }
+    .bg-button {
+      background-color: #0A2D85;
+    }
 
       .conditional-hyphens {
          overflow-wrap: break-word;
@@ -61,7 +71,7 @@
    </script>
 </head>
 
-<body>
+<body class="bg-custom">
    {% include 'header.html' %} <!--JINJA2 template for the header-->
    <!--when user presses "search", use /searchresults Flask route with GET-->
    <section>
@@ -75,23 +85,23 @@
          {{ search_form.hidden_tag() }}
          <div class="flex space-x-10">
             <!-- Render the keyword field using WTForms -->
-            {{ search_form.keyword(class_="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", placeholder="Search for any gig now!") }}
+            {{ search_form.keyword(class_="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-600", placeholder="Search for any gig now!") }}
 
             <!-- Render the category select field using WTForms -->
-            {{ search_form.category(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500")}}
+            {{ search_form.category(class_="border border-gray-400 p-2 rounded-lg focus:outline-none focus:border-blue-600")}}
 
             <!-- Render the submit button using WTForms -->
-            {{ search_form.submit(class_="p-2 w-auto rounded-lg bg-indigo-200") }}
+            {{ search_form.submit(class_="p-2 w-auto rounded-lg  font-semibold  bg-button text-white") }}
          </div>
       </form>
    </section>
    <section>
       <div class="text-sm">
-         ...or, build your freelancer profile now! Go to your <a class="text-blue-500" href="/profile">Profile</a> to edit your information.
+         ...or, build your freelancer profile now! Go to your <a class="text-custom font-semibold" href="/profile">Profile</a> to edit your information.
       </div>
       <br>
       <div class="text-sm">
-         If you are looking to hire someone, you can <a class="text-blue-500" href="/postgig">post a gig</a> immediately with no registration required!
+         If you are looking to hire someone, you can <a class="text-custom font-semibold" href="/postgig">post a gig</a> immediately with no registration required!
       </div>
    </section>
    <section>
@@ -100,7 +110,7 @@
          {% for gig in popular_gigs %}
          <div class="border p-4 rounded-lg shadow-lg bg-gray-100">
             <div class="flex justify-between items-center mb-2"> <!-- Flex container for title and bookmark -->
-               <a href="/details/{{ gig.get_gigID() }}" class="text-blue-500 hover:text-blue-700 font-bold flex-grow">
+               <a href="/details/{{ gig.get_gigID() }}" class="text-custom hover:text-blue-700 font-bold flex-grow">
                   {{ gig.get_title() | truncate(30) }}
                </a>
                <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark text-xl cursor-pointer bookmark-icon"
@@ -195,7 +205,7 @@
          <div class="border p-4 rounded-lg shadow-lg bg-gray-100">
             <div class="flex justify-between items-center mb-2"> <!-- Flex container for title and bookmark -->
                <div class="flex-grow">
-                  <a href="/details/{{ gig.get_gigID() }}" class="text-blue-500 hover:text-blue-700 font-bold">
+                  <a href="/details/{{ gig.get_gigID() }}" class="text-custom hover:text-blue-700 font-bold">
                      {{ gig.get_title() | truncate(30) }}
                   </a>
                </div>
