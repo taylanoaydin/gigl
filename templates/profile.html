@@ -396,7 +396,7 @@
          <div class="flex flex-col items-center justify-center">
             <!-- Tabs -->
             <div class="mb-4 space-x-10">
-               <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300"
+               <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300 bg-gray-300 border border-blue-500"
                   onclick="openTab(event, 'Table1')">Posted Gigs</button>
                <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300"
                   onclick="openTab(event, 'Table2')">Sent Applications</button>
@@ -410,10 +410,10 @@
                   <thead class="bg-gray-200 border-b-2 border-gray-200">
                      <tr>
                         <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">Posted On</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">Start Date</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">End Date</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">Category</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">Posted On</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">Start Date</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">End Date</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">Category</th>
                      </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-150">
@@ -422,13 +422,13 @@
                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a
                               href="{{ url_for('details', id=gig.get_gigID()) }}"
                               class="font-bold text-custom conditional-hyphens hover:underline">{{ gig.get_title() }}</a></td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}
                         </td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}
                         </td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}
                         </td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">
                            {% if gig.get_category() == 'teaching' %}
                            <span
                               class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
@@ -509,7 +509,7 @@
                   <thead class="bg-gray-200 border-b-2 border-gray-200">
                      <tr>
                         <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">Application Message</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">Application Message</th>
                      </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-150">
@@ -519,7 +519,7 @@
                               href="{{ url_for('details', id=app.get_gigID()) }}"
                               class="font-bold text-custom w-1/4 hover:underline">{{
                               get_this_gig(app.get_gigID()).get_title() }}</a></td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 w-3/4 conditional-hyphens">{{
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 w-3/4 conditional-hyphens">{{
                            app.get_message() }}</td>
                      </tr>
                      {% endfor %}
@@ -539,10 +539,10 @@
                   <thead class="bg-gray-200 border-b-2 border-gray-200">
                      <tr>
                         <th class="p-3 text-sm font-semibold tracking-wide text-left">Gig Title</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">Posted On</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">Start Date</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">End Date</th>
-                        <th class="p-3 text-sm font-semibold tracking-wide text-left">Category</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">Posted On</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">Start Date</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">End Date</th>
+                        <th class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left">Category</th>
                      </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-150">
@@ -551,13 +551,13 @@
                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a
                               href="{{ url_for('details', id=gig.get_gigID()) }}"
                               class="font-bold text-custom hover:underline">{{ gig.get_title() }}</a></td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}
                         </td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}
                         </td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}
                         </td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">
                            {% if gig.get_category() == 'teaching' %}
                            <span
                               class="p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
