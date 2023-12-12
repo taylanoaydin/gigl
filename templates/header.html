@@ -1,58 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gigl</title>
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+    <script>
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+    </script>
     <style>
         header {
-            background: linear-gradient(rgb(134, 168, 255),
-          rgb(255, 255, 255) 100%);
+            background: linear-gradient(to bottom, rgb(134, 168, 255), rgb(255, 255, 255));
         }
         .divider {
             border-left: 1px solid #0F1015;
         }
-        .text-custom1 {
-      color: #0F1015
-    }
-    .text-custom-hover {
-      color: #0A2D85
-    }
+        .text-custom {
+            color: #0F1015;
+        }
 
+        .logo-img {
+            height: 50px;
+            width: auto;
+        }
         .actions a {
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
-        .logo-img {
-            height: 50px; /* Adjust the size as needed */
-            width: auto;
-        }
-
         .active-link {
             color: #0A2D85;
             pointer-events: none;
             text-shadow: #0A2D85;
             border-bottom: 2px solid #0A2D85;
         }
+        .active-link-mb {
+            color: #0A2D85;
+            pointer-events: none;
+            text-shadow: #0A2D85;
+            text-decoration: underline;
+            text-decoration-color: #0A2D85;
+        }
     </style>
 </head>
-
 <body>
     <header>
         <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
             <div class="flex items-center space-x-2">
                 <img src="{{ url_for('static', filename='newicon.png') }}" alt="Logo" class="logo-img">
-                <a href="/home" class="text-custom1 font-medium hover:text-blue-600 {{ 'active-link' if (active_page|default('')) == 'home' else '' }}">gigl</a>
+                <a href="/home" class="text-xl font-semibold text-custom hover:text-blue-600 {{ 'active-link' if (active_page|default('')) == 'home' else '' }}">gigl</a>
             </div>
-            <div class="actions flex">
-                <a href="/profilesearch?spec=&kw=" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profilesearch' else '' }}">search freelancers</a>
-                <a href="/postgig" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'postgig' else '' }}">post gig</a>
-                <a href="/profile" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profile' else '' }}">profile</a>
-                <a href="/logout" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'logout' else '' }}">logout</a>
-            </div>
+            <button onclick="toggleMobileMenu()" class="text-gray-800 p-2 focus:outline-none md:hidden">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <nav class="hidden md:actions md:flex">
+                <a href="/profilesearch?spec=&kw=" class="text-custom font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profilesearch' else '' }}">search freelancers</a>
+                <a href="/postgig" class="text-custom font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'postgig' else '' }}">post gig</a>
+                <a href="/profile" class="text-custom font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profile' else '' }}">profile</a>
+                <a href="/logout" class="text-custom font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'logout' else '' }}">logout</a>
+            </nav>
         </div>
-    </header>    
+        <div id="mobileMenu" class="hidden md:hidden bg-transparent shadow-md">
+            <a href="/profilesearch?spec=&kw=" class="block text-gray-800 font-medium hover:text-blue-600 px-3 py-2 {{ 'active-link-mb' if (active_page|default('')) == 'profilesearch' else '' }}">search freelancers</a>
+            <a href="/postgig" class="block text-gray-800 font-medium hover:text-blue-600 px-3 py-2 {{ 'active-link-mb' if (active_page|default('')) == 'postgig' else '' }}">post gig</a>
+            <a href="/profile" class="block text-gray-800 font-medium hover:text-blue-600 px-3 py-2 {{ 'active-link-mb' if (active_page|default('')) == 'profile' else '' }}">profile</a>
+            <a href="/logout" class="block text-gray-800 font-medium hover:text-blue-600 px-3 py-2 {{ 'active-link-mb' if (active_page|default('')) == 'logout' else '' }}">logout</a>
+        </div>
+    </header>
+    <!-- Rest of the body content goes here -->
 </body>
-
 </html>
