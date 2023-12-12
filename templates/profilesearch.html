@@ -55,7 +55,7 @@
           <tr>
             <th id="name" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Name</th>
             <th id="specialty" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Specialty</th>
-            <th id="lastactive" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Last Active
+            <th id="lastactive" class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Last Active
             </th>
           </tr>
         </thead>
@@ -129,7 +129,7 @@
               </span>
               {% endif %}
             </td>
-            <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ freelancer.get_active() }}</td>
+            <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ freelancer.get_active() }}</td>
           </tr>
           {% endfor %}
         </tbody>
