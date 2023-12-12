@@ -15,7 +15,7 @@ class ApplyForm(FlaskForm):
 
 class BioEditForm(FlaskForm):
     bio = TextAreaField('Bio', [Length(min=0, max=1000)])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Save')
 
 
 class LinkEditForm(FlaskForm):
@@ -30,7 +30,7 @@ class LinkEditForm(FlaskForm):
     link2 = StringField('Link2', validators=[Length(min=0, max=50), validate_url])
     link3 = StringField('Link3', validators=[Length(min=0, max=50), validate_url])
     link4 = StringField('Link4', validators=[Length(min=0, max=50), validate_url])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Save')
 
 
 class DeleteGigForm(FlaskForm):
