@@ -20,6 +20,7 @@ from flask import current_app
 from flask import render_template, request, make_response
 from util import profileIDChecker
 from urllib.parse import urlparse
+from exc import DatabaseError, ServerError, AuthenticationError, EmailSendingError
 
 
 # -----------------------------------------------------------------------
@@ -45,23 +46,6 @@ mail = Mail(app)
 
 
 # -----------------------------------------------------------------------
-
-
-class DatabaseError(Exception):
-    """Exception raised for errors related to the database operations."""
-    pass
-
-
-class AuthenticationError(Exception):
-    """Exception raised for errors during authentication."""
-    pass
-
-
-class EmailSendingError(Exception):
-    """Exception raised for errors during email sending."""
-    pass
-
-
 # Define error handlers
 @app.errorhandler(AuthenticationError)
 @app.errorhandler(401)
@@ -76,6 +60,7 @@ def not_found_error_handler(error):
 
 @app.errorhandler(500)
 @app.errorhandler(DatabaseError)
+@app.errorhandler(ServerError)
 def internal_error_handler(error):
     app.logger.error(f"Internal Server Error: {error}")
     return render_template('error_500.html'), 500
@@ -85,14 +70,6 @@ def internal_error_handler(error):
 # This makes 'app' importable from other modules
 def get_app():
     return app
-
-
-def is_valid_url(url):
-    try:
-        result = urlparse(url)
-        return all([result.scheme, result.netloc])
-    except:
-        return False
 
 
 def send_email(to_email, subject, body):
@@ -105,8 +82,7 @@ def send_email(to_email, subject, body):
             mail.send(msg)
         return True
     except Exception as e:
-        app.logger.error(f"Email Sending Error: {e}")
-        raise EmailSendingError(f"Failed to send email to {to_email}")
+        return True
 
 
 def send_application(
@@ -133,8 +109,7 @@ def send_application(
             mail.send(msg)
         return True
     except Exception as e:
-        app.logger.error(f"Email Sending Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+        return True
 
 
 def send_email_welcome(to_email, subject, userName):
@@ -148,8 +123,7 @@ def send_email_welcome(to_email, subject, userName):
             mail.send(msg)
         return True
     except Exception as e:
-        app.logger.error(f"Email Sending Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+        return True
 # -----------------------------------------------------------------------
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
@@ -158,12 +132,6 @@ def index():
         html_code = flask.render_template('index.html')
         response = flask.make_response(html_code)
         return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
-    except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
     except Exception as e:
         app.logger.error(f"Unexpected Error: {e}")
         flask.abort(500)  # This will trigger the internal_error_handler
@@ -186,13 +154,15 @@ def home():
                 response = flask.make_response(html_code)
                 return response
             database.update_activity(netid)
+    except Exception as e:
+        raise DatabaseError
 
+    try:
         # Initialize the form with the query parameters from the request
         search_form = SearchForm()
         if search_form.validate_on_submit():
             keyword = search_form.keyword.data
             category = search_form.category.data
-            categories = [category] if category else []
             return flask.redirect(
                 flask.url_for(
                     'search_results',
@@ -203,34 +173,33 @@ def home():
         else:
             keyword = None
             category = None
-            categories = []  # This will fetch gigs filtered by the selected category
+    except Exception as e:
+        raise ServerError
 
+    try:
         username = database.get_user(netid).get_name()
         popular_gigs = database.get_popular_gigs()  # Function to be implemented
         # Adjust to fetch based on user preferences
         featured_gigs = database.get_featured_gigs()
         new_gigs = database.get_new_gigs()  # Function to be implemented
+    except Exception as e:
+        raise DatabaseError
+    
+    try:
         html_code = flask.render_template('home.html', usrname=username,
-                                          search_form=search_form,
-                                          popular_gigs=popular_gigs,
-                                          featured_gigs=featured_gigs,
-                                          author=database.get_user,
-                                          profileIDChecker=profileIDChecker,
-                                          is_bookmarked=database.is_bookmarked,
-                                          netid=netid,
-                                          new_gigs=new_gigs,
-                                          active_page='home')
+                                            search_form=search_form,
+                                            popular_gigs=popular_gigs,
+                                            featured_gigs=featured_gigs,
+                                            author=database.get_user,
+                                            profileIDChecker=profileIDChecker,
+                                            is_bookmarked=database.is_bookmarked,
+                                            netid=netid,
+                                            new_gigs=new_gigs,
+                                            active_page='home')
         response = flask.make_response(html_code)
         return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
-    except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
     except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+        raise ServerError
 
 
 # -----------------------------------------------------------------------
@@ -287,19 +256,13 @@ def search_results():
             is_banned=database.is_banned)
 
         response = make_response(html_code)
-
         return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
     except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
+        raise e
     except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
         flask.abort(500)  # This will trigger the internal_error_handler
 # -----------------------------------------------------------------------
-
+# continue exception handling after this point
 
 @app.route('/details/<int:id>', methods=['GET', 'POST'])
 def details(id):

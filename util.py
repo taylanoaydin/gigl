@@ -1,11 +1,7 @@
 import database
 
 def profileIDChecker(netID):
-    ls, _ = database.get_freelancers()
-    for i in ls:
-        if i.get_netid() == netID:
-            return True
-    return False
+    return database.is_visible(netID)
     
 if __name__ == '__main__':
     print(profileIDChecker('asdfgh'))
