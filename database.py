@@ -14,6 +14,7 @@ import application as Application
 import gig
 import user
 from datetime import datetime
+from exc import DatabaseError
 
 
 # -----------------------------------------------------------------------
@@ -33,7 +34,10 @@ def _get_connection():
    try:
        conn = _connection_pool.get(block=False)
    except queue.Empty:
-       conn = psycopg2.connect(DATABASE_URL)
+       try:
+            conn = psycopg2.connect(DATABASE_URL)
+       except:
+           raise DatabaseError
    return conn
 
 
@@ -65,7 +69,11 @@ def get_gigs(keyword='', categories=None):
    if categories is None:
        categories = []
    gigs = []
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    try:
        with connection.cursor() as cursor:
            kw = '%' + keyword + '%'
@@ -87,8 +95,7 @@ def get_gigs(keyword='', categories=None):
                a_gig = gig.Gig(*row)
                gigs.append(a_gig)
    except Exception as ex:
-       # Log the exception as in gigl.py
-       raise  # Reraise the exception or handle it as needed
+       raise DatabaseError
    finally:
        _put_connection(connection)
        # Pagination logic
@@ -101,7 +108,11 @@ def get_gigs(keyword='', categories=None):
 
 
 def get_gig_details(gigID):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    thisgig = None
    try:
        with connection.cursor() as cursor:
@@ -109,27 +120,24 @@ def get_gig_details(gigID):
            cursor.execute(query, [gigID])
            gigdetails = cursor.fetchone()
 
-
            if gigdetails is None:
                return None
 
-
            thisgig = gig.Gig(*gigdetails)
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
    return thisgig
 
 
 # returns list of Gig's posted by netid
-
-
-
-
 def get_gigs_posted_by(netid):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    gigs = []
    try:
        with connection.cursor() as cursor:
@@ -137,25 +145,23 @@ def get_gigs_posted_by(netid):
            cursor.execute(query, [netid])
            postedgigs = cursor.fetchall()
 
-
            for row in postedgigs:
                thisgig = gig.Gig(*row)
                gigs.append(thisgig)
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
    return gigs
 
 
 # returns list of Application's sent to gig with gigID
-
-
-
-
 def get_apps_for(gigID):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    apps = []
    try:
        with connection.cursor() as cursor:
@@ -171,8 +177,7 @@ def get_apps_for(gigID):
                thisapp = Application.Application(*row)
                apps.append(thisapp)
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
    return apps
@@ -182,7 +187,11 @@ def get_apps_for(gigID):
 
 # returns list of Application's sent by user with netid (to any gig)
 def get_apps_by(netid):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    apps = []
    try:
        with connection.cursor() as cursor:
@@ -199,17 +208,18 @@ WHERE u.banned = FALSE AND a.netid = %s
                thisapp = Application.Application(*row)
                apps.append(thisapp)
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
    return apps
 
 
-
-
 def get_bookmarks(netid):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    bookmarks = []
    try:
        with connection.cursor() as cursor:
@@ -226,8 +236,7 @@ WHERE u.banned = FALSE AND b.netid = %s"""
                if gigfromDB is not None:
                    bookmarks.append(gigfromDB)
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
    return bookmarks
@@ -237,12 +246,11 @@ WHERE u.banned = FALSE AND b.netid = %s"""
 # gigID. Returns None if no application sent by netid to gigID.
 # note to devs: compare return value with None to see if
 # user already applied
-
-
-
-
 def get_application(netid, gigID):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    thisapp = None
    try:
        with connection.cursor() as cursor:
@@ -257,8 +265,7 @@ def get_application(netid, gigID):
 
            thisapp = Application.Application(*row)
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
    return thisapp
@@ -270,7 +277,10 @@ def get_application(netid, gigID):
 
 
 def get_user(netid):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    thisuser = None
    try:
        with connection.cursor() as cursor:
@@ -278,15 +288,12 @@ def get_user(netid):
            cursor.execute(query, [netid])
            row = cursor.fetchone()
 
-
            if row is None:
                return None
 
-
            thisuser = user.User(*row)
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
    return thisuser
@@ -296,7 +303,11 @@ def get_user(netid):
 # overall profile search: netid, name, specialty, last_active
 def get_freelancers(keyword='', specialty='', page=1, per_page=100):
    users = []
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    try:
        with connection.cursor() as cursor:
            kw = '%' + keyword + '%'
@@ -329,18 +340,19 @@ def get_freelancers(keyword='', specialty='', page=1, per_page=100):
          
       
            return users, total_freelancers
-      
-      
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
 def get_all_users(keyword='', specialty='', page=1, per_page=100):
    users = []
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    try:
        with connection.cursor() as cursor:
            kw = '%' + keyword + '%'
@@ -373,8 +385,7 @@ def get_all_users(keyword='', specialty='', page=1, per_page=100):
                users.append(thisuser)
            return users, total_freelancers
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
 # -----------------------------------------------------------------------
@@ -384,32 +395,26 @@ def get_all_users(keyword='', specialty='', page=1, per_page=100):
 # Checks if user with the given netid already exists, if not, adds them
 # to database (used after login). Returns true if successful, exception else
 # if there was any error in the addition of the user to the database
-
-
-
-
 def check_and_add_user(netid):
    usr = get_user(netid)
    if usr is None:
-       connection = _get_connection()
+       try:
+           connection = _get_connection()
+       except:
+           raise DatabaseError
        try:
            with connection.cursor() as cursor:
                cursor.execute('BEGIN')
-
 
                usrname = cas_details(netid)[0]
                query = "INSERT INTO users (netid, name, visible, bio, links, specialty, last_active, banned) VALUES (%s, %s, 'n', '', '', 'Not Chosen', %s, false)"
                cursor.execute(query, [netid, usrname, datetime.now().date()])
 
-
                cursor.execute('COMMIT')
 
-
                return "user_created"
-       except Exception as ex:
-           # Log the exception as in gigl.py
-          
-           raise  # Reraise the exception or handle it as needed
+       except Exception as ex:          
+           raise DatabaseError
        finally:
            _put_connection(connection)
    return True
@@ -418,12 +423,11 @@ def check_and_add_user(netid):
 # Deletes gig with the given gigID from both applications and gigs.
 # raises exception if there was an error and it couldn't be deleted, true
 # otherwise
-
-
-
-
 def delete_gig_from_db(gigID):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
@@ -442,15 +446,18 @@ def delete_gig_from_db(gigID):
 
 
            cursor.execute('COMMIT')
+           return True
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
-   return True
 
 def update_gig_details(gig_id, netid, title, description, qualifications, category):
-    connection = _get_connection()
+    try:
+        connection = _get_connection()
+    except:
+        raise DatabaseError
+   
     try:
         with connection.cursor() as cursor:
             # Check if the gig belongs to the user
@@ -463,8 +470,7 @@ def update_gig_details(gig_id, netid, title, description, qualifications, catego
             cursor.execute('COMMIT')
             return True
     except Exception as ex:
-        connection.rollback()
-        raise
+        raise DatabaseError
     finally:
         _put_connection(connection)
 
@@ -478,80 +484,72 @@ def update_gig_details(gig_id, netid, title, description, qualifications, catego
 
 def create_gig(netid, title, category, description, qualf, startfrom,
               until, posted):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
-
 
            query = """INSERT INTO gigs
            (netid, title, category, description,
            qualf, startfrom, until, posted, num_apps)
            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0) RETURNING gigID"""
 
-
            cursor.execute(
                query, [
                    netid, title, category, description, qualf, startfrom, until, posted])
            gigID = cursor.fetchone()[0]
 
-
            cursor.execute('COMMIT')
            return gigID
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
 # Sends application from user with netid to gig with gigID with the
 # given message.
-
-
-
-
 def send_application(netid, gigID, message):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            validgig = "SELECT * FROM gigs WHERE gigID = %s"
 
-
            cursor.execute(validgig, [gigID])
            row = cursor.fetchone()
-
 
            if row is None:
                return False
 
-
            cursor.execute('BEGIN')
-
 
            query = """INSERT INTO apps
                (netid, gigID, message, status) VALUES
                (%s, %s, %s, 'UNDECIDED')"""
            cursor.execute(query, [netid, gigID, message])
 
-
            query = "UPDATE gigs SET num_apps = num_apps + 1 WHERE gigID = %s"
            cursor.execute(query, [gigID])
-
 
            cursor.execute('COMMIT')
            return True
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
-
-
 def set_visibility(netid, visible):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
@@ -567,57 +565,57 @@ def set_visibility(netid, visible):
            cursor.execute('COMMIT')
            return True
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
-
-
 def update_activity(netid):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+    
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
            query = "UPDATE users SET last_active = %s"
            query += " WHERE netid = %s"
 
-
            cursor.execute(query, [datetime.now().date(), netid])
            cursor.execute('COMMIT')
            return True
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
-
-
 def update_bio(netid, newbio):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
            query = "UPDATE users SET bio = %s"
            query += " WHERE netid = %s"
 
-
            cursor.execute(query, [newbio, netid])
            cursor.execute('COMMIT')
            return True
    except Exception as ex:
-       return False
+       return DatabaseError
    finally:
        _put_connection(connection)
 
-
-
-
 def update_links(netid, links):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
@@ -630,13 +628,16 @@ def update_links(netid, links):
            cursor.execute('COMMIT')
            return True
    except Exception as ex:
-       return False
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
 def update_specialty(netid, newspec):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
@@ -648,12 +649,15 @@ def update_specialty(netid, newspec):
            cursor.execute('COMMIT')
            return True
    except Exception as ex:
-       return False
+       raise DatabaseError
    finally:
        _put_connection(connection)      
 
 def ban_user(netid):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            if is_banned(netid):
@@ -666,13 +670,16 @@ def ban_user(netid):
            cursor.execute('COMMIT')
            return True
    except Exception as ex:
-       return False
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
 def unban_user(netid):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
@@ -683,13 +690,16 @@ def unban_user(netid):
            cursor.execute('COMMIT')
            return True
    except Exception as ex:
-       return False
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
 def is_banned(netid): # finish
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            query = "SELECT banned FROM users WHERE netid=%s"
@@ -697,14 +707,34 @@ def is_banned(netid): # finish
            row = cursor.fetchone()
           
            return row[0] if row else False
-   except Exception as ex:
-       raise ex
+   except Exception:
+       raise DatabaseError
+   finally:
+       _put_connection(connection)
+
+def is_visible(netid): # finish
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
+   try:
+       with connection.cursor() as cursor:
+           query = "SELECT visible FROM users WHERE netid=%s"
+           cursor.execute(query, [netid])
+           row = cursor.fetchone()
+          
+           return row[0] if row else False
+   except Exception:
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
 def update_status(gigID, netid, status):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
@@ -715,6 +745,8 @@ def update_status(gigID, netid, status):
            cursor.execute(query, [status, gigID, netid])
            cursor.execute('COMMIT')
            return True
+   except Exception as ex:
+        raise DatabaseError
    finally:
        _put_connection(connection)
 
@@ -726,24 +758,22 @@ def update_status(gigID, netid, status):
 
 
 # true if netid posted gig with gigID, exception otherwise
-
-
-
-
 def owns_gig(netid, gigID):
    try:
        thisgig = get_gig_details(gigID)
        return (thisgig is not None) and (thisgig.get_netid() == netid)
    except Exception as ex:
-      
-       raise
+       raise DatabaseError
 
 
 # -----------------------------------------------------------------------
 
 
 def add_bookmark(netid, gigID):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       return False
    try:
        with connection.cursor() as cursor:
            # Check if the bookmark already exists
@@ -759,7 +789,6 @@ def add_bookmark(netid, gigID):
            connection.commit()
            return True
    except Exception as ex:
-       print(ex)
        connection.rollback()
        return False
    finally:
@@ -767,7 +796,10 @@ def add_bookmark(netid, gigID):
 
 
 def remove_bookmark(netid, gigID):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       return False
    try:
        with connection.cursor() as cursor:
            query = "DELETE FROM bookmarks WHERE netid = %s AND gigID = %s"
@@ -775,7 +807,6 @@ def remove_bookmark(netid, gigID):
            connection.commit()
            return True
    except Exception as ex:
-       print(ex)
        connection.rollback()
        return False
    finally:
@@ -783,7 +814,10 @@ def remove_bookmark(netid, gigID):
 
 
 def is_bookmarked(netid, gigID):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       return False
    try:
        with connection.cursor() as cursor:
            query = "SELECT COUNT(*) FROM bookmarks WHERE netid = %s AND gigID = %s"
@@ -795,8 +829,12 @@ def is_bookmarked(netid, gigID):
        return False
    finally:
        _put_connection(connection)
+
 def get_popular_gigs(limit=6):
-    connection = _get_connection()
+    try:
+        connection = _get_connection()
+    except:
+        raise DatabaseError
     try:
         with connection.cursor() as cursor:
             query = """
@@ -810,11 +848,15 @@ def get_popular_gigs(limit=6):
             gigs = cursor.fetchall()
             return [gig.Gig(*row) for row in gigs]
     except Exception as ex:
-        raise
+        raise DatabaseError
     finally:
         _put_connection(connection)
+
 def get_featured_gigs(limit=6):
-   connection = _get_connection()
+   try:
+       connection = _get_connection()
+   except:
+       raise DatabaseError
    try:
        with connection.cursor() as cursor:
            query = """SELECT * FROM gigs ORDER BY RANDOM() LIMIT %s"""
@@ -822,13 +864,16 @@ def get_featured_gigs(limit=6):
            gigs = cursor.fetchall()
            return [gig.Gig(*row) for row in gigs]
    except Exception as ex:
-       raise
+       raise DatabaseError
    finally:
        _put_connection(connection)
 
 
 def get_new_gigs(limit=6):
-    connection = _get_connection()
+    try:
+        connection = _get_connection()
+    except:
+        raise DatabaseError
     try:
         with connection.cursor() as cursor:
             query = """
@@ -842,7 +887,7 @@ def get_new_gigs(limit=6):
             gigs = cursor.fetchall()
             return [gig.Gig(*row) for row in gigs]
     except Exception as ex:
-        raise
+        raise DatabaseError
     finally:
         _put_connection(connection)
 
