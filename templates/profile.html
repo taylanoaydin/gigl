@@ -517,10 +517,8 @@
                      <tr class="bg-gray-100">
                         <td scope="row" class="p-3 text-sm text-gray-700"><a
                               href="{{ url_for('details', id=app.get_gigID()) }}"
-                              class="font-bold text-custom  hover:underline">{{
-                              get_this_gig(app.get_gigID()).get_title() }}</a></td>
-                        <td scope="row" class="p-3 text-sm text-gray-700 conditional-hyphens">{{
-                           app.get_message() }}</td>
+                              class="font-bold text-custom hover:underline">{{ get_this_gig(app.get_gigID()).get_title() }}</a></td>
+                        <td scope="row" class="p-3 text-sm text-gray-700 conditional-hyphens">{{ app.get_message() }}</td>
                      </tr>
                      {% endfor %}
                   </tbody>
