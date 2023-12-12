@@ -28,6 +28,13 @@
             height: 50px; /* Adjust the size as needed */
             width: auto;
         }
+
+        .active-link {
+            color: #0A2D85;
+            pointer-events: none;
+            text-shadow: #0A2D85;
+            border-bottom: 2px solid #0A2D85;
+        }
     </style>
 </head>
 
@@ -36,16 +43,16 @@
         <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
             <div class="flex items-center space-x-2">
                 <img src="{{ url_for('static', filename='newicon.png') }}" alt="Logo" class="logo-img">
-                <a href="/home" class="text-custom1 font-medium hover:text-blue-600">gigl</a>
+                <a href="/home" class="text-custom1 font-medium hover:text-blue-600 {{ 'active-link' if (active_page|default('')) == 'home' else '' }}">gigl</a>
             </div>
             <div class="actions flex">
-                <a href="/profilesearch?spec=&kw=" class="text-custom1 font-medium hover:text-blue-600 divider px-4">freelancers</a>
-                <a href="/postgig" class="text-custom1 font-medium hover:text-blue-600 divider px-4">post gig</a>
-                <a href="/profile" class="text-custom1 font-medium hover:text-blue-600 divider px-4">profile</a>
-                <a href="/logout" class="text-custom1 font-medium hover:text-blue-600 divider px-4">logout</a>
+                <a href="/profilesearch?spec=&kw=" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profilesearch' else '' }}">search freelancers</a>
+                <a href="/postgig" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'postgig' else '' }}">post gig</a>
+                <a href="/profile" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profile' else '' }}">profile</a>
+                <a href="/logout" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'logout' else '' }}">logout</a>
             </div>
         </div>
-    </header>
+    </header>    
 </body>
 
 </html>

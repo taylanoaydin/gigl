@@ -227,7 +227,8 @@ def home():
                                           profileIDChecker=profileIDChecker,
                                           is_bookmarked=database.is_bookmarked,
                                           netid=netid,
-                                          new_gigs=new_gigs)
+                                          new_gigs=new_gigs,
+                                          active_page='home')
         response = flask.make_response(html_code)
         return response
     except AuthenticationError as e:
@@ -510,7 +511,8 @@ def postgig():
         user_email = f"{netid}@princeton.edu"
         html_code = flask.render_template('postgig.html', username=username,
                                           user_email=user_email,
-                                          gig_form=gig_form)
+                                          gig_form=gig_form,
+                                          active_page='postgig')
         response = flask.make_response(html_code)
         return response
     except AuthenticationError as e:
@@ -574,7 +576,8 @@ def profile():
         bioeditform=bioeditform,
         linkeditform=linkeditform,
         specialtyform=specialtyform,
-        get_this_gig=database.get_gig_details)  # Pass the visibility status to the template
+        get_this_gig=database.get_gig_details,
+        active_page='profile')  # Pass the visibility status to the template
     response = flask.make_response(html_code)
     return response
 # -----------------------------------------------------------------------
@@ -633,7 +636,8 @@ def profilesearch():
             total_pages=total_pages,
             current_page=page,
             kw=keyword,
-            isAdmin=isAdmin)
+            isAdmin=isAdmin,
+            active_page='profilesearch')
 
         response = make_response(html_code)
 

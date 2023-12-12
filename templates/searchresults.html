@@ -250,7 +250,7 @@
             focus:border-blue-600", value=cat) }}
 
             <!-- Render the submit button using WTForms -->
-            {{ search_form.submit(class_="p-2 w-auto rounded-lg  font-semibold  bg-button text-white bg-button-hover") }}
+            {{ search_form.submit(class_="p-2 w-auto rounded-lg cursor-pointer font-semibold bg-button text-white bg-button-hover") }}
          </div>
       </form>
    </section>
@@ -367,7 +367,7 @@
                      {% endif %}
                   </td>
                   <td class="p-3 text-center">
-                     <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark"
+                     <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark cursor-pointer"
                         onclick="toggleBookmark('{{ gig.get_gigID() }}', this)"></i>
                   </td>
                </tr>
