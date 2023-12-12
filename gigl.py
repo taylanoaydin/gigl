@@ -1,7 +1,4 @@
-
 #!/usr/bin/env python
-
-
 # -----------------------------------------------------------------------
 # gigl.py
 # Authors: TA, AB, IA, YD
@@ -198,6 +195,8 @@ def home():
                                             active_page='home')
         response = flask.make_response(html_code)
         return response
+    except DatabaseError as e:
+        raise e
     except Exception as e:
         raise ServerError
 
@@ -262,8 +261,6 @@ def search_results():
     except Exception as e:
         flask.abort(500)  # This will trigger the internal_error_handler
 # -----------------------------------------------------------------------
-# continue exception handling after this point
-
 @app.route('/details/<int:id>', methods=['GET', 'POST'])
 def details(id):
    netid = auth.authenticate()
@@ -280,10 +277,10 @@ def details(id):
             gigTitle = gig.get_title()
             gigNetID = gig.get_netid()
        except:
-           return render_template('error_404.html'), 404
+           flask.abort(404)
 
        if database.is_banned(gigNetID):
-           return render_template('error_404.html'), 404
+           flask.abort(404)
        gigAuthor = database.get_user(gigNetID).get_name()
        gigCategory = gig.get_category()
        gigDescription = gig.get_description()
@@ -302,13 +299,10 @@ def details(id):
            all_apps = None
            application = database.get_application(netid, id)
 
-
        apply_form = ApplyForm()
-
 
        if apply_form.validate_on_submit():
            application_message = apply_form.message.data
-
 
            if database.owns_gig(netid, id):
                flask.flash("You can't apply to your own gig...", 'error')
@@ -332,70 +326,76 @@ def details(id):
 
 
            return flask.redirect(flask.url_for('apply_result', gigID=id))
-   except AuthenticationError as e:
-       app.logger.error(f"Authentication Error: {e}")
-       flask.abort(401)  # This will trigger the authentication_error_handler
    except DatabaseError as e:
-       app.logger.error(f"Database Error: {e}")
-       flask.abort(500)  # This will trigger the database_error_handler
+       raise e
    except Exception as e:
        flask.abort(500)  # This will trigger the internal_error_handler
+   
+   try:
+        delete_form = DeleteGigForm()
+        show_confirm = False
+        if delete_form.validate_on_submit():
+            _ = flask.get_flashed_messages()  # clears flashed messages
+            # url = flask.url_for('details', id=id)
+            if delete_form.delete.data:
+                show_confirm = True
+            elif delete_form.confirm.data:
+                if owns or isAdmin:
+                    database.delete_gig_from_db(id)
+                    flask.flash("Your Gig has been successfully deleted!", "success")
+                    return flask.redirect(flask.url_for('gigdeleted'))
+                else:
+                    flask.flash("You are not authorized to delete this gig.", "error")
+                    return flask.redirect(flask.url_for('gigdeleted'))
+            # elif delete_form.cancel.data:
+            #     return flask.redirect(url)
+   except DatabaseError as e:
+       raise e
+   except Exception as e:
+       flask.abort(500) 
+   
+   try:
+        setstatusforms = {}
+        if owns:
+            for app in all_apps:
+                setstatusform = SetStatusForm()
+                setstatusform.status.data = app.get_status()
+                setstatusform.gigID.data = app.get_gigID()
+                setstatusform.applicantID.data = app.get_applicant_netid()
+                setstatusforms[app.get_applicant_netid()] = setstatusform
+        gig_form = EditGigForm()
+        gig_form.qualifications.data = gigQualifications
+        gig_form.title.data = gigTitle
+        gig_form.description.data = gigDescription
+        gig_form.categories.data = gigCategory
 
-   delete_form = DeleteGigForm()
-   show_confirm = False
-   if delete_form.validate_on_submit():
-       _ = flask.get_flashed_messages()  # clears flashed messages
-       # url = flask.url_for('details', id=id)
-       if delete_form.delete.data:
-           show_confirm = True
-       elif delete_form.confirm.data:
-           if owns or isAdmin:
-               database.delete_gig_from_db(id)
-               flask.flash("Your Gig has been successfully deleted!", "success")
-               return flask.redirect(flask.url_for('gigdeleted'))
-           else:
-               flask.flash("You are not authorized to delete this gig.", "error")
-               return flask.redirect(flask.url_for('gigdeleted'))
-       # elif delete_form.cancel.data:
-       #     return flask.redirect(url)
-
-   setstatusforms = {}
-   if owns:
-       for app in all_apps:
-           setstatusform = SetStatusForm()
-           setstatusform.status.data = app.get_status()
-           setstatusform.gigID.data = app.get_gigID()
-           setstatusform.applicantID.data = app.get_applicant_netid()
-           setstatusforms[app.get_applicant_netid()] = setstatusform
-   gig_form = EditGigForm()
-   gig_form.qualifications.data = gigQualifications
-   gig_form.title.data = gigTitle
-   gig_form.description.data = gigDescription
-   gig_form.categories.data = gigCategory
-
-   html_code = flask.render_template('details.html',
-                                     gigTitle=gigTitle,
-                                     gigPoster=gigAuthor,
-                                     gigCategory=gigCategory,
-                                     gigDescription=gigDescription,
-                                     gigQualifications=gigQualifications,
-                                     gigStartDate=gigStartDate,
-                                     gigEndDate=gigEndDate,
-                                     gigPostedDate=gigPostedDate,
-                                     is_owner=owns,
-                                     application=application,
-                                     all_apps=all_apps,
-                                     gigID=id,
-                                     apply_form=apply_form,
-                                     delete_form=delete_form,
-                                     show_confirm=show_confirm,
-                                     isAdmin=isAdmin,
-                                     get_usr = database.get_user,
-                                     setstatusforms=setstatusforms,
-                                     gig_form=gig_form,
-                                     profileIDChecker=profileIDChecker)
-   response = flask.make_response(html_code)
-   return response
+        html_code = flask.render_template('details.html',
+                                            gigTitle=gigTitle,
+                                            gigPoster=gigAuthor,
+                                            gigCategory=gigCategory,
+                                            gigDescription=gigDescription,
+                                            gigQualifications=gigQualifications,
+                                            gigStartDate=gigStartDate,
+                                            gigEndDate=gigEndDate,
+                                            gigPostedDate=gigPostedDate,
+                                            is_owner=owns,
+                                            application=application,
+                                            all_apps=all_apps,
+                                            gigID=id,
+                                            apply_form=apply_form,
+                                            delete_form=delete_form,
+                                            show_confirm=show_confirm,
+                                            isAdmin=isAdmin,
+                                            get_usr = database.get_user,
+                                            setstatusforms=setstatusforms,
+                                            gig_form=gig_form,
+                                            profileIDChecker=profileIDChecker)
+        response = flask.make_response(html_code)
+        return response
+   except DatabaseError as e:
+       raise e
+   except Exception as e:
+       flask.abort(500)
 # -----------------------------------------------------------------------
 
 
@@ -415,14 +415,9 @@ def apply_result():
         html_code = flask.render_template('apply_err.html', gigID=gigID)
         response = flask.make_response(html_code)
         return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
     except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
+        raise e
     except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
         flask.abort(500)  # This will trigger the internal_error_handler
 
 
@@ -456,9 +451,6 @@ def postgig():
                     'gigposted_success',
                     gigID=gig_id))
         else:
-            print(gig_form.start_date.errors)
-            print(gig_form.end_date.errors)
-            # TODO: Error handling
             pass
 
         username = user.get_name()
@@ -469,79 +461,77 @@ def postgig():
                                           active_page='postgig')
         response = flask.make_response(html_code)
         return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
     except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
+        raise e
     except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
         flask.abort(500)  # This will trigger the internal_error_handler
 # -----------------------------------------------------------------------
-
-
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     netid = auth.authenticate()
-    database.check_and_add_user(netid)
-    if database.is_banned(netid):
+    try:
+        database.check_and_add_user(netid)
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        database.update_activity(netid)
+
+        user = database.get_user(netid)
+        bio = user.get_bio()
+        links = user.get_links()
+        spec = user.get_specialty()
+        username = user.get_name()
+        user_email = f"{netid}@princeton.edu"
+
+        bioeditform = BioEditForm()
+        bioeditform.bio.data = bio
+        linkeditform = LinkEditForm()
+        specialtyform = SpecialtySelectForm()
+        specialtyform.specialty.data = spec
+
+        if request.method == 'POST':
+            if 'toggle_visibility' in request.form:
+                # Call the function to toggle visibility
+                database.set_visibility(netid, not user.is_visible())
+
+                return flask.redirect(flask.url_for('profile'))
+
+        mygigs = database.get_gigs_posted_by(netid)
+        myapps = database.get_apps_by(netid)
+
         html_code = flask.render_template(
-            'banneduser.html', name=database.get_user(netid).get_name())
+            'profile.html',
+            username=username,
+            user_email=user_email,
+            mygigs=mygigs,
+            mybookmarks=database.get_bookmarks(netid),
+            myapps=myapps,
+            user=user,
+            specialty=spec,
+            is_visible=user.is_visible(),
+            bio=bio,
+            links=links,
+            bioeditform=bioeditform,
+            linkeditform=linkeditform,
+            specialtyform=specialtyform,
+            get_this_gig=database.get_gig_details,
+            active_page='profile')  # Pass the visibility status to the template
         response = flask.make_response(html_code)
         return response
-    database.update_activity(netid)
-
-    user = database.get_user(netid)
-    bio = user.get_bio()
-    links = user.get_links()
-    spec = user.get_specialty()
-    username = user.get_name()
-    user_email = f"{netid}@princeton.edu"
-
-    bioeditform = BioEditForm()
-    bioeditform.bio.data = bio
-    linkeditform = LinkEditForm()
-    specialtyform = SpecialtySelectForm()
-    specialtyform.specialty.data = spec
-
-    if request.method == 'POST':
-        if 'toggle_visibility' in request.form:
-            # Call the function to toggle visibility
-            database.set_visibility(netid, not user.is_visible())
-
-            return flask.redirect(flask.url_for('profile'))
-
-    mygigs = database.get_gigs_posted_by(netid)
-    myapps = database.get_apps_by(netid)
-
-    html_code = flask.render_template(
-        'profile.html',
-        username=username,
-        user_email=user_email,
-        mygigs=mygigs,
-        mybookmarks=database.get_bookmarks(netid),
-        myapps=myapps,
-        user=user,
-        specialty=spec,
-        is_visible=user.is_visible(),
-        bio=bio,
-        links=links,
-        bioeditform=bioeditform,
-        linkeditform=linkeditform,
-        specialtyform=specialtyform,
-        get_this_gig=database.get_gig_details,
-        active_page='profile')  # Pass the visibility status to the template
-    response = flask.make_response(html_code)
-    return response
+    except DatabaseError as e:
+        raise e
+    except Exception as e:
+        raise ServerError
 # -----------------------------------------------------------------------
 
 
 @app.route('/profilesearch', methods=['GET', 'POST'])
 def profilesearch():
     netid = auth.authenticate()
-    isAdmin = (netid == 'cos-gigl')
     try:
+        isAdmin = (netid == 'cos-gigl')
         database.check_and_add_user(netid)
         if database.is_banned(netid):
             html_code = flask.render_template(
@@ -596,15 +586,10 @@ def profilesearch():
         response = make_response(html_code)
 
         return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
     except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
+        raise e
     except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+        raise ServerError
 
 
 # -----------------------------------------------------------------------
@@ -635,20 +620,13 @@ def gigdeleted(id):
         html_code = flask.render_template('gigdeleted.html')
         response = flask.make_response(html_code)
         return response
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
     except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
+        raise e
     except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+        raise ServerError
 
 
 # -----------------------------------------------------------------------
-
-
 @app.route('/gigposted_success/<int:gigID>', methods=['GET'])
 def gigposted_success(gigID):
     netid = auth.authenticate()
@@ -662,32 +640,24 @@ def gigposted_success(gigID):
         database.update_activity(netid)
 
         return flask.render_template('gigposted.html', gigID=gigID)
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
     except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
+        raise e
     except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+        raise ServerError
 
 
 # -----------------------------------------------------------------------
-
-
 @app.route('/logout', methods=['GET'])
 def logout():
     # Log out of the CAS session, and then the application.
     return auth.logoutcas()
 # -----------------------------------------------------------------------
 
-
 @app.route('/freelancer/<netid>', methods=['GET', 'POST'])
 def freelancer_profile(netid):
     id = auth.authenticate()
-    isAdmin = (id == 'cos-gigl')
     try:
+        isAdmin = (id == 'cos-gigl')
         # Fetch freelancer details from the database using netid
         database.check_and_add_user(id)
         if database.is_banned(id):
@@ -714,15 +684,11 @@ def freelancer_profile(netid):
             # Handle the case where the freelancer does not exist or is not
             # visible
             return render_template('error_404.html'), 404
-    except AuthenticationError as e:
-        app.logger.error(f"Authentication Error: {e}")
-        flask.abort(401)  # This will trigger the authentication_error_handler
+
     except DatabaseError as e:
-        app.logger.error(f"Database Error: {e}")
-        flask.abort(500)  # This will trigger the database_error_handler
+        raise e
     except Exception as e:
-        app.logger.error(f"Unexpected Error: {e}")
-        flask.abort(500)  # This will trigger the internal_error_handler
+        raise ServerError
 
 
 # ----------------------------------------------------------------------
@@ -824,12 +790,12 @@ def editlinks():
 @app.route('/update_status', methods=['POST'])
 def update_status():
     netid = auth.authenticate()
-    if database.is_banned(netid):
-        html_code = flask.render_template(
-            'banneduser.html', name=database.get_user(netid).get_name())
-        response = flask.make_response(html_code)
-        return response
     try:
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+            'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
         status_form = SetStatusForm(flask.request.form)
         if status_form.validate():
             if not database.owns_gig(netid, status_form.gigID.data):
@@ -882,97 +848,92 @@ def remove_bookmark(gig_id):
 @app.route('/update_gig/<int:gig_id>', methods=['POST'])
 def update_gig(gig_id):
     netid = auth.authenticate()
-    if database.is_banned(netid):
-        html_code = flask.render_template(
-            'banneduser.html', name=database.get_user(netid).get_name())
-        response = flask.make_response(html_code)
-        return response
-    gig_form = EditGigForm(flask.request.form)
+    try:
+        if database.is_banned(netid):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        gig_form = EditGigForm(flask.request.form)
 
-    if not database.owns_gig(netid, gig_id):
-        html_code = flask.render_template(
-            'banneduser.html', name=database.get_user(netid).get_name())
-        response = flask.make_response(html_code)
-        return response
-    
-    print("validate_on_submit")
-    print(gig_form.validate_on_submit())
-    print(gig_form.title.data)
-    print(gig_form.description.data)
-    print(gig_form.qualifications.data)
-    print(gig_form.categories.data)
-    print(gig_form.errors)
+        if not database.owns_gig(netid, gig_id):
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
 
-    gig = database.get_gig_details(gig_id)
+        gig = database.get_gig_details(gig_id)
 
-    if gig is None:
-        html_code = flask.render_template(
-            'banneduser.html', name=database.get_user(netid).get_name())
-        response = flask.make_response(html_code)
-        return response
-    
-    print("update_gig")
-    if gig_form.validate_on_submit():
-        print("validate_on_submit")
-        newTitle = gig_form.title.data
-        newDescription = gig_form.description.data
-        newQualifications = gig_form.qualifications.data
-        newCategories = gig_form.categories.data
+        if gig is None:
+            html_code = flask.render_template(
+                'banneduser.html', name=database.get_user(netid).get_name())
+            response = flask.make_response(html_code)
+            return response
+        
+        if gig_form.validate_on_submit():
+            newTitle = gig_form.title.data
+            newDescription = gig_form.description.data
+            newQualifications = gig_form.qualifications.data
+            newCategories = gig_form.categories.data
 
-        gigAuthor = database.get_user(netid).get_name()
-        gigStartDate = gig.get_fromdate()
-        gigEndDate = gig.get_til_date()
-        gigPostedDate = gig.get_post_date()
+            gigAuthor = database.get_user(netid).get_name()
+            gigStartDate = gig.get_fromdate()
+            gigEndDate = gig.get_til_date()
+            gigPostedDate = gig.get_post_date()
 
-        owns = True
+            owns = True
 
-        database.update_gig_details(gig_id, netid, gig_form.title.data, gig_form.description.data, gig_form.qualifications.data, gig_form.categories.data)
-        html_code = flask.render_template('gig_in_edit.html',
-                                     gigTitle=newTitle,
-                                     gigPoster=gigAuthor,
-                                     gigCategory=newCategories,
-                                     gigDescription=newDescription,
-                                     gigQualifications=newQualifications,
-                                     gigStartDate=gigStartDate,
-                                     gigEndDate=gigEndDate,
-                                     gigPostedDate=gigPostedDate,
-                                     is_owner=owns,
-                                     gigID=id,
-                                     get_usr = database.get_user,
-                                     gig_form=gig_form)
-        response = flask.make_response(html_code)
-        return response
-    else:
-        errs = gig_form.errors
-        print(errs)
-        gig_form = EditGigForm()
+            database.update_gig_details(gig_id, netid, gig_form.title.data, gig_form.description.data, gig_form.qualifications.data, gig_form.categories.data)
+            html_code = flask.render_template('gig_in_edit.html',
+                                        gigTitle=newTitle,
+                                        gigPoster=gigAuthor,
+                                        gigCategory=newCategories,
+                                        gigDescription=newDescription,
+                                        gigQualifications=newQualifications,
+                                        gigStartDate=gigStartDate,
+                                        gigEndDate=gigEndDate,
+                                        gigPostedDate=gigPostedDate,
+                                        is_owner=owns,
+                                        gigID=id,
+                                        get_usr = database.get_user,
+                                        gig_form=gig_form)
+            response = flask.make_response(html_code)
+            return response
+        else:
+            errs = gig_form.errors
+            print(errs)
+            gig_form = EditGigForm()
 
-        gigAuthor = database.get_user(netid).get_name()
-        gigStartDate = gig.get_fromdate()
-        gigEndDate = gig.get_til_date()
-        gigPostedDate = gig.get_post_date()
-        gigTitle = gig.get_title()
-        gigDescription = gig.get_description()
-        gigQualifications = gig.get_qualifications()
-        gigCategory = gig.get_category()
+            gigAuthor = database.get_user(netid).get_name()
+            gigStartDate = gig.get_fromdate()
+            gigEndDate = gig.get_til_date()
+            gigPostedDate = gig.get_post_date()
+            gigTitle = gig.get_title()
+            gigDescription = gig.get_description()
+            gigQualifications = gig.get_qualifications()
+            gigCategory = gig.get_category()
 
-        owns = True
-        html_code = flask.render_template('gig_in_edit_error.html',
-                                     gigTitle=gigTitle,
-                                     gigPoster=gigAuthor,
-                                     gigCategory=gigCategory,
-                                     gigDescription=gigDescription,
-                                     gigQualifications=gigQualifications,
-                                     gigStartDate=gigStartDate,
-                                     gigEndDate=gigEndDate,
-                                     gigPostedDate=gigPostedDate,
-                                     is_owner=owns,
-                                     gigID=id,
-                                     get_usr = database.get_user,
-                                     gig_form=gig_form,
-                                     errs=errs)
-        response = flask.make_response(html_code)
-        return response
+            owns = True
+            html_code = flask.render_template('gig_in_edit_error.html',
+                                        gigTitle=gigTitle,
+                                        gigPoster=gigAuthor,
+                                        gigCategory=gigCategory,
+                                        gigDescription=gigDescription,
+                                        gigQualifications=gigQualifications,
+                                        gigStartDate=gigStartDate,
+                                        gigEndDate=gigEndDate,
+                                        gigPostedDate=gigPostedDate,
+                                        is_owner=owns,
+                                        gigID=id,
+                                        get_usr = database.get_user,
+                                        gig_form=gig_form,
+                                        errs=errs)
+            response = flask.make_response(html_code)
+            return response
+    except DatabaseError as e:
+        raise e
+    except Exception as e:
+        raise ServerError
 
 # -----------------------------------------------------------------------
 if __name__ == '__main__':
