@@ -17,7 +17,7 @@
         .divider {
             border-left: 1px solid #0F1015;
         }
-        .text-custom {
+        .text-custom1 {
             color: #0F1015;
         }
 
@@ -50,7 +50,7 @@
         <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
             <div class="flex items-center space-x-2">
                 <img src="{{ url_for('static', filename='newicon.png') }}" alt="Logo" class="logo-img">
-                <a href="/home" class="text-xl font-semibold text-custom hover:text-blue-600 {{ 'active-link' if (active_page|default('')) == 'home' else '' }}">gigl</a>
+                <a href="/home" class="text-xl font-semibold text-custom1 hover:text-blue-600 {{ 'active-link' if (active_page|default('')) == 'home' else '' }}">gigl</a>
             </div>
             <button onclick="toggleMobileMenu()" class="text-gray-800 p-2 focus:outline-none md:hidden">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -58,10 +58,10 @@
                 </svg>
             </button>
             <nav class="hidden md:actions md:flex">
-                <a href="/profilesearch?spec=&kw=" class="text-custom font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profilesearch' else '' }}">search freelancers</a>
-                <a href="/postgig" class="text-custom font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'postgig' else '' }}">post gig</a>
-                <a href="/profile" class="text-custom font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profile' else '' }}">profile</a>
-                <a href="/logout" class="text-custom font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'logout' else '' }}">logout</a>
+                <a href="/profilesearch?spec=&kw=" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profilesearch' else '' }}">search freelancers</a>
+                <a href="/postgig" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'postgig' else '' }}">post gig</a>
+                <a href="/profile" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profile' else '' }}">profile</a>
+                <a href="/logout" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'logout' else '' }}">logout</a>
             </nav>
         </div>
         <div id="mobileMenu" class="hidden md:hidden bg-transparent shadow-md">
