@@ -63,17 +63,9 @@ class EmailSendingError(Exception):
 
 
 # Define error handlers
-
-
-@app.errorhandler(DatabaseError)
-def database_error_handler(error):
-    app.logger.error(f"Database Error: {error}")
-    return render_template('error_database.html'), 500
-
-
 @app.errorhandler(AuthenticationError)
+@app.errorhandler(401)
 def authentication_error_handler(error):
-    app.logger.error(f"Authentication Error: {error}")
     return render_template('error_auth.html'), 401
 
 
@@ -83,6 +75,7 @@ def not_found_error_handler(error):
 
 
 @app.errorhandler(500)
+@app.errorhandler(DatabaseError)
 def internal_error_handler(error):
     app.logger.error(f"Internal Server Error: {error}")
     return render_template('error_500.html'), 500
@@ -158,8 +151,6 @@ def send_email_welcome(to_email, subject, userName):
         app.logger.error(f"Email Sending Error: {e}")
         flask.abort(500)  # This will trigger the internal_error_handler
 # -----------------------------------------------------------------------
-
-
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
