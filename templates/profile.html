@@ -310,7 +310,7 @@
                            {{ specialtyform.specialty(class_="border border-gray-200 p-2 rounded-lg focus:outline-none focus:border-teal-500", value=specialty) }}
 
                            <!-- Render the submit button using WTForms -->
-                           {{ specialtyform.submit(class_="p-2 w-auto rounded-lg bg-button bg-button-hover text-white font-semibold") }}
+                           {{ specialtyform.submit(class_="p-2 w-auto rounded-lg bg-button bg-button-hover text-white font-semibold cursor-pointer") }}
                         </div>
                      </form>
                   </div>
@@ -341,7 +341,7 @@
                   {{ bioeditform.hidden_tag() }}
                   <div class="flex space-x-10">
                      {{ bioeditform.bio(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", maxlength="1500", rows=1, placeholder="Who are you and what do you do?", id="bio") }}
-                     {{ bioeditform.submit(class_="submit-btn") }}
+                     {{ bioeditform.submit(class_="submit-btn cursor-pointer") }}
                   </div>
                </form>
             </div>
@@ -381,7 +381,7 @@
                      {{ linkeditform.link3(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link3", maxlength="200", placeholder="example_link.com", value=links[2] if links|length >= 3 else '') }}
 
                      {{ linkeditform.link4(class_="border border-gray-200 p-2 w-full rounded-lg focus:outline-none focus:border-teal-500", id="link4", maxlength="200", placeholder="example_link.com", value=links[3] if links|length >= 4 else '') }}
-                     {{ linkeditform.submit(class_="submit-btn") }}
+                     {{ linkeditform.submit(class_="submit-btn cursor-pointer") }}
                   </div>
                </form>
             </div>
