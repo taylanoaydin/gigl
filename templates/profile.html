@@ -93,11 +93,11 @@
 
       /* Hover effects */
       .btn-visible:hover {
-         background-color: #0DDD94;
+         background-color: #0cc785;
       }
 
       .btn-invisible:hover {
-         background-color: #FF0062;
+         background-color: #e60058;
       }
 
       /* Hover effects */
@@ -320,7 +320,7 @@
             <div>
                <button id="toggleVisibilityBtn"
                   class="{{ 'btn-invisible' if not user.is_visible() else 'btn-visible' }}">
-                  {{ 'Make Invisible' if not user.is_visible() else 'Make Visible' }}
+                  {{ 'Invisible' if not user.is_visible() else 'Visible' }}
                </button>
             </div>
          </div>
@@ -860,9 +860,9 @@
             var btn = $(this);
             // Change button appearance immediately
             if (btn.hasClass('btn-visible')) {
-               btn.removeClass('btn-visible').addClass('btn-invisible').text('Make Invisible');
+               btn.removeClass('btn-visible').addClass('btn-invisible').text('Invisible');
             } else {
-               btn.removeClass('btn-invisible').addClass('btn-visible').text('Make Visible');
+               btn.removeClass('btn-invisible').addClass('btn-visible').text('Visible');
             }
             // AJAX request to update the server
             $.ajax({
