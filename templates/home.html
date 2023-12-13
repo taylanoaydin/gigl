@@ -78,8 +78,8 @@
    {% include 'header.html' %} <!--JINJA2 template for the header-->
    <!--when user presses "search", use /searchresults Flask route with GET-->
    <section>
-      <div class="mb-6">
-         <strong> Here to connect your talent with the on-campus demand, {{ usrname }}</strong>
+      <div class="mb-6 text-xl">
+         <strong> Find your next freelancing opportunity {{ usrname }}, search for a gig below!</strong>
       </div>
    </section>
    <section>
@@ -99,11 +99,11 @@
       </form>
    </section>
    <section>
-      <div class="text-sm">
+      <div class="text-lg">
          ...or, build your freelancer profile now! Go to your <a class="text-custom font-semibold hover:underline" href="/profile">Profile</a> to edit your information.
       </div>
       <br>
-      <div class="text-sm">
+      <div class="text-lg">
          If you are looking to hire someone, you can <a class="text-custom font-semibold hover:underline" href="/postgig">post a gig</a> immediately with no registration required!
       </div>
    </section>
