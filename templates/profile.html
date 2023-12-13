@@ -13,7 +13,19 @@
          cursor: pointer;
          color: #3498db;
       }
+      
+      .visibility-text {
+         font-weight: bold;
+         transition: color 0.3s ease;
+      }
 
+      .visible-text {
+         color: #32c894; /* Green color for visible */
+      }
+
+      .invisible-text {
+         color: #f16399; /* Red color for invisible */
+      }
       /* Hide the checkbox */
       .collapsible-toggle {
          display: none;
@@ -80,13 +92,13 @@
       }
 
       .btn-visible {
-         background-color: #0cc785;
+         background-color: #32c894;
          /* A nicer shade of green */
          color: white;
       }
 
       .btn-invisible {
-         background-color: #FF0062;
+         background-color: #f16399;
          /* A nicer shade of red */
          color: white;
       }
@@ -97,7 +109,7 @@
       }
 
       .btn-invisible:hover {
-         background-color: #e60058;
+         background-color: #FF0062;
       }
 
       /* Hover effects */
@@ -132,6 +144,12 @@
       .edit-btn:hover {
          background-color: #4676EE;
          /* Darker green on hover */
+      }
+      .text-visible {
+         color: #28a745; /* Green color for visible */
+      }
+      .text-invisible {
+         color: #dc3545; /* Red color for invisible */
       }
 
 
@@ -244,7 +262,7 @@
                         {% elif specialty == 'Not Chosen' %}
                         <span
                            class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
-                           Not Chosen
+                           Choose Your Specialty!
                         </span>
                         {% elif specialty == 'Researcher' %}
                         <span
@@ -318,10 +336,12 @@
             </div>
             <!-- Toggle Visibility Form -->
             <div>
-               <button id="toggleVisibilityBtn"
-                  class="{{ 'btn-invisible' if not user.is_visible() else 'btn-visible' }}">
-                  {{ 'Invisible' if not user.is_visible() else 'Visible' }}
-               </button>
+               <span id="visibilityStatus">
+                  Your profile is <span class="{{ 'text-invisible' if not user.is_visible() else 'text-visible' }}">{{ 'invisible' if not user.is_visible() else 'visible' }}</span> on Freelancer Search:
+                  <button id="toggleVisibilityBtn" class="{{ 'btn-invisible' if not user.is_visible() else 'btn-visible' }}">
+                     {{ '❌' if not user.is_visible() else '✅' }}
+                  </button>
+               </span>
             </div>
          </div>
       </section>
@@ -858,11 +878,13 @@
       $(document).ready(function () {
          $('#toggleVisibilityBtn').click(function () {
             var btn = $(this);
-            // Change button appearance immediately
+            // Toggle visibility status text and button appearance
             if (btn.hasClass('btn-visible')) {
-               btn.removeClass('btn-visible').addClass('btn-invisible').text('Invisible');
+               btn.removeClass('btn-visible').addClass('btn-invisible').text('❌');
+               $('#visibilityStatus span').removeClass('text-visible').addClass('text-invisible').text('invisible');
             } else {
-               btn.removeClass('btn-invisible').addClass('btn-visible').text('Visible');
+               btn.removeClass('btn-invisible').addClass('btn-visible').text('✅');
+               $('#visibilityStatus span').removeClass('text-invisible').addClass('text-visible').text('visible');
             }
             // AJAX request to update the server
             $.ajax({
