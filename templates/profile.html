@@ -856,7 +856,9 @@
 
       function setup() {
          console.log('setup complete');
-         $('#bioEditForm').find('textarea[name="bio"]').val('{{ bio }}');
+         // Escape newline characters for bio
+         var bioContent = `{{ bio | replace('\n', '\\n') | replace('\r', '') | safe }}`;
+         $('#bioEditForm').find('textarea[name="bio"]').val(bioContent);
 
           // Set link edit form fields to server-rendered values
          $('#linkEditForm').find('input[name="link1"]').val('{{ links[0]|default('') }}');
