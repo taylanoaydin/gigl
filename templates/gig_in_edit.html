@@ -37,8 +37,8 @@
         <div>
             <p id="dateDisplay" class="text-gray-600">{{gigPostedDate}}</p>
             {% if is_owner %}
-            <button id="gigEditButton" class="text-blue-600 bg-transparent w-full">
-                Edit Gig
+            <button id="gigEditButton" class="text-white bg-button bg-button-hover rounded-lg p-1 w-full">
+                <i class="fas fa-pencil-alt"></i> Edit Gig 
             </button>
             {% endif %}
         </div>
@@ -139,8 +139,7 @@
         <div>
             <p class="text-gray-600">{{gigPostedDate}}</p>
             {% if is_owner %}
-            {{ gig_form.submit(class= "text-blue-600 bg-transparent
-            w-full")}}
+            {{ gig_form.submit(class= "cursor-pointer text-white bg-button bg-button-hover rounded-md p-1 w-full")}}
             {% endif %}
         </div>
     </div>

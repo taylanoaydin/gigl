@@ -13,6 +13,26 @@
             width: 80%;
             padding: 1em;
         }
+        .btn-delete-green {
+         background-color: #0cc785;
+         /* A nicer shade of green */
+         color: white;
+      }
+
+      .btn-delete {
+         background-color: #FF0062;
+         /* A nicer shade of red */
+         color: white;
+      }
+
+      /* Hover effects */
+      .btn-delete-green:hover {
+         background-color: #0bb378;
+      }
+
+      .btn-delete:hover {
+         background-color: #e60058;
+      }
 
         #cancelButton {
             margin-left: 10px;
@@ -53,6 +73,7 @@
 </head>
 
 <body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     {% include 'header.html' %} <!--JINJA2 template for the header-->
     <main>
         <br>
@@ -63,8 +84,8 @@
                     <div>
                         <p id="dateDisplay" class="text-gray-600">{{gigPostedDate}}</p>
                         {% if is_owner %}
-                        <button id="gigEditButton" class="text-blue-600 bg-transparent w-full">
-                            Edit Gig
+                        <button id="gigEditButton" class="text-white bg-button bg-button-hover rounded-lg p-1 w-full">
+                            <i class="fas fa-pencil-alt"></i> Edit Gig 
                         </button>
                         {% endif %}
                     </div>
@@ -165,8 +186,7 @@
                     <div>
                         <p class="text-gray-600">{{gigPostedDate}}</p>
                         {% if is_owner %}
-                        {{ gig_form.submit(class= "cursor-pointer text-blue-600 bg-transparent
-                        w-full")}}
+                        {{ gig_form.submit(class= "cursor-pointer text-white bg-button bg-button-hover rounded-md p-1 w-full")}}
                         {% endif %}
                     </div>
                 </div>
@@ -259,10 +279,10 @@
                 {{ delete_form.hidden_tag() }} <!-- CSRF token -->
                 {% if show_confirm %}
                 <p> Are you sure? </p>
-                {{ delete_form.confirm(class="cursor-pointer p-2 w-auto rounded-lg bg-green-200") }}
-                {{ delete_form.cancel(class="cursor-pointer p-2 w-auto rounded-lg bg-red-200") }}
+                {{ delete_form.confirm(class="cursor-pointer p-2 w-auto rounded-lg btn-delete-green") }}
+                {{ delete_form.cancel(class="cursor-pointer p-2 w-auto rounded-lg btn-delete") }}
                 {% else %}
-                {{ delete_form.delete(class="cursor-pointer p-2 w-auto rounded-lg bg-red-200") }}
+                {{ delete_form.delete(class="cursor-pointer p-2 w-auto rounded-lg btn-delete") }}
                 {% endif %}
             </form>
         </section>
@@ -273,10 +293,10 @@
                 {{ delete_form.hidden_tag() }} <!-- CSRF token -->
                 {% if show_confirm %}
                 <p> Are you sure? </p>
-                {{ delete_form.confirm(class="cursor-pointer p-2 w-auto rounded-lg bg-green-200") }}
-                {{ delete_form.cancel(class="cursor-pointer p-2 w-auto rounded-lg bg-red-200") }}
+                {{ delete_form.confirm(class="cursor-pointer p-2 w-auto rounded-lg btn-delete-green") }}
+                {{ delete_form.cancel(class="cursor-pointer p-2 w-auto rounded-lg btn-delete") }}
                 {% else %}
-                {{ delete_form.delete(class="cursor-pointer p-2 w-auto rounded-lg bg-red-200") }}
+                {{ delete_form.delete(class="cursor-pointer p-2 w-auto rounded-lg btn-delete") }}
                 {% endif %}
             </form>
         </section>
@@ -361,12 +381,12 @@
                 // Show confirm and cancel buttons
                 form.html('{{ delete_form.hidden_tag() }}' +
                     '<p>Are you sure?</p>' +
-                    '{{ delete_form.confirm(class="cursor-pointer p-2 w-auto rounded-lg bg-green-200") }}' +
-                    '{{ delete_form.cancel(class="cursor-pointer p-2 w-auto rounded-lg bg-red-200") }}');
+                    '{{ delete_form.confirm(class="cursor-pointer p-2 w-auto rounded-lg btn-delete-green") }}' +
+                    '{{ delete_form.cancel(class="cursor-pointer p-2 w-auto rounded-lg btn-delete") }}');
             } else {
                 // Show delete button
                 form.html('{{ delete_form.hidden_tag() }}' +
-                    '{{ delete_form.delete(class="cursor-pointer p-2 w-auto rounded-lg bg-red-200") }}');
+                    '{{ delete_form.delete(class="cursor-pointer p-2 w-auto rounded-lg btn-delete") }}');
             }
         }
 
