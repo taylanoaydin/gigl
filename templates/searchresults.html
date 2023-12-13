@@ -167,7 +167,7 @@
       }
 
       $(document).ready(function () {
-         let searchTable = $('#resultsTable').DataTable({
+         $('#resultsTable').DataTable({
             "ordering": true,
             "responsive": false,
             "columnDefs": [
@@ -247,9 +247,9 @@
       <!-- Update the form to use WTForms -->
       <form method="POST">
          {{ search_form.hidden_tag() }}
-         <div class="flex space-x-10">
+         <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-10">
             <!-- Render the keyword field using WTForms -->
-            {{ search_form.keyword(class_="border border-gray-400 p-2 w-1/2 rounded-lg focus:outline-none
+            {{ search_form.keyword(class_="border border-gray-400 p-2 w-1/2 w-full rounded-lg focus:outline-none
             focus:border-blue-600", placeholder="Search for any gig now!", value=kw) }}
 
             <!-- Render the category select field using WTForms -->
@@ -272,11 +272,11 @@
                <tr>
                   <th id="0" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Gig Title
                   </th>
-                  <th id="1" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Posted On
+                  <th id="1" class="hidden lg:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Posted On
                   </th>
-                  <th id="2" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Start Date
+                  <th id="2" class="hidden lg:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Start Date
                   </th>
-                  <th id="3" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">End Date
+                  <th id="3" class="hidden lg:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">End Date
                   </th>
                   <th id="4" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Category
                   </th>
@@ -307,9 +307,9 @@
                         {% endif %}
                      </div>
                   </td>
-                  <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}</td>
-                  <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}</td>
-                  <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}</td>
+                  <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}</td>
+                  <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}</td>
+                  <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}</td>
                   <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
                      {% if gig.get_category() == 'teaching' %}
                      <span
