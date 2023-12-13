@@ -395,14 +395,23 @@
       <section>
          <div class="flex flex-col items-center justify-center">
             <!-- Tabs -->
-            <div class="mb-4 space-x-10">
+            <div class="mb-4 space-x-2 sm:space-x-10">
                <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300 bg-gray-300 border border-blue-500"
-                  onclick="openTab(event, 'Table1')">Posted Gigs</button>
+                  onclick="openTab(event, 'Table1')">
+                  <span class="md:hidden">Posts</span>
+                  <span class="hidden md:inline">Posted Gigs</span>
+               </button>
                <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300"
-                  onclick="openTab(event, 'Table2')">Sent Applications</button>
+                  onclick="openTab(event, 'Table2')">
+                  <span class="md:hidden">Sends</span>
+                  <span class="hidden md:inline">Sent Applications</span>
+               </button>
                <button class="tab-link px-4 py-2 font-semibold bg-gray-200 focus:outline-none hover:bg-gray-300"
-                  onclick="openTab(event, 'Table3')">Bookmarked Gigs</button>
-            </div>
+                  onclick="openTab(event, 'Table3')">
+                  <span class="md:hidden">Bookmarks</span>
+                  <span class="hidden md:inline">Bookmarked Gigs</span>
+               </button>
+             </div>
 
             <!-- Content -->
             <div id="Table1" class="tab-content w-full" style="display:block">
