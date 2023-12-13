@@ -311,9 +311,9 @@ def get_freelancers(keyword='', specialty='', page=1, per_page=100):
    try:
        with connection.cursor() as cursor:
            kw = '%' + keyword + '%'
-           all_args = [kw]
+           all_args = [kw, kw]
            query = """SELECT netid, name, specialty, last_active, visible FROM users
-                      WHERE name ILIKE %s AND visible AND NOT banned"""
+                      WHERE (name ILIKE %s OR bio ILIKE %s) AND visible AND NOT banned"""
            if specialty != '':
                query += " AND specialty=%s"
                all_args.append(specialty)
@@ -356,9 +356,9 @@ def get_all_users(keyword='', specialty='', page=1, per_page=100):
    try:
        with connection.cursor() as cursor:
            kw = '%' + keyword + '%'
-           all_args = [kw]
+           all_args = [kw, kw]
            query = """SELECT netid, name, specialty, last_active, visible, banned FROM users
-                      WHERE name ILIKE %s"""
+                      WHERE (name ILIKE %s OR bio ILIKE %s)"""
            if specialty != '':
                query += " AND specialty=%s"
                all_args.append(specialty)
