@@ -41,6 +41,8 @@ app.config['MAIL_USE_SSL'] = True
 # Initialize Flask-Mail
 mail = Mail(app)
 
+all_admins = ['cos-gigl', 'dpw3', 'ogolev2', 'cos-to6377', 'mtouil2']
+
 
 # -----------------------------------------------------------------------
 # Define error handlers
@@ -291,7 +293,7 @@ def details(id):
 
 
        owns = database.owns_gig(netid, id)  # boolean
-       isAdmin = (netid == 'cos-gigl')
+       isAdmin = (netid in all_admins)
        if owns:
            all_apps = database.get_apps_for(id)
            application = None
@@ -531,7 +533,7 @@ def profile():
 def profilesearch():
     netid = auth.authenticate()
     try:
-        isAdmin = (netid == 'cos-gigl')
+        isAdmin = (netid in all_admins)
         database.check_and_add_user(netid)
         if database.is_banned(netid):
             html_code = flask.render_template(
@@ -607,7 +609,7 @@ def gigdeleted(id):
             return response
         database.update_activity(netid)
         owns = database.owns_gig(netid, id)
-        isAdmin = (netid == 'cos-gigl')
+        isAdmin = (netid in all_admins)
         delete_form = DeleteGigForm(request.form)
         if delete_form.validate_on_submit():
             print('delete submitted')
@@ -657,7 +659,7 @@ def logout():
 def freelancer_profile(netid):
     id = auth.authenticate()
     try:
-        isAdmin = (id == 'cos-gigl')
+        isAdmin = (id in all_admins)
         # Fetch freelancer details from the database using netid
         database.check_and_add_user(id)
         if database.is_banned(id):
