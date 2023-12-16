@@ -147,41 +147,30 @@
 
 
   </script>
-  {% if total_pages > 1 %}
-  <div class="flex justify-center space-x-1 mt-4">
-    <!-- Always show the first page link and use conditional styling for the current page -->
-    <a href="{{ url_for('profilesearch', page=1, spec=spec, kw=kw) }}"
-      class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == 1 else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">1</a>
-
-
-    <!-- Show ellipsis if there are pages between the first and the current range start -->
+  <!-- Pagination Section -->
+{% if total_pages > 1 %}
+<div class="flex justify-center space-x-1 mt-4">
+    <!-- First Page Link -->
     {% if current_page > 3 %}
+    <a href="{{ url_for('profilesearch', page=1, spec=spec, kw=kw) }}" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">1</a>
     <span class="px-3 py-1">...</span>
     {% endif %}
 
+    <!-- Page Range -->
+    {% set start_page = current_page - 2 if current_page > 3 else 1 %}
+    {% set end_page = current_page + 2 if current_page < total_pages - 2 else total_pages %}
+    {% for page_num in range(start_page, end_page + 1) %}
+    <a href="{{ url_for('profilesearch', page=page_num, spec=spec, kw=kw) }}" class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if page_num == current_page else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{ page_num }}</a>
+    {% endfor %}
 
-    <!-- Determine the range of page numbers to display -->
-    {% set start_page = current_page - 2 if current_page > 2 else 2 %}
-    {% set end_page = current_page + 2 if current_page < total_pages - 1 else total_pages - 1 %} <!-- Display the range
-      of page numbers -->
-      {% for page_num in range(start_page, end_page + 1) %}
-      <a href="{{ url_for('profilesearch', page=page_num, spec=spec, kw=kw) }}"
-        class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if page_num == current_page else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{
-        page_num }}</a>
-      {% endfor %}
+    <!-- Last Page Link -->
+    {% if current_page < total_pages - 2 %}
+    <span class="px-3 py-1">...</span>
+    <a href="{{ url_for('profilesearch', page=total_pages, spec=spec, kw=kw) }}" class="px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100">{{ total_pages }}</a>
+    {% endif %}
+</div>
+{% endif %}
 
-
-      <!-- Show ellipsis if there are pages between the current range end and the last page -->
-      {% if current_page < total_pages - 2 %} <span class="px-3 py-1">...</span>
-        {% endif %}
-
-
-        <!-- Always show the last page link and use conditional styling for the current page -->
-        <a href="{{ url_for('profilesearch', page=total_pages, spec=spec, kw=kw) }}"
-          class="px-3 py-1 rounded-md {{ 'bg-indigo-600 text-white' if current_page == total_pages else 'bg-white text-indigo-600 hover:bg-indigo-100' }}">{{
-          total_pages }}</a>
-  </div>
-  {% endif %}
 
 
 </body>
