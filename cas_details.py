@@ -15,16 +15,9 @@ def cas_details(netID):
         req_lib.configs.USERS,
         uid=netID,
     )
-    info_list = [[item['displayname'],
-                  item['sn'],
-                  item['mail'],
-                  item['department'],
-                  item['pustatus'],
-                  item['eduPersonPrimaryAffiliation'],
-                  item['universityid']] for item in req]
+    info_list = [[item['displayname']] for item in req]
     return info_list[0]
 
 #Test
 if __name__ == '__main__':
-    print(cas_details('hd0216'))
-    print(cas_details('ta0639'))
+    print(cas_details('ogolev2'))
