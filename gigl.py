@@ -11,7 +11,6 @@ import os
 import dotenv
 import database
 from datetime import datetime
-from cas_details import cas_details
 from forms import ApplyForm, DeleteGigForm, PostGigForm, EditGigForm, SearchForm, ProfileSearchForm, BioEditForm, LinkEditForm, SpecialtySelectForm, SetStatusForm
 from flask import current_app
 from flask import render_template, request, make_response
@@ -143,7 +142,7 @@ def home():
     try:
         status = database.check_and_add_user(netid)
         if status == "user_created":
-            username = cas_details(netid)[0]
+            username = database.get_user(netid).get_name()
             email = netid + "@princeton.edu"
             send_email_welcome(email, "Welcome to Gigl!", username)
         else:

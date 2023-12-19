@@ -405,8 +405,12 @@ def check_and_add_user(netid):
        try:
            with connection.cursor() as cursor:
                cursor.execute('BEGIN')
-
-               usrname = cas_details(netid)[0]
+               
+               try:
+                    usrname = cas_details(netid)[0]
+               except:
+                    usrname = netid
+                
                query = "INSERT INTO users (netid, name, visible, bio, links, specialty, last_active, banned) VALUES (%s, %s, 'n', '', '', 'Not Chosen', %s, false)"
                cursor.execute(query, [netid, usrname, datetime.now().date()])
 
