@@ -730,13 +730,13 @@ def editbio():
     if bioeditform.validate_on_submit():
         newbio = bioeditform.bio.data
         database.update_bio(netid, newbio)
+        bioeditform.bio.data = newbio
         html_code = flask.render_template(
             'bio_in_profile.html', bio=newbio, bioeditform=bioeditform)
         response = flask.make_response(html_code)
         return response
     else:
         errs = bioeditform.errors
-        bioeditform = BioEditForm()
         bio = database.get_user(netid).get_bio()
         bioeditform.bio.data = bio
         html_code = flask.render_template(
