@@ -34,7 +34,7 @@
                 {{ gig_form.hidden_tag() }} <!-- CSRF Protection token -->
                 <div>
                     {{ gig_form.title.label }}
-                    {{ gig_form.title(class="bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500", maxlength="50")}}
+                    {{ gig_form.title(class="bg-gray-50 shadow block border border-gray-200 p-2 w-full md:w-1/2 rounded-lg focus:outline-none focus:border-teal-500", maxlength="46")}}
                     {% for error in gig_form.title.errors %}
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
