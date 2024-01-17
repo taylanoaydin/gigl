@@ -138,7 +138,7 @@ class PostGigForm(FlaskForm):
                 'Start date cannot be after the end date'
             )
         
-    title = StringField('Title', validators=[InputRequired(), Length(max=100)])
+    title = StringField('Title', validators=[InputRequired(), Length(max=46)])
     start_date = DateField(
         'Start Date',
         validators=[
@@ -197,7 +197,7 @@ class PostGigForm(FlaskForm):
 
 
 class EditGigForm(FlaskForm):
-    title = StringField('Title', validators=[InputRequired(), Length(max=100)])
+    title = StringField('Title', validators=[InputRequired(), Length(max=46)])
     qualifications = TextAreaField(
         'Qualifications', validators=[
             InputRequired(), Length(
