@@ -487,7 +487,7 @@ def update_gig_details(gig_id, netid, title, description, qualifications, catego
 
 
 def create_gig(netid, title, category, description, qualf, startfrom,
-              until, posted):
+              until, posted, hprice = None):
    try:
        connection = _get_connection()
    except:
@@ -498,12 +498,12 @@ def create_gig(netid, title, category, description, qualf, startfrom,
 
            query = """INSERT INTO gigs
            (netid, title, category, description,
-           qualf, startfrom, until, posted, num_apps)
-           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0) RETURNING gigID"""
+           qualf, startfrom, until, posted, num_apps, hprice)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0, %s) RETURNING gigID"""
 
            cursor.execute(
                query, [
-                   netid, title, category, description, qualf, startfrom, until, posted])
+                   netid, title, category, description, qualf, startfrom, until, posted, hprice])
            gigID = cursor.fetchone()[0]
 
            cursor.execute('COMMIT')

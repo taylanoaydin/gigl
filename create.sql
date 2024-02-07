@@ -63,3 +63,6 @@ CREATE TABLE bookmarks
   gigID INTEGER,
   PRIMARY KEY (netid, gigID)
 );
+
+ALTER TABLE gigs
+ADD COLUMN price DECIMAL(5,2);
