@@ -107,6 +107,7 @@
                   "width": "143px", "targets": -3
                },
                { "width": "90px", "targets": 1},
+               { "width": "410px", "targets": 0},
                { "width": "90px", "targets": 2},
                { "width": "90px", "targets": 3}
             ],
@@ -115,8 +116,8 @@
             "lengthChange": false,
             "info": false,
             "pagingType": "numbers",
-            "scrollX": false,
-            "scrollY": false,
+            "scrollX": true,
+            "scrollY": true,
             "createdRow": function (row, data, dataIndex) {
                $(row).addClass('bg-gray-100')
                $(row).find('td').addClass('p-3 text-sm text-gray-700 whitespace-nowrap break-all');
@@ -197,7 +198,7 @@
                <tr>
                   <th id="0" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Gig Title
                   </th>
-                  <th id="1" class="hidden lg:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Posted On
+                  <th id="1" class="hidden xl:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Posted On
                   </th>
                   <th id="2" class="hidden lg:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Start Date
                   </th>
@@ -205,7 +206,7 @@
                   </th>
                   <th id="4" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Category
                   </th>
-                  <th id="5" class="hidden lg:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Rate
+                  <th id="5" class="hidden md:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Rate
                   </th>
                   <th></th>
                </tr>
@@ -234,7 +235,7 @@
                         {% endif %}
                      </div>
                   </td>
-                  <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}</td>
+                  <td scope="row" class="hidden xl:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}</td>
                   <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}</td>
                   <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}</td>
                   <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
@@ -300,7 +301,7 @@
                      </span>
                      {% endif %}
                   </td>
-                  <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{% if gig.get_hprice() is none %}
+                  <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{% if gig.get_hprice() is none %}
                      N/A
                  {% else %}
                      ${{ gig.get_hprice() }}
