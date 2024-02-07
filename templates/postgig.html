@@ -76,6 +76,14 @@
                     <span style="color: red;">[{{ error }}]</span>
                     {% endfor %}
                 </div>
+                <br>
+                <div>
+                    Hourly Rate
+                    {{ gig_form.price(class="block bg-gray-50 shadow block border border-gray-200 p-2 w-1/4 rounded-lg focus:outline-none focus:border-teal-500", rows=1, value=0, step=0.50) }}
+                    {% for error in gig_form.price.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </div>
 
                 <br>
 

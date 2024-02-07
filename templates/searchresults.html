@@ -55,84 +55,6 @@
     }
    </style>
    <script>
-      // Global variable to store all rows
-      // let sortStates = {};
-      // let initialSortColumn = 1; // Assuming 'Posted On' is the second column (index 1)
-      // let allRows = [];
-      // const rowsPerPage = 5; // Adjust this as per your requirement
-
-
-      // function initializeSortStates() {
-      //    let table = document.getElementById("resultsTable");
-      //    let headers = table.tHead.rows[0].cells;
-      //    for (let i = 0; i < headers.length; i++) {
-      //       sortStates[i] = undefined; // Initialize all sort states as undefined
-      //    }
-      // }
-
-      // function sortColumn(th_id, isAscending) {
-      //    // Sort all rows
-      //    allRows.sort(function (a, b) {
-      //       let textA = a.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
-      //       let textB = b.getElementsByTagName("TD")[th_id].textContent.toLowerCase();
-      //       return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
-      //    });
-
-      //    // Reapply pagination to show the first page of sorted results
-      //    paginateToPage(1);
-      // }
-
-      // function setupSearchResultsPagination() {
-      //    const table = document.getElementById('resultsTable');
-      //    allRows = Array.from(table.getElementsByTagName('tbody')[0].getElementsByTagName('tr'));
-      //    sortColumn(initialSortColumn, true); // Sort initially by 'Posted On'
-      //    const maxPage = Math.ceil(allRows.length / rowsPerPage);
-      //    const paginationControls = document.getElementById('searchResultsPagination');
-      //    paginationControls.innerHTML = '';
-
-      //    for (let i = 1; i <= maxPage; i++) {
-      //       const pageButton = document.createElement('button');
-      //       pageButton.innerText = i;
-      //       pageButton.className = 'px-3 py-1 rounded-md bg-white text-indigo-600 hover:bg-indigo-100';
-      //       pageButton.onclick = function () { paginateToPage(i); };
-      //       paginationControls.appendChild(pageButton);
-      //    }
-      //    paginateToPage(1);
-      // }
-
-      // function paginateToPage(pageNumber) {
-      //    const table = document.getElementById('resultsTable');
-      //    const tbody = table.getElementsByTagName('tbody')[0];
-      //    const start = (pageNumber - 1) * rowsPerPage;
-      //    const end = start + rowsPerPage;
-      //    tbody.innerHTML = '';
-      //    allRows.slice(start, end).forEach(row => tbody.appendChild(row));
-      // }
-
-      // document.addEventListener('DOMContentLoaded', function () {
-      //    initializeSortStates();
-      //    setupSearchResultsPagination();
-      //    setupTableSort();
-      // });
-
-
-      // function sortTableByColumn(th_id) {
-      //    let isAscending = sortStates[th_id] !== undefined ? !sortStates[th_id] : true; // Default to ascending on first click
-      //    sortStates[th_id] = isAscending; // Update sort state
-      //    sortColumn(th_id, isAscending);
-      // }
-
-      // function setupTableSort() {
-      //    let table = document.getElementById("resultsTable");
-      //    let headers = table.tHead.rows[0].cells;
-
-      //    for (let i = 0; i < headers.length; i++) {
-      //       headers[i].addEventListener('click', function () {
-      //          sortTableByColumn(i);
-      //       });
-      //    }
-      // }
-
       window.onpageshow = function (event) {
             if (event.persisted) {
                 window.location.reload();
@@ -179,7 +101,10 @@
                   "width": "36px", "targets": -1
                },
                {
-                  "width": "143px", "targets": -2
+                  "width": "72px", "targets": -2
+               },
+               {
+                  "width": "143px", "targets": -3
                },
                { "width": "90px", "targets": 1},
                { "width": "90px", "targets": 2},
@@ -280,6 +205,8 @@
                   </th>
                   <th id="4" class="p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Category
                   </th>
+                  <th id="5" class="hidden lg:table-cell p-3 text-sm font-semibold tracking-wide text-left cursor-pointer">Rate
+                  </th>
                   <th></th>
                </tr>
             </thead>
@@ -373,6 +300,12 @@
                      </span>
                      {% endif %}
                   </td>
+                  <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{% if gig.get_hprice() is none %}
+                     N/A
+                 {% else %}
+                     ${{ gig.get_hprice() }}
+                 {% endif %}
+                 </td>
                   <td class="p-3 text-center">
                      <i class="{{ 'fas' if is_bookmarked(netid, gig.get_gigID()) else 'far' }} fa-bookmark cursor-pointer"
                         onclick="toggleBookmark('{{ gig.get_gigID() }}', this)"></i>

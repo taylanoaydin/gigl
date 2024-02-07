@@ -126,6 +126,10 @@
         <h3 id="gigQualificationTitleDisplay" class="font-bold">Qualifications</h3>
         <p id="gigQualificationDisplay" class="conditional-hyphens">{{gigQualifications}}</p>
     </div>
+    <div class="mb-4">
+        <h3 id="hpriceTitleDisplay" class="font-bold">Hourly Rate</h3>
+        <p id="hpriceDisplay" class="conditional-hyphens">${{gigHprice}}</p>
+    </div>
 </div>
 <form hidden id="gigEditForm" method="post">
     {{ gig_form.hidden_tag() }}
@@ -172,6 +176,14 @@
         {{ gig_form.qualifications(id="gigQualificationEdit", class="border border-blue-600 py-1 rounded-lg
         w-full")}}
         {% for error in gig_form.qualifications.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div class="mb-4">
+        <h3 class="font-bold">Hourly Rate</h3>
+        {{ gig_form.price(id="gigPriceEdit", class="border border-blue-600 py-1 rounded-lg
+        w-1/4")}}
+        {% for error in gig_form.price.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
     </div>

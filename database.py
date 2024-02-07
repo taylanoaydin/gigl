@@ -456,7 +456,7 @@ def delete_gig_from_db(gigID):
    finally:
        _put_connection(connection)
 
-def update_gig_details(gig_id, netid, title, description, qualifications, category):
+def update_gig_details(gig_id, netid, title, description, qualifications, category, hprice):
     try:
         connection = _get_connection()
     except:
@@ -469,8 +469,8 @@ def update_gig_details(gig_id, netid, title, description, qualifications, catego
                 return False
             
             cursor.execute('BEGIN')
-            query = "UPDATE gigs SET title = %s, description = %s, qualf = %s, category = %s WHERE gigID = %s"
-            cursor.execute(query, [title, description, qualifications, category, gig_id])
+            query = "UPDATE gigs SET title = %s, description = %s, qualf = %s, category = %s, price = %s WHERE gigID = %s"
+            cursor.execute(query, [title, description, qualifications, category, hprice, gig_id])
             cursor.execute('COMMIT')
             return True
     except Exception as ex:
@@ -487,7 +487,7 @@ def update_gig_details(gig_id, netid, title, description, qualifications, catego
 
 
 def create_gig(netid, title, category, description, qualf, startfrom,
-              until, posted, hprice = None):
+              until, posted, hprice):
    try:
        connection = _get_connection()
    except:
@@ -495,17 +495,18 @@ def create_gig(netid, title, category, description, qualf, startfrom,
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
+           print("wow2")
 
            query = """INSERT INTO gigs
            (netid, title, category, description,
-           qualf, startfrom, until, posted, num_apps, hprice)
+           qualf, startfrom, until, posted, num_apps, price)
            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0, %s) RETURNING gigID"""
 
            cursor.execute(
                query, [
                    netid, title, category, description, qualf, startfrom, until, posted, hprice])
            gigID = cursor.fetchone()[0]
-
+           print("wow3")
            cursor.execute('COMMIT')
            return gigID
    except Exception as ex:

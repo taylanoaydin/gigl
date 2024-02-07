@@ -289,6 +289,7 @@ def details(id):
        gigStartDate = gig.get_fromdate()
        gigEndDate = gig.get_til_date()
        gigPostedDate = gig.get_post_date()
+       gigHprice = gig.get_hprice()
 
 
        owns = database.owns_gig(netid, id)  # boolean
@@ -369,6 +370,8 @@ def details(id):
         gig_form.title.data = gigTitle
         gig_form.description.data = gigDescription
         gig_form.categories.data = gigCategory
+        gig_form.price.data = gigHprice
+
 
         html_code = flask.render_template('details.html',
                                             gigTitle=gigTitle,
@@ -390,7 +393,8 @@ def details(id):
                                             get_usr = database.get_user,
                                             setstatusforms=setstatusforms,
                                             gig_form=gig_form,
-                                            profileIDChecker=profileIDChecker)
+                                            profileIDChecker=profileIDChecker,
+                                            gigHprice = gigHprice)
         response = flask.make_response(html_code)
         return response
    except DatabaseError as e:
@@ -438,6 +442,7 @@ def postgig():
         user = database.get_user(netid)
         gig_form = PostGigForm()
         if gig_form.validate_on_submit():
+            print("wow")
             gig_id = database.create_gig(
                 netid,
                 gig_form.title.data,
@@ -446,7 +451,8 @@ def postgig():
                 gig_form.qualifications.data,
                 gig_form.start_date.data,
                 gig_form.end_date.data,
-                datetime.now().date())
+                datetime.now().date(),
+                gig_form.price.data)
             return flask.redirect(
                 flask.url_for(
                     'gigposted_success',
@@ -876,6 +882,7 @@ def update_gig(gig_id):
             newDescription = gig_form.description.data
             newQualifications = gig_form.qualifications.data
             newCategories = gig_form.categories.data
+            gigHprice = gig_form.price.data
 
             gigAuthor = database.get_user(netid).get_name()
             gigStartDate = gig.get_fromdate()
@@ -884,7 +891,7 @@ def update_gig(gig_id):
 
             owns = True
 
-            database.update_gig_details(gig_id, netid, gig_form.title.data, gig_form.description.data, gig_form.qualifications.data, gig_form.categories.data)
+            database.update_gig_details(gig_id, netid, gig_form.title.data, gig_form.description.data, gig_form.qualifications.data, gig_form.categories.data, gig_form.price.data)
             html_code = flask.render_template('gig_in_edit.html',
                                         gigTitle=newTitle,
                                         gigPoster=gigAuthor,
@@ -896,6 +903,7 @@ def update_gig(gig_id):
                                         gigPostedDate=gigPostedDate,
                                         is_owner=owns,
                                         gigID=id,
+                                        gigHprice=gigHprice,
                                         get_usr = database.get_user,
                                         gig_form=gig_form)
             response = flask.make_response(html_code)
@@ -913,6 +921,7 @@ def update_gig(gig_id):
             gigDescription = gig.get_description()
             gigQualifications = gig.get_qualifications()
             gigCategory = gig.get_category()
+            gigHprice = gig.get_hprice()
 
             owns = True
             html_code = flask.render_template('gig_in_edit_error.html',
@@ -926,6 +935,7 @@ def update_gig(gig_id):
                                         gigPostedDate=gigPostedDate,
                                         is_owner=owns,
                                         gigID=id,
+                                        gigHprice=gigHprice,
                                         get_usr = database.get_user,
                                         gig_form=gig_form,
                                         errs=errs)

@@ -1,5 +1,5 @@
-from wtforms import SubmitField, TextAreaField, StringField, DateField, SelectField, HiddenField
-from wtforms.validators import InputRequired, ValidationError, Length, DataRequired
+from wtforms import SubmitField, TextAreaField, StringField, DateField, SelectField, HiddenField, DecimalField
+from wtforms.validators import InputRequired, ValidationError, Length, DataRequired, NumberRange
 from wtforms.validators import Optional, ValidationError
 from flask_wtf import FlaskForm
 from datetime import datetime
@@ -159,6 +159,10 @@ class PostGigForm(FlaskForm):
         'Description', validators=[
             InputRequired(), Length(
                 max=1000)])
+    price = DecimalField(
+        'Price', validators=[
+            InputRequired(), NumberRange(min=0, max=999.99, message='Rate must be between $0 and $999.99')]
+    )
     categories = SelectField(
         'Categories',
         validators=[
@@ -198,6 +202,9 @@ class PostGigForm(FlaskForm):
 
 class EditGigForm(FlaskForm):
     title = StringField('Title', validators=[InputRequired(), Length(max=46)])
+    price = DecimalField(
+        'Price', validators=[
+            InputRequired(), NumberRange(min=0, max=999.99, message='Rate must be between $0 and $999.99')])
     qualifications = TextAreaField(
         'Qualifications', validators=[
             InputRequired(), Length(
