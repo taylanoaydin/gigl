@@ -253,7 +253,8 @@ def search_results():
             profileIDChecker=profileIDChecker,
             is_bookmarked=database.is_bookmarked,
             netid=netid,
-            is_banned=database.is_banned)
+            is_banned=database.is_banned,
+            active_page='searchresults')
 
         response = make_response(html_code)
         return response

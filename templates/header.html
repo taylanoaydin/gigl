@@ -58,6 +58,7 @@
                 </svg>
             </button>
             <nav class="hidden md:actions md:flex">
+                <a href="/searchresults?kw=&cat=" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'searchresults' else '' }}">search gigs</a>
                 <a href="/profilesearch?spec=&kw=" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profilesearch' else '' }}">search freelancers</a>
                 <a href="/postgig" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'postgig' else '' }}">post gig</a>
                 <a href="/profile" class="text-custom1 font-medium hover:text-blue-600 divider px-4 {{ 'active-link' if (active_page|default('')) == 'profile' else '' }}">profile</a>
@@ -65,6 +66,7 @@
             </nav>
         </div>
         <div id="mobileMenu" class="hidden md:hidden bg-transparent shadow-md">
+            <a href="/searchresults?kw=&cat=" class="block text-gray-800 font-medium hover:text-blue-600 px-3 py-2 {{ 'active-link-mb' if (active_page|default('')) == 'searchresults' else '' }}">search gigs</a>
             <a href="/profilesearch?spec=&kw=" class="block text-gray-800 font-medium hover:text-blue-600 px-3 py-2 {{ 'active-link-mb' if (active_page|default('')) == 'profilesearch' else '' }}">search freelancers</a>
             <a href="/postgig" class="block text-gray-800 font-medium hover:text-blue-600 px-3 py-2 {{ 'active-link-mb' if (active_page|default('')) == 'postgig' else '' }}">post gig</a>
             <a href="/profile" class="block text-gray-800 font-medium hover:text-blue-600 px-3 py-2 {{ 'active-link-mb' if (active_page|default('')) == 'profile' else '' }}">profile</a>
