@@ -208,7 +208,7 @@ def home():
 @app.route('/searchresults', methods=['GET', 'POST'])
 def search_results():
     netid = auth.authenticate()
-    try:
+    try: 
         database.check_and_add_user(netid)
         if database.is_banned(netid):
             html_code = flask.render_template(
@@ -234,7 +234,7 @@ def search_results():
         search_form.category.data = category
 
         gigs = database.get_gigs(keyword=keyword, categories=[
-                                 category] if category else [])
+                                    category] if category else [])
 
         for gig in gigs:
             gig.is_bookmarked = database.is_bookmarked(netid, gig.get_gigID())
@@ -258,10 +258,12 @@ def search_results():
 
         response = make_response(html_code)
         return response
+
     except DatabaseError as e:
         raise e
     except Exception as e:
         flask.abort(500)  # This will trigger the internal_error_handler
+
 # -----------------------------------------------------------------------
 @app.route('/details/<int:id>', methods=['GET', 'POST'])
 def details(id):
@@ -287,9 +289,9 @@ def details(id):
        gigCategory = gig.get_category()
        gigDescription = gig.get_description()
        gigQualifications = gig.get_qualifications()
-       gigStartDate = gig.get_fromdate()
-       gigEndDate = gig.get_til_date()
-       gigPostedDate = gig.get_post_date()
+       gigStartDate = gig.get_stylized_fromdate()
+       gigEndDate = gig.get_stylized_til_date()
+       gigPostedDate = gig.get_stylized_post_date()
        gigHprice = gig.get_hprice()
 
 
@@ -886,9 +888,9 @@ def update_gig(gig_id):
             gigHprice = gig_form.price.data
 
             gigAuthor = database.get_user(netid).get_name()
-            gigStartDate = gig.get_fromdate()
-            gigEndDate = gig.get_til_date()
-            gigPostedDate = gig.get_post_date()
+            gigStartDate = gig.get_stylized_fromdate()
+            gigEndDate = gig.get_stylized_til_date()
+            gigPostedDate = gig.get_stylized_post_date()
 
             owns = True
 
@@ -915,9 +917,9 @@ def update_gig(gig_id):
             gig_form = EditGigForm()
 
             gigAuthor = database.get_user(netid).get_name()
-            gigStartDate = gig.get_fromdate()
-            gigEndDate = gig.get_til_date()
-            gigPostedDate = gig.get_post_date()
+            gigStartDate = gig.get_stylized_fromdate()
+            gigEndDate = gig.get_stylized_til_date()
+            gigPostedDate = gig.get_stylized_post_date()
             gigTitle = gig.get_title()
             gigDescription = gig.get_description()
             gigQualifications = gig.get_qualifications()

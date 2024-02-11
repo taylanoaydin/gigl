@@ -235,9 +235,10 @@
                         {% endif %}
                      </div>
                   </td>
-                  <td scope="row" class="hidden xl:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}</td>
-                  <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}</td>
-                  <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}</td>
+               </td>
+               <td scope="row" class="hidden xl:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_post_date() }}</td>
+               <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_fromdate() }}</td>
+               <td scope="row" class="hidden lg:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_til_date() }}</td>               
                   <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap">
                      {% if gig.get_category() == 'teaching' %}
                      <span

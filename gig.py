@@ -3,6 +3,7 @@
 # user.py
 # Author: Taylan Aydin
 # -----------------------------------------------------------------------
+from datetime import datetime
 
 class Gig:
 
@@ -52,6 +53,19 @@ class Gig:
     
     def get_hprice(self):
         return self._hprice
+    
+    def get_stylized_date(self, date):
+        stylized_date = date.strftime('%b %d, %Y')
+        return stylized_date
+    
+    def get_stylized_fromdate(self):
+        return self.get_stylized_date(self._from_date)
+
+    def get_stylized_til_date(self):
+        return self.get_stylized_date(self._til_date)
+    
+    def get_stylized_post_date(self):
+        return self.get_stylized_date(self._post_date)
 
 # -----------------------------------------------------------------------
 

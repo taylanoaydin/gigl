@@ -442,11 +442,11 @@
                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a
                               href="{{ url_for('details', id=gig.get_gigID()) }}"
                               class="font-bold text-custom conditional-hyphens hover:underline">{{ gig.get_title() }}</a></td>
-                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_post_date() }}
                         </td>
-                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_fromdate() }}
                         </td>
-                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_til_date() }}
                         </td>
                         <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">
                            {% if gig.get_category() == 'teaching' %}
@@ -571,11 +571,11 @@
                         <td scope="row" class="p-3 text-sm text-gray-700 whitespace-nowrap"><a
                               href="{{ url_for('details', id=gig.get_gigID()) }}"
                               class="font-bold text-custom hover:underline">{{ gig.get_title() }}</a></td>
-                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_post_date() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_post_date() }}
                         </td>
-                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_fromdate() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_fromdate() }}
                         </td>
-                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_til_date() }}
+                        <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">{{ gig.get_stylized_til_date() }}
                         </td>
                         <td scope="row" class="hidden md:table-cell p-3 text-sm text-gray-700 whitespace-nowrap">
                            {% if gig.get_category() == 'teaching' %}

@@ -3,6 +3,8 @@
 # user.py
 # Author: Taylan Aydin
 # -----------------------------------------------------------------------
+from datetime import datetime
+
 class User:
 
     def __init__(
@@ -51,6 +53,14 @@ class User:
 
     def to_tuple(self):
         return (self._netid, self._name)
+    
+    def get_stylized_date(self, date):
+        stylized_date = date.strftime('%b %d, %Y')
+        return stylized_date
+    
+    def get_stylized_active(self):
+        return self.get_stylized_date(self._last_active)
+    
 
 # -----------------------------------------------------------------------
 

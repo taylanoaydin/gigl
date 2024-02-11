@@ -186,11 +186,11 @@
             <p class="text-sm my-2 conditional-hyphens">{{ gig.get_description() | truncate(200) }}</p>
             <div class="flex justify-between">
                <div> <!-- First column -->
-                  <div class="text-xs text-gray-600">Start Date: {{ gig.get_fromdate() }}</div>
-                  <div class="text-xs text-gray-600">End Date: {{ gig.get_til_date() }}</div>
+                  <div class="text-xs text-gray-600">Start Date: {{ gig.get_stylized_fromdate() }}</div>
+                  <div class="text-xs text-gray-600">End Date: {{ gig.get_stylized_til_date() }}</div>
                </div>
                <div> <!-- Second column -->
-                  <div class="text-xs text-gray-600">Posted: {{ gig.get_post_date() }}</div>
+                  <div class="text-xs text-gray-600">Posted: {{ gig.get_stylized_post_date() }}</div>
                   <div class="text-xs text-gray-600">
                      Posted by: {{ author(gig.get_netid()).get_name() }}
                   </div>
@@ -282,11 +282,11 @@
             <p class="text-sm my-2 conditional-hyphens">{{ gig.get_description() | truncate(200) }}</p>
             <div class="flex justify-between">
                <div> <!-- First column -->
-                  <div class="text-xs text-gray-600">Start Date: {{ gig.get_fromdate() }}</div>
-                  <div class="text-xs text-gray-600">End Date: {{ gig.get_til_date() }}</div>
+                  <div class="text-xs text-gray-600">Start Date: {{ gig.get_stylized_fromdate() }}</div>
+                  <div class="text-xs text-gray-600">End Date: {{ gig.get_stylized_til_date() }}</div>
                </div>
                <div> <!-- Second column -->
-                  <div class="text-xs text-gray-600">Posted: {{ gig.get_post_date() }}</div>
+                  <div class="text-xs text-gray-600">Posted: {{ gig.get_stylized_post_date() }}</div>
                   <div class="text-xs text-gray-600">
                      Posted by: {{ author(gig.get_netid()).get_name() }}
                   </div>
