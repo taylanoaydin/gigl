@@ -15,6 +15,7 @@ import gig
 import user
 from datetime import datetime
 from exc import DatabaseError
+import time
 
 
 # -----------------------------------------------------------------------
@@ -24,29 +25,39 @@ dotenv.load_dotenv()
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-_connection_pool = queue.Queue()
+_connection_pool = queue.Queue(maxsize=10)
 
 
 # -----------------------------------------------------------------------
 
 
+# Counter for the total number of created connections
+_total_connections = 0
+
 def _get_connection():
-   try:
-       conn = _connection_pool.get(block=False)
-   except queue.Empty:
-       try:
-            conn = psycopg2.connect(DATABASE_URL)
-       except:
-           raise DatabaseError
-   return conn
+    global _total_connections
 
-
-
+    try:
+        conn = _connection_pool.get(block=False)
+    except queue.Empty:
+        if _total_connections >= 10:
+            try:
+                return _connection_pool.get(timeout=3)  # Wait for up to 3 seconds
+            except queue.Empty:
+                raise DatabaseError
+        else:
+            try:
+                conn = psycopg2.connect(DATABASE_URL)
+                _total_connections += 1
+            except:
+                raise DatabaseError
+    return conn
 
 def _put_connection(conn):
-   _connection_pool.put(conn)
-
-
+    try:
+        _connection_pool.put(conn, block=False)
+    except queue.Full:
+        conn.close()
 
 
 def _close_all_connections():
@@ -272,10 +283,6 @@ def get_application(netid, gigID):
 
 
 # RETURNS ALL INFORMATION ABOUT PERSON WITH NETID = netid
-
-
-
-
 def get_user(netid):
    try:
        connection = _get_connection()
@@ -480,12 +487,7 @@ def update_gig_details(gig_id, netid, title, description, qualifications, catego
 
 
 # Creates gig with the given parameters. Unique gigID is automatically
-# created for any gig. Returns gigID normally, -1 if there was any
-# problem adding to db
-
-
-
-
+# created for any gig. Returns gigID
 def create_gig(netid, title, category, description, qualf, startfrom,
               until, posted, hprice):
    try:
@@ -495,7 +497,6 @@ def create_gig(netid, title, category, description, qualf, startfrom,
    try:
        with connection.cursor() as cursor:
            cursor.execute('BEGIN')
-           print("wow2")
 
            query = """INSERT INTO gigs
            (netid, title, category, description,
@@ -506,7 +507,7 @@ def create_gig(netid, title, category, description, qualf, startfrom,
                query, [
                    netid, title, category, description, qualf, startfrom, until, posted, hprice])
            gigID = cursor.fetchone()[0]
-           print("wow3")
+
            cursor.execute('COMMIT')
            return gigID
    except Exception as ex:
@@ -896,14 +897,36 @@ def get_new_gigs(limit=6):
     finally:
         _put_connection(connection)
 
+def delete_old_gigs():
+    try:
+        connection = _get_connection()
+    except:
+        raise DatabaseError("Failed to connect to the database")
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('BEGIN')
+
+            # Calculate the date 2 months ago
+            two_months_ago = datetime.datetime.now() - datetime.timedelta(days=60)
+            formatted_date = two_months_ago.strftime('%Y-%m-%d')
+
+            # SQL query to delete gigs older than 2 months
+            delete_query = "DELETE FROM gigs WHERE until < %s"
+            cursor.execute(delete_query, [formatted_date])
+
+            cursor.execute('COMMIT')
+    except Exception as ex:
+        cursor.execute('ROLLBACK')
+        raise DatabaseError(f"An error occurred: {ex}")
+    finally:
+        _put_connection(connection)
+
 
 
 def _test():
-   check_and_add_user('cos-gigl')
-   _close_all_connections()
-   return
-
-
+    # create_gig("cos-gigl", "Test", "marketing", "description", "qualification", "2024-03-03", "2024-04-04", "2024-02-01", 0)
+    return
 
 
 if __name__ == '__main__':
