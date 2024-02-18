@@ -122,6 +122,26 @@
                 class="p-2 text-xs font-medium uppercase tracking-wider text-yellow-800 bg-yellow-200 rounded-lg bg-opacity-50">
                 Fashion Designer
               </span>
+              {% elif freelancer.get_specialty() == 'Musician' %}
+<span
+  class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-orange-800 bg-orange-200 rounded-lg bg-opacity-50">
+  Musician
+</span>
+{% elif freelancer.get_specialty() == 'Choreographer' %}
+<span
+  class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-teal-800 bg-teal-200 rounded-lg bg-opacity-50">
+  Choreographer
+</span>
+{% elif freelancer.get_specialty() == 'Stylist' %}
+<span
+  class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">
+  Stylist
+</span>
+{% elif freelancer.get_specialty() == 'Actor' %}
+<span
+  class="hover:shadow-xl p-2 text-xs font-medium uppercase tracking-wider text-blue-800 bg-blue-200 rounded-lg bg-opacity-50">
+  Actor
+</span>
               {% elif freelancer.get_specialty() == 'Miscellaneous' %}
               <span
                 class="p-2 text-xs font-medium uppercase tracking-wider text-red-800 bg-red-200 rounded-lg bg-opacity-50">

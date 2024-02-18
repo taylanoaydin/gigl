@@ -74,6 +74,10 @@ class ProfileSearchForm(FlaskForm):
         ('Cosmetician', 'Cosmetician'),
         ('Cook', 'Cook'),
         ('Fashion Designer', 'Fashion Designer'),
+        ('Musician', 'Musician'),
+        ('Choreographer', 'Choreographer'),
+        ('Stylist', 'Stylist'),
+        ('Actor', 'Actor'),
         ('Miscellaneous', 'Miscellaneous')
     ])
     submit = SubmitField('Search')
@@ -92,6 +96,10 @@ class SpecialtySelectForm(FlaskForm):
         ('Cosmetician', 'Cosmetician'),
         ('Cook', 'Cook'),
         ('Fashion Designer', 'Fashion Designer'),
+        ('Musician', 'Musician'),
+        ('Choreographer', 'Choreographer'),
+        ('Stylist', 'Stylist'),
+        ('Actor', 'Actor'),
         ('Miscellaneous', 'Miscellaneous')
     ])
     submit = SubmitField('Choose')
