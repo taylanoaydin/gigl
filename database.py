@@ -911,9 +911,20 @@ def delete_old_gigs():
             two_months_ago = datetime.datetime.now() - datetime.timedelta(days=60)
             formatted_date = two_months_ago.strftime('%Y-%m-%d')
 
+            # SQL query to select gig IDs older than 2 months
+            select_query = "SELECT gigID FROM gigs WHERE until < %s"
+            cursor.execute(select_query, [formatted_date])
+            gigs_to_delete = [row['gigID'] for row in cursor.fetchall()]
+
+            # SQL queries to delete related entries in apps and bookmarks
+            delete_apps_query = "DELETE FROM apps WHERE gigID = ANY(%s)"
+            delete_bookmarks_query = "DELETE FROM bookmarks WHERE gigID = ANY(%s)"
+            cursor.execute(delete_apps_query, [gigs_to_delete])
+            cursor.execute(delete_bookmarks_query, [gigs_to_delete])
+
             # SQL query to delete gigs older than 2 months
-            delete_query = "DELETE FROM gigs WHERE until < %s"
-            cursor.execute(delete_query, [formatted_date])
+            delete_gigs_query = "DELETE FROM gigs WHERE gigID = ANY(%s)"
+            cursor.execute(delete_gigs_query, [gigs_to_delete])
 
             cursor.execute('COMMIT')
     except Exception as ex:
@@ -921,6 +932,7 @@ def delete_old_gigs():
         raise DatabaseError(f"An error occurred: {ex}")
     finally:
         _put_connection(connection)
+
 
 
 
