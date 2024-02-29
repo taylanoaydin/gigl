@@ -40,7 +40,7 @@ app.config['MAIL_USE_SSL'] = True
 # Initialize Flask-Mail
 mail = Mail(app)
 
-all_admins = ['cos-gigl', 'dpw3', 'ogolev2', 'cos-to6377', 'mtouil2']
+all_admins = ['cos-gigl', 'jl9926',  'motoaki', 'sk3686']
 
 
 # -----------------------------------------------------------------------
